@@ -1,0 +1,1018 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:wb="urn:wbx:0.1" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" viewBox="-300 -500 19000 15600" width="1900" height="1560" wb:version="0.1" wb:units="um" wb:design="wafer.space 1x1 logo die" wb:rev="A" wb:rule-wire-gap="60" wb:rule-edge-clear="40" wb:rule-fid-clear="150">
+  <title>Wire bond diagram: wafer.space 1x1 logo die rev A</title>
+  <style>text{font-family:Helvetica,Arial,sans-serif;fill:#222}.h{font-size:150px;font-weight:bold}.t{font-size:105px}.s{font-size:78px;fill:#555}.sub{fill:#eef3ea;stroke:#9aa;stroke-width:8}.cu{fill:#d9a441}.die{fill:#c9ccd6;stroke:#667;stroke-width:6}.pad{fill:#f7f7fa;stroke:#445;stroke-width:4}.w{fill:none;stroke-linecap:round}.sig{stroke:#b8860b}.pwr{stroke:#c0392b}.gnd{stroke:#2e7d32}.lab{font-size:62px;fill:#333}.zone{fill:#e67e22;fill-opacity:.35;stroke:#e67e22;stroke-width:3}.gd{fill:none;stroke:#222;stroke-width:8}.gdb{fill:#fff;stroke:#222;stroke-width:8}.mark{fill:#7b4fa0}</style>
+  <text x="0" y="-220" class="h">wafer.space 1x1 logo die rev A: top view (1 unit = 1 um, true scale)</text>
+  <g inkscape:groupmode="layer" inkscape:label="substrate">
+    <rect x="0" y="0" width="13000" height="13000" class="sub" wb:kind="outline" wb:name="SUB"/>
+    <rect x="3175" y="10700" width="250" height="1000" class="cu" wb:kind="land" wb:name="L1" wb:net="clk_PAD" wb:finish="ENIG">
+      <title>L1 net clk_PAD</title>
+    </rect>
+    <rect x="3575" y="10700" width="250" height="1000" class="cu" wb:kind="land" wb:name="L2" wb:net="rst_n_PAD" wb:finish="ENIG">
+      <title>L2 net rst_n_PAD</title>
+    </rect>
+    <rect x="3975" y="10700" width="250" height="1000" class="cu" wb:kind="land" wb:name="L3" wb:net="bidir_PAD[0]" wb:finish="ENIG">
+      <title>L3 net bidir_PAD[0]</title>
+    </rect>
+    <rect x="4375" y="10700" width="250" height="1000" class="cu" wb:kind="land" wb:name="L4" wb:net="bidir_PAD[1]" wb:finish="ENIG">
+      <title>L4 net bidir_PAD[1]</title>
+    </rect>
+    <rect x="4775" y="10700" width="250" height="1000" class="cu" wb:kind="land" wb:name="L5" wb:net="bidir_PAD[2]" wb:finish="ENIG">
+      <title>L5 net bidir_PAD[2]</title>
+    </rect>
+    <rect x="5175" y="10700" width="250" height="1000" class="cu" wb:kind="land" wb:name="L6" wb:net="bidir_PAD[3]" wb:finish="ENIG">
+      <title>L6 net bidir_PAD[3]</title>
+    </rect>
+    <rect x="5575" y="10700" width="250" height="1000" class="cu" wb:kind="land" wb:name="L7" wb:net="bidir_PAD[4]" wb:finish="ENIG">
+      <title>L7 net bidir_PAD[4]</title>
+    </rect>
+    <rect x="5975" y="10700" width="250" height="1000" class="cu" wb:kind="land" wb:name="L8" wb:net="bidir_PAD[5]" wb:finish="ENIG">
+      <title>L8 net bidir_PAD[5]</title>
+    </rect>
+    <rect x="6375" y="10700" width="250" height="1000" class="cu" wb:kind="land" wb:name="L9" wb:net="VSS" wb:finish="ENIG">
+      <title>L9 net VSS</title>
+    </rect>
+    <rect x="6775" y="10700" width="250" height="1000" class="cu" wb:kind="land" wb:name="L10" wb:net="bidir_PAD[6]" wb:finish="ENIG">
+      <title>L10 net bidir_PAD[6]</title>
+    </rect>
+    <rect x="7175" y="10700" width="250" height="1000" class="cu" wb:kind="land" wb:name="L11" wb:net="bidir_PAD[7]" wb:finish="ENIG">
+      <title>L11 net bidir_PAD[7]</title>
+    </rect>
+    <rect x="7575" y="10700" width="250" height="1000" class="cu" wb:kind="land" wb:name="L12" wb:net="bidir_PAD[8]" wb:finish="ENIG">
+      <title>L12 net bidir_PAD[8]</title>
+    </rect>
+    <rect x="7975" y="10700" width="250" height="1000" class="cu" wb:kind="land" wb:name="L13" wb:net="bidir_PAD[9]" wb:finish="ENIG">
+      <title>L13 net bidir_PAD[9]</title>
+    </rect>
+    <rect x="8375" y="10700" width="250" height="1000" class="cu" wb:kind="land" wb:name="L14" wb:net="bidir_PAD[10]" wb:finish="ENIG">
+      <title>L14 net bidir_PAD[10]</title>
+    </rect>
+    <rect x="8775" y="10700" width="250" height="1000" class="cu" wb:kind="land" wb:name="L15" wb:net="bidir_PAD[11]" wb:finish="ENIG">
+      <title>L15 net bidir_PAD[11]</title>
+    </rect>
+    <rect x="9175" y="10700" width="250" height="1000" class="cu" wb:kind="land" wb:name="L16" wb:net="bidir_PAD[12]" wb:finish="ENIG">
+      <title>L16 net bidir_PAD[12]</title>
+    </rect>
+    <rect x="9575" y="10700" width="250" height="1000" class="cu" wb:kind="land" wb:name="L17" wb:net="bidir_PAD[13]" wb:finish="ENIG">
+      <title>L17 net bidir_PAD[13]</title>
+    </rect>
+    <rect x="10300" y="10175" width="1000" height="250" class="cu" wb:kind="land" wb:name="L18" wb:net="VDD" wb:finish="ENIG">
+      <title>L18 net VDD</title>
+    </rect>
+    <rect x="10300" y="9775" width="1000" height="250" class="cu" wb:kind="land" wb:name="L19" wb:net="VSS" wb:finish="ENIG">
+      <title>L19 net VSS</title>
+    </rect>
+    <rect x="10300" y="9375" width="1000" height="250" class="cu" wb:kind="land" wb:name="L20" wb:net="bidir_PAD[14]" wb:finish="ENIG">
+      <title>L20 net bidir_PAD[14]</title>
+    </rect>
+    <rect x="10300" y="8975" width="1000" height="250" class="cu" wb:kind="land" wb:name="L21" wb:net="bidir_PAD[15]" wb:finish="ENIG">
+      <title>L21 net bidir_PAD[15]</title>
+    </rect>
+    <rect x="10300" y="8575" width="1000" height="250" class="cu" wb:kind="land" wb:name="L22" wb:net="bidir_PAD[16]" wb:finish="ENIG">
+      <title>L22 net bidir_PAD[16]</title>
+    </rect>
+    <rect x="10300" y="8175" width="1000" height="250" class="cu" wb:kind="land" wb:name="L23" wb:net="bidir_PAD[17]" wb:finish="ENIG">
+      <title>L23 net bidir_PAD[17]</title>
+    </rect>
+    <rect x="10300" y="7775" width="1000" height="250" class="cu" wb:kind="land" wb:name="L24" wb:net="bidir_PAD[18]" wb:finish="ENIG">
+      <title>L24 net bidir_PAD[18]</title>
+    </rect>
+    <rect x="10300" y="7375" width="1000" height="250" class="cu" wb:kind="land" wb:name="L25" wb:net="bidir_PAD[19]" wb:finish="ENIG">
+      <title>L25 net bidir_PAD[19]</title>
+    </rect>
+    <rect x="10300" y="6975" width="1000" height="250" class="cu" wb:kind="land" wb:name="L26" wb:net="VDD" wb:finish="ENIG">
+      <title>L26 net VDD</title>
+    </rect>
+    <rect x="10300" y="6575" width="1000" height="250" class="cu" wb:kind="land" wb:name="L27" wb:net="VSS" wb:finish="ENIG">
+      <title>L27 net VSS</title>
+    </rect>
+    <rect x="10300" y="6175" width="1000" height="250" class="cu" wb:kind="land" wb:name="L28" wb:net="bidir_PAD[20]" wb:finish="ENIG">
+      <title>L28 net bidir_PAD[20]</title>
+    </rect>
+    <rect x="10300" y="5775" width="1000" height="250" class="cu" wb:kind="land" wb:name="L29" wb:net="bidir_PAD[21]" wb:finish="ENIG">
+      <title>L29 net bidir_PAD[21]</title>
+    </rect>
+    <rect x="10300" y="5375" width="1000" height="250" class="cu" wb:kind="land" wb:name="L30" wb:net="bidir_PAD[22]" wb:finish="ENIG">
+      <title>L30 net bidir_PAD[22]</title>
+    </rect>
+    <rect x="10300" y="4975" width="1000" height="250" class="cu" wb:kind="land" wb:name="L31" wb:net="bidir_PAD[23]" wb:finish="ENIG">
+      <title>L31 net bidir_PAD[23]</title>
+    </rect>
+    <rect x="10300" y="4575" width="1000" height="250" class="cu" wb:kind="land" wb:name="L32" wb:net="bidir_PAD[24]" wb:finish="ENIG">
+      <title>L32 net bidir_PAD[24]</title>
+    </rect>
+    <rect x="10300" y="4175" width="1000" height="250" class="cu" wb:kind="land" wb:name="L33" wb:net="bidir_PAD[25]" wb:finish="ENIG">
+      <title>L33 net bidir_PAD[25]</title>
+    </rect>
+    <rect x="10300" y="3775" width="1000" height="250" class="cu" wb:kind="land" wb:name="L34" wb:net="VSS" wb:finish="ENIG">
+      <title>L34 net VSS</title>
+    </rect>
+    <rect x="10300" y="3375" width="1000" height="250" class="cu" wb:kind="land" wb:name="L35" wb:net="VDD" wb:finish="ENIG">
+      <title>L35 net VDD</title>
+    </rect>
+    <rect x="10300" y="2975" width="1000" height="250" class="cu" wb:kind="land" wb:name="L36" wb:net="VSS" wb:finish="ENIG">
+      <title>L36 net VSS</title>
+    </rect>
+    <rect x="10300" y="2575" width="1000" height="250" class="cu" wb:kind="land" wb:name="L37" wb:net="VDD" wb:finish="ENIG">
+      <title>L37 net VDD</title>
+    </rect>
+    <rect x="9575" y="1300" width="250" height="1000" class="cu" wb:kind="land" wb:name="L38" wb:net="bidir_PAD[26]" wb:finish="ENIG">
+      <title>L38 net bidir_PAD[26]</title>
+    </rect>
+    <rect x="9175" y="1300" width="250" height="1000" class="cu" wb:kind="land" wb:name="L39" wb:net="bidir_PAD[27]" wb:finish="ENIG">
+      <title>L39 net bidir_PAD[27]</title>
+    </rect>
+    <rect x="8775" y="1300" width="250" height="1000" class="cu" wb:kind="land" wb:name="L40" wb:net="bidir_PAD[28]" wb:finish="ENIG">
+      <title>L40 net bidir_PAD[28]</title>
+    </rect>
+    <rect x="8375" y="1300" width="250" height="1000" class="cu" wb:kind="land" wb:name="L41" wb:net="bidir_PAD[29]" wb:finish="ENIG">
+      <title>L41 net bidir_PAD[29]</title>
+    </rect>
+    <rect x="7975" y="1300" width="250" height="1000" class="cu" wb:kind="land" wb:name="L42" wb:net="bidir_PAD[30]" wb:finish="ENIG">
+      <title>L42 net bidir_PAD[30]</title>
+    </rect>
+    <rect x="7575" y="1300" width="250" height="1000" class="cu" wb:kind="land" wb:name="L43" wb:net="bidir_PAD[31]" wb:finish="ENIG">
+      <title>L43 net bidir_PAD[31]</title>
+    </rect>
+    <rect x="7175" y="1300" width="250" height="1000" class="cu" wb:kind="land" wb:name="L44" wb:net="bidir_PAD[32]" wb:finish="ENIG">
+      <title>L44 net bidir_PAD[32]</title>
+    </rect>
+    <rect x="6775" y="1300" width="250" height="1000" class="cu" wb:kind="land" wb:name="L45" wb:net="bidir_PAD[33]" wb:finish="ENIG">
+      <title>L45 net bidir_PAD[33]</title>
+    </rect>
+    <rect x="6375" y="1300" width="250" height="1000" class="cu" wb:kind="land" wb:name="L46" wb:net="VSS" wb:finish="ENIG">
+      <title>L46 net VSS</title>
+    </rect>
+    <rect x="5975" y="1300" width="250" height="1000" class="cu" wb:kind="land" wb:name="L47" wb:net="bidir_PAD[34]" wb:finish="ENIG">
+      <title>L47 net bidir_PAD[34]</title>
+    </rect>
+    <rect x="5575" y="1300" width="250" height="1000" class="cu" wb:kind="land" wb:name="L48" wb:net="bidir_PAD[35]" wb:finish="ENIG">
+      <title>L48 net bidir_PAD[35]</title>
+    </rect>
+    <rect x="5175" y="1300" width="250" height="1000" class="cu" wb:kind="land" wb:name="L49" wb:net="bidir_PAD[36]" wb:finish="ENIG">
+      <title>L49 net bidir_PAD[36]</title>
+    </rect>
+    <rect x="4775" y="1300" width="250" height="1000" class="cu" wb:kind="land" wb:name="L50" wb:net="bidir_PAD[37]" wb:finish="ENIG">
+      <title>L50 net bidir_PAD[37]</title>
+    </rect>
+    <rect x="4375" y="1300" width="250" height="1000" class="cu" wb:kind="land" wb:name="L51" wb:net="bidir_PAD[38]" wb:finish="ENIG">
+      <title>L51 net bidir_PAD[38]</title>
+    </rect>
+    <rect x="3975" y="1300" width="250" height="1000" class="cu" wb:kind="land" wb:name="L52" wb:net="bidir_PAD[39]" wb:finish="ENIG">
+      <title>L52 net bidir_PAD[39]</title>
+    </rect>
+    <rect x="3575" y="1300" width="250" height="1000" class="cu" wb:kind="land" wb:name="L53" wb:net="analog_PAD[0]" wb:finish="ENIG">
+      <title>L53 net analog_PAD[0]</title>
+    </rect>
+    <rect x="3175" y="1300" width="250" height="1000" class="cu" wb:kind="land" wb:name="L54" wb:net="analog_PAD[1]" wb:finish="ENIG">
+      <title>L54 net analog_PAD[1]</title>
+    </rect>
+    <rect x="1700" y="2575" width="1000" height="250" class="cu" wb:kind="land" wb:name="L55" wb:net="input_PAD[0]" wb:finish="ENIG">
+      <title>L55 net input_PAD[0]</title>
+    </rect>
+    <rect x="1700" y="2975" width="1000" height="250" class="cu" wb:kind="land" wb:name="L56" wb:net="input_PAD[1]" wb:finish="ENIG">
+      <title>L56 net input_PAD[1]</title>
+    </rect>
+    <rect x="1700" y="3375" width="1000" height="250" class="cu" wb:kind="land" wb:name="L57" wb:net="VSS" wb:finish="ENIG">
+      <title>L57 net VSS</title>
+    </rect>
+    <rect x="1700" y="3775" width="1000" height="250" class="cu" wb:kind="land" wb:name="L58" wb:net="VDD" wb:finish="ENIG">
+      <title>L58 net VDD</title>
+    </rect>
+    <rect x="1700" y="4175" width="1000" height="250" class="cu" wb:kind="land" wb:name="L59" wb:net="input_PAD[2]" wb:finish="ENIG">
+      <title>L59 net input_PAD[2]</title>
+    </rect>
+    <rect x="1700" y="4575" width="1000" height="250" class="cu" wb:kind="land" wb:name="L60" wb:net="input_PAD[3]" wb:finish="ENIG">
+      <title>L60 net input_PAD[3]</title>
+    </rect>
+    <rect x="1700" y="4975" width="1000" height="250" class="cu" wb:kind="land" wb:name="L61" wb:net="input_PAD[4]" wb:finish="ENIG">
+      <title>L61 net input_PAD[4]</title>
+    </rect>
+    <rect x="1700" y="5375" width="1000" height="250" class="cu" wb:kind="land" wb:name="L62" wb:net="input_PAD[5]" wb:finish="ENIG">
+      <title>L62 net input_PAD[5]</title>
+    </rect>
+    <rect x="1700" y="5775" width="1000" height="250" class="cu" wb:kind="land" wb:name="L63" wb:net="VSS" wb:finish="ENIG">
+      <title>L63 net VSS</title>
+    </rect>
+    <rect x="1700" y="6175" width="1000" height="250" class="cu" wb:kind="land" wb:name="L64" wb:net="VDD" wb:finish="ENIG">
+      <title>L64 net VDD</title>
+    </rect>
+    <rect x="1700" y="6575" width="1000" height="250" class="cu" wb:kind="land" wb:name="L65" wb:net="input_PAD[6]" wb:finish="ENIG">
+      <title>L65 net input_PAD[6]</title>
+    </rect>
+    <rect x="1700" y="6975" width="1000" height="250" class="cu" wb:kind="land" wb:name="L66" wb:net="input_PAD[7]" wb:finish="ENIG">
+      <title>L66 net input_PAD[7]</title>
+    </rect>
+    <rect x="1700" y="7375" width="1000" height="250" class="cu" wb:kind="land" wb:name="L67" wb:net="input_PAD[8]" wb:finish="ENIG">
+      <title>L67 net input_PAD[8]</title>
+    </rect>
+    <rect x="1700" y="7775" width="1000" height="250" class="cu" wb:kind="land" wb:name="L68" wb:net="input_PAD[9]" wb:finish="ENIG">
+      <title>L68 net input_PAD[9]</title>
+    </rect>
+    <rect x="1700" y="8175" width="1000" height="250" class="cu" wb:kind="land" wb:name="L69" wb:net="input_PAD[10]" wb:finish="ENIG">
+      <title>L69 net input_PAD[10]</title>
+    </rect>
+    <rect x="1700" y="8575" width="1000" height="250" class="cu" wb:kind="land" wb:name="L70" wb:net="input_PAD[11]" wb:finish="ENIG">
+      <title>L70 net input_PAD[11]</title>
+    </rect>
+    <rect x="1700" y="8975" width="1000" height="250" class="cu" wb:kind="land" wb:name="L71" wb:net="VSS" wb:finish="ENIG">
+      <title>L71 net VSS</title>
+    </rect>
+    <rect x="1700" y="9375" width="1000" height="250" class="cu" wb:kind="land" wb:name="L72" wb:net="VDD" wb:finish="ENIG">
+      <title>L72 net VDD</title>
+    </rect>
+    <rect x="1700" y="9775" width="1000" height="250" class="cu" wb:kind="land" wb:name="L73" wb:net="VSS" wb:finish="ENIG">
+      <title>L73 net VSS</title>
+    </rect>
+    <rect x="1700" y="10175" width="1000" height="250" class="cu" wb:kind="land" wb:name="L74" wb:net="VDD" wb:finish="ENIG">
+      <title>L74 net VDD</title>
+    </rect>
+    <circle cx="900" cy="12100" r="250" class="cu" wb:kind="fiducial" wb:name="F1" wb:role="align" wb:datum="B">
+      <title>F1 fiducial, align: a machine may fit to it, datum B</title>
+    </circle>
+    <circle cx="12100" cy="900" r="250" class="cu" wb:kind="fiducial" wb:name="F2" wb:role="align" wb:datum="C">
+      <title>F2 fiducial, align: a machine may fit to it, datum C</title>
+    </circle>
+    <circle cx="1700" cy="11300" r="150" class="cu" wb:kind="fiducial" wb:name="P1" wb:role="orient">
+      <title>P1 fiducial, orient: a mark for people</title>
+    </circle>
+  </g>
+  <g transform="translate(4534 9061) scale(1 -1)" wb:kind="die" wb:name="U1" wb:gds-cell="chip_top" wb:pad-layer="37/0" inkscape:groupmode="layer" inkscape:label="die">
+    <rect x="0" y="0" width="3932" height="5122" class="die" wb:kind="outline"/>
+    <g transform="scale(1 -1)">
+      <title>U1 artwork</title>
+      <image x="0" y="-5122" width="3932" height="5122" preserveAspectRatio="none" href="data:image/png;base64,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"/>
+    </g>
+    <rect x="496" y="28" width="60" height="60" class="pad" wb:kind="pad" wb:name="1" wb:net="clk_PAD">
+      <title>U1 pad 1 net clk_PAD</title>
+    </rect>
+    <rect x="676" y="28" width="60" height="60" class="pad" wb:kind="pad" wb:name="2" wb:net="rst_n_PAD">
+      <title>U1 pad 2 net rst_n_PAD</title>
+    </rect>
+    <rect x="856" y="28" width="60" height="60" class="pad" wb:kind="pad" wb:name="3" wb:net="bidir_PAD[0]">
+      <title>U1 pad 3 net bidir_PAD[0]</title>
+    </rect>
+    <rect x="1036" y="28" width="60" height="60" class="pad" wb:kind="pad" wb:name="4" wb:net="bidir_PAD[1]">
+      <title>U1 pad 4 net bidir_PAD[1]</title>
+    </rect>
+    <rect x="1216" y="28" width="60" height="60" class="pad" wb:kind="pad" wb:name="5" wb:net="bidir_PAD[2]">
+      <title>U1 pad 5 net bidir_PAD[2]</title>
+    </rect>
+    <rect x="1396" y="28" width="60" height="60" class="pad" wb:kind="pad" wb:name="6" wb:net="bidir_PAD[3]">
+      <title>U1 pad 6 net bidir_PAD[3]</title>
+    </rect>
+    <rect x="1576" y="28" width="60" height="60" class="pad" wb:kind="pad" wb:name="7" wb:net="bidir_PAD[4]">
+      <title>U1 pad 7 net bidir_PAD[4]</title>
+    </rect>
+    <rect x="1756" y="28" width="60" height="60" class="pad" wb:kind="pad" wb:name="8" wb:net="bidir_PAD[5]">
+      <title>U1 pad 8 net bidir_PAD[5]</title>
+    </rect>
+    <rect x="1936" y="28" width="60" height="60" class="pad" wb:kind="pad" wb:name="9" wb:net="VSS">
+      <title>U1 pad 9 net VSS</title>
+    </rect>
+    <rect x="2116" y="28" width="60" height="60" class="pad" wb:kind="pad" wb:name="10" wb:net="bidir_PAD[6]">
+      <title>U1 pad 10 net bidir_PAD[6]</title>
+    </rect>
+    <rect x="2296" y="28" width="60" height="60" class="pad" wb:kind="pad" wb:name="11" wb:net="bidir_PAD[7]">
+      <title>U1 pad 11 net bidir_PAD[7]</title>
+    </rect>
+    <rect x="2476" y="28" width="60" height="60" class="pad" wb:kind="pad" wb:name="12" wb:net="bidir_PAD[8]">
+      <title>U1 pad 12 net bidir_PAD[8]</title>
+    </rect>
+    <rect x="2656" y="28" width="60" height="60" class="pad" wb:kind="pad" wb:name="13" wb:net="bidir_PAD[9]">
+      <title>U1 pad 13 net bidir_PAD[9]</title>
+    </rect>
+    <rect x="2836" y="28" width="60" height="60" class="pad" wb:kind="pad" wb:name="14" wb:net="bidir_PAD[10]">
+      <title>U1 pad 14 net bidir_PAD[10]</title>
+    </rect>
+    <rect x="3016" y="28" width="60" height="60" class="pad" wb:kind="pad" wb:name="15" wb:net="bidir_PAD[11]">
+      <title>U1 pad 15 net bidir_PAD[11]</title>
+    </rect>
+    <rect x="3196" y="28" width="60" height="60" class="pad" wb:kind="pad" wb:name="16" wb:net="bidir_PAD[12]">
+      <title>U1 pad 16 net bidir_PAD[12]</title>
+    </rect>
+    <rect x="3376" y="28" width="60" height="60" class="pad" wb:kind="pad" wb:name="17" wb:net="bidir_PAD[13]">
+      <title>U1 pad 17 net bidir_PAD[13]</title>
+    </rect>
+    <rect x="3844" y="526.5" width="60" height="60" class="pad" wb:kind="pad" wb:name="18" wb:net="VDD">
+      <title>U1 pad 18 net VDD</title>
+    </rect>
+    <rect x="3844" y="737.5" width="60" height="60" class="pad" wb:kind="pad" wb:name="19" wb:net="VSS">
+      <title>U1 pad 19 net VSS</title>
+    </rect>
+    <rect x="3844" y="948.5" width="60" height="60" class="pad" wb:kind="pad" wb:name="20" wb:net="bidir_PAD[14]">
+      <title>U1 pad 20 net bidir_PAD[14]</title>
+    </rect>
+    <rect x="3844" y="1159.5" width="60" height="60" class="pad" wb:kind="pad" wb:name="21" wb:net="bidir_PAD[15]">
+      <title>U1 pad 21 net bidir_PAD[15]</title>
+    </rect>
+    <rect x="3844" y="1370.5" width="60" height="60" class="pad" wb:kind="pad" wb:name="22" wb:net="bidir_PAD[16]">
+      <title>U1 pad 22 net bidir_PAD[16]</title>
+    </rect>
+    <rect x="3844" y="1581.5" width="60" height="60" class="pad" wb:kind="pad" wb:name="23" wb:net="bidir_PAD[17]">
+      <title>U1 pad 23 net bidir_PAD[17]</title>
+    </rect>
+    <rect x="3844" y="1792.5" width="60" height="60" class="pad" wb:kind="pad" wb:name="24" wb:net="bidir_PAD[18]">
+      <title>U1 pad 24 net bidir_PAD[18]</title>
+    </rect>
+    <rect x="3844" y="2003.5" width="60" height="60" class="pad" wb:kind="pad" wb:name="25" wb:net="bidir_PAD[19]">
+      <title>U1 pad 25 net bidir_PAD[19]</title>
+    </rect>
+    <rect x="3844" y="2214.5" width="60" height="60" class="pad" wb:kind="pad" wb:name="26" wb:net="VDD">
+      <title>U1 pad 26 net VDD</title>
+    </rect>
+    <rect x="3844" y="2425.5" width="60" height="60" class="pad" wb:kind="pad" wb:name="27" wb:net="VSS">
+      <title>U1 pad 27 net VSS</title>
+    </rect>
+    <rect x="3844" y="2636.5" width="60" height="60" class="pad" wb:kind="pad" wb:name="28" wb:net="bidir_PAD[20]">
+      <title>U1 pad 28 net bidir_PAD[20]</title>
+    </rect>
+    <rect x="3844" y="2847.5" width="60" height="60" class="pad" wb:kind="pad" wb:name="29" wb:net="bidir_PAD[21]">
+      <title>U1 pad 29 net bidir_PAD[21]</title>
+    </rect>
+    <rect x="3844" y="3058.5" width="60" height="60" class="pad" wb:kind="pad" wb:name="30" wb:net="bidir_PAD[22]">
+      <title>U1 pad 30 net bidir_PAD[22]</title>
+    </rect>
+    <rect x="3844" y="3269.5" width="60" height="60" class="pad" wb:kind="pad" wb:name="31" wb:net="bidir_PAD[23]">
+      <title>U1 pad 31 net bidir_PAD[23]</title>
+    </rect>
+    <rect x="3844" y="3480.5" width="60" height="60" class="pad" wb:kind="pad" wb:name="32" wb:net="bidir_PAD[24]">
+      <title>U1 pad 32 net bidir_PAD[24]</title>
+    </rect>
+    <rect x="3844" y="3691.5" width="60" height="60" class="pad" wb:kind="pad" wb:name="33" wb:net="bidir_PAD[25]">
+      <title>U1 pad 33 net bidir_PAD[25]</title>
+    </rect>
+    <rect x="3844" y="3902.5" width="60" height="60" class="pad" wb:kind="pad" wb:name="34" wb:net="VSS">
+      <title>U1 pad 34 net VSS</title>
+    </rect>
+    <rect x="3844" y="4113.5" width="60" height="60" class="pad" wb:kind="pad" wb:name="35" wb:net="VDD">
+      <title>U1 pad 35 net VDD</title>
+    </rect>
+    <rect x="3844" y="4324.5" width="60" height="60" class="pad" wb:kind="pad" wb:name="36" wb:net="VSS">
+      <title>U1 pad 36 net VSS</title>
+    </rect>
+    <rect x="3844" y="4535.5" width="60" height="60" class="pad" wb:kind="pad" wb:name="37" wb:net="VDD">
+      <title>U1 pad 37 net VDD</title>
+    </rect>
+    <rect x="3376" y="5034" width="60" height="60" class="pad" wb:kind="pad" wb:name="38" wb:net="bidir_PAD[26]">
+      <title>U1 pad 38 net bidir_PAD[26]</title>
+    </rect>
+    <rect x="3196" y="5034" width="60" height="60" class="pad" wb:kind="pad" wb:name="39" wb:net="bidir_PAD[27]">
+      <title>U1 pad 39 net bidir_PAD[27]</title>
+    </rect>
+    <rect x="3016" y="5034" width="60" height="60" class="pad" wb:kind="pad" wb:name="40" wb:net="bidir_PAD[28]">
+      <title>U1 pad 40 net bidir_PAD[28]</title>
+    </rect>
+    <rect x="2836" y="5034" width="60" height="60" class="pad" wb:kind="pad" wb:name="41" wb:net="bidir_PAD[29]">
+      <title>U1 pad 41 net bidir_PAD[29]</title>
+    </rect>
+    <rect x="2656" y="5034" width="60" height="60" class="pad" wb:kind="pad" wb:name="42" wb:net="bidir_PAD[30]">
+      <title>U1 pad 42 net bidir_PAD[30]</title>
+    </rect>
+    <rect x="2476" y="5034" width="60" height="60" class="pad" wb:kind="pad" wb:name="43" wb:net="bidir_PAD[31]">
+      <title>U1 pad 43 net bidir_PAD[31]</title>
+    </rect>
+    <rect x="2296" y="5034" width="60" height="60" class="pad" wb:kind="pad" wb:name="44" wb:net="bidir_PAD[32]">
+      <title>U1 pad 44 net bidir_PAD[32]</title>
+    </rect>
+    <rect x="2116" y="5034" width="60" height="60" class="pad" wb:kind="pad" wb:name="45" wb:net="bidir_PAD[33]">
+      <title>U1 pad 45 net bidir_PAD[33]</title>
+    </rect>
+    <rect x="1936" y="5034" width="60" height="60" class="pad" wb:kind="pad" wb:name="46" wb:net="VSS">
+      <title>U1 pad 46 net VSS</title>
+    </rect>
+    <rect x="1756" y="5034" width="60" height="60" class="pad" wb:kind="pad" wb:name="47" wb:net="bidir_PAD[34]">
+      <title>U1 pad 47 net bidir_PAD[34]</title>
+    </rect>
+    <rect x="1576" y="5034" width="60" height="60" class="pad" wb:kind="pad" wb:name="48" wb:net="bidir_PAD[35]">
+      <title>U1 pad 48 net bidir_PAD[35]</title>
+    </rect>
+    <rect x="1396" y="5034" width="60" height="60" class="pad" wb:kind="pad" wb:name="49" wb:net="bidir_PAD[36]">
+      <title>U1 pad 49 net bidir_PAD[36]</title>
+    </rect>
+    <rect x="1216" y="5034" width="60" height="60" class="pad" wb:kind="pad" wb:name="50" wb:net="bidir_PAD[37]">
+      <title>U1 pad 50 net bidir_PAD[37]</title>
+    </rect>
+    <rect x="1036" y="5034" width="60" height="60" class="pad" wb:kind="pad" wb:name="51" wb:net="bidir_PAD[38]">
+      <title>U1 pad 51 net bidir_PAD[38]</title>
+    </rect>
+    <rect x="856" y="5034" width="60" height="60" class="pad" wb:kind="pad" wb:name="52" wb:net="bidir_PAD[39]">
+      <title>U1 pad 52 net bidir_PAD[39]</title>
+    </rect>
+    <rect x="676" y="5034" width="60" height="60" class="pad" wb:kind="pad" wb:name="53" wb:net="analog_PAD[0]">
+      <title>U1 pad 53 net analog_PAD[0]</title>
+    </rect>
+    <rect x="496" y="5034" width="60" height="60" class="pad" wb:kind="pad" wb:name="54" wb:net="analog_PAD[1]">
+      <title>U1 pad 54 net analog_PAD[1]</title>
+    </rect>
+    <rect x="28" y="4535.5" width="60" height="60" class="pad" wb:kind="pad" wb:name="55" wb:net="input_PAD[0]">
+      <title>U1 pad 55 net input_PAD[0]</title>
+    </rect>
+    <rect x="28" y="4324.5" width="60" height="60" class="pad" wb:kind="pad" wb:name="56" wb:net="input_PAD[1]">
+      <title>U1 pad 56 net input_PAD[1]</title>
+    </rect>
+    <rect x="28" y="4113.5" width="60" height="60" class="pad" wb:kind="pad" wb:name="57" wb:net="VSS">
+      <title>U1 pad 57 net VSS</title>
+    </rect>
+    <rect x="28" y="3902.5" width="60" height="60" class="pad" wb:kind="pad" wb:name="58" wb:net="VDD">
+      <title>U1 pad 58 net VDD</title>
+    </rect>
+    <rect x="28" y="3691.5" width="60" height="60" class="pad" wb:kind="pad" wb:name="59" wb:net="input_PAD[2]">
+      <title>U1 pad 59 net input_PAD[2]</title>
+    </rect>
+    <rect x="28" y="3480.5" width="60" height="60" class="pad" wb:kind="pad" wb:name="60" wb:net="input_PAD[3]">
+      <title>U1 pad 60 net input_PAD[3]</title>
+    </rect>
+    <rect x="28" y="3269.5" width="60" height="60" class="pad" wb:kind="pad" wb:name="61" wb:net="input_PAD[4]">
+      <title>U1 pad 61 net input_PAD[4]</title>
+    </rect>
+    <rect x="28" y="3058.5" width="60" height="60" class="pad" wb:kind="pad" wb:name="62" wb:net="input_PAD[5]">
+      <title>U1 pad 62 net input_PAD[5]</title>
+    </rect>
+    <rect x="28" y="2847.5" width="60" height="60" class="pad" wb:kind="pad" wb:name="63" wb:net="VSS">
+      <title>U1 pad 63 net VSS</title>
+    </rect>
+    <rect x="28" y="2636.5" width="60" height="60" class="pad" wb:kind="pad" wb:name="64" wb:net="VDD">
+      <title>U1 pad 64 net VDD</title>
+    </rect>
+    <rect x="28" y="2425.5" width="60" height="60" class="pad" wb:kind="pad" wb:name="65" wb:net="input_PAD[6]">
+      <title>U1 pad 65 net input_PAD[6]</title>
+    </rect>
+    <rect x="28" y="2214.5" width="60" height="60" class="pad" wb:kind="pad" wb:name="66" wb:net="input_PAD[7]">
+      <title>U1 pad 66 net input_PAD[7]</title>
+    </rect>
+    <rect x="28" y="2003.5" width="60" height="60" class="pad" wb:kind="pad" wb:name="67" wb:net="input_PAD[8]">
+      <title>U1 pad 67 net input_PAD[8]</title>
+    </rect>
+    <rect x="28" y="1792.5" width="60" height="60" class="pad" wb:kind="pad" wb:name="68" wb:net="input_PAD[9]">
+      <title>U1 pad 68 net input_PAD[9]</title>
+    </rect>
+    <rect x="28" y="1581.5" width="60" height="60" class="pad" wb:kind="pad" wb:name="69" wb:net="input_PAD[10]">
+      <title>U1 pad 69 net input_PAD[10]</title>
+    </rect>
+    <rect x="28" y="1370.5" width="60" height="60" class="pad" wb:kind="pad" wb:name="70" wb:net="input_PAD[11]">
+      <title>U1 pad 70 net input_PAD[11]</title>
+    </rect>
+    <rect x="28" y="1159.5" width="60" height="60" class="pad" wb:kind="pad" wb:name="71" wb:net="VSS">
+      <title>U1 pad 71 net VSS</title>
+    </rect>
+    <rect x="28" y="948.5" width="60" height="60" class="pad" wb:kind="pad" wb:name="72" wb:net="VDD">
+      <title>U1 pad 72 net VDD</title>
+    </rect>
+    <rect x="28" y="737.5" width="60" height="60" class="pad" wb:kind="pad" wb:name="73" wb:net="VSS">
+      <title>U1 pad 73 net VSS</title>
+    </rect>
+    <rect x="28" y="526.5" width="60" height="60" class="pad" wb:kind="pad" wb:name="74" wb:net="VDD">
+      <title>U1 pad 74 net VDD</title>
+    </rect>
+    <rect x="3763.5" y="4967.75" width="141.75" height="116.25" class="mark" wb:kind="fiducial" wb:name="LOGO" wb:role="align">
+      <title>LOGO fiducial, align: a machine may fit to it</title>
+    </rect>
+    <rect x="26" y="26" width="142.8" height="142.8" class="mark" wb:kind="fiducial" wb:name="QR" wb:role="align">
+      <title>QR fiducial, align: a machine may fit to it</title>
+    </rect>
+  </g>
+  <g inkscape:groupmode="layer" inkscape:label="wires">
+    <line x1="5060" y1="9003" x2="3300" y2="11000" stroke-width="20" class="w sig" wb:kind="wire" wb:name="W01" wb:from="U1.1" wb:to="L1" wb:profile="STD20" wb:seq="1" wb:tier="1" wb:net="clk_PAD">
+      <title>W01 clk_PAD: U1.1 to L1, Au 20 um, STD20, seq 1, tier 1</title>
+    </line>
+    <line x1="5240" y1="9003" x2="3700" y2="11000" stroke-width="20" class="w sig" wb:kind="wire" wb:name="W02" wb:from="U1.2" wb:to="L2" wb:profile="STD20" wb:seq="2" wb:tier="1" wb:net="rst_n_PAD">
+      <title>W02 rst_n_PAD: U1.2 to L2, Au 20 um, STD20, seq 2, tier 1</title>
+    </line>
+    <line x1="5420" y1="9003" x2="4100" y2="11000" stroke-width="20" class="w sig" wb:kind="wire" wb:name="W03" wb:from="U1.3" wb:to="L3" wb:profile="STD20" wb:seq="3" wb:tier="1" wb:net="bidir_PAD[0]">
+      <title>W03 bidir_PAD[0]: U1.3 to L3, Au 20 um, STD20, seq 3, tier 1</title>
+    </line>
+    <line x1="5600" y1="9003" x2="4500" y2="11000" stroke-width="20" class="w sig" wb:kind="wire" wb:name="W04" wb:from="U1.4" wb:to="L4" wb:profile="STD20" wb:seq="4" wb:tier="1" wb:net="bidir_PAD[1]">
+      <title>W04 bidir_PAD[1]: U1.4 to L4, Au 20 um, STD20, seq 4, tier 1</title>
+    </line>
+    <line x1="5780" y1="9003" x2="4900" y2="11000" stroke-width="20" class="w sig" wb:kind="wire" wb:name="W05" wb:from="U1.5" wb:to="L5" wb:profile="STD20" wb:seq="5" wb:tier="1" wb:net="bidir_PAD[2]">
+      <title>W05 bidir_PAD[2]: U1.5 to L5, Au 20 um, STD20, seq 5, tier 1</title>
+    </line>
+    <line x1="5960" y1="9003" x2="5300" y2="11000" stroke-width="20" class="w sig" wb:kind="wire" wb:name="W06" wb:from="U1.6" wb:to="L6" wb:profile="STD20" wb:seq="6" wb:tier="1" wb:net="bidir_PAD[3]">
+      <title>W06 bidir_PAD[3]: U1.6 to L6, Au 20 um, STD20, seq 6, tier 1</title>
+    </line>
+    <line x1="6140" y1="9003" x2="5700" y2="11000" stroke-width="20" class="w sig" wb:kind="wire" wb:name="W07" wb:from="U1.7" wb:to="L7" wb:profile="STD20" wb:seq="7" wb:tier="1" wb:net="bidir_PAD[4]">
+      <title>W07 bidir_PAD[4]: U1.7 to L7, Au 20 um, STD20, seq 7, tier 1</title>
+    </line>
+    <line x1="6320" y1="9003" x2="6100" y2="11000" stroke-width="20" class="w sig" wb:kind="wire" wb:name="W08" wb:from="U1.8" wb:to="L8" wb:profile="STD20" wb:seq="8" wb:tier="1" wb:net="bidir_PAD[5]">
+      <title>W08 bidir_PAD[5]: U1.8 to L8, Au 20 um, STD20, seq 8, tier 1</title>
+    </line>
+    <line x1="6500" y1="9003" x2="6500" y2="11000" stroke-width="20" class="w gnd" wb:kind="wire" wb:name="W09" wb:from="U1.9" wb:to="L9" wb:profile="PWR20" wb:seq="9" wb:tier="1" wb:net="VSS">
+      <title>W09 VSS: U1.9 to L9, Au 20 um, PWR20, seq 9, tier 1</title>
+    </line>
+    <line x1="6680" y1="9003" x2="6900" y2="11000" stroke-width="20" class="w sig" wb:kind="wire" wb:name="W10" wb:from="U1.10" wb:to="L10" wb:profile="STD20" wb:seq="10" wb:tier="1" wb:net="bidir_PAD[6]">
+      <title>W10 bidir_PAD[6]: U1.10 to L10, Au 20 um, STD20, seq 10, tier 1</title>
+    </line>
+    <line x1="6860" y1="9003" x2="7300" y2="11000" stroke-width="20" class="w sig" wb:kind="wire" wb:name="W11" wb:from="U1.11" wb:to="L11" wb:profile="STD20" wb:seq="11" wb:tier="1" wb:net="bidir_PAD[7]">
+      <title>W11 bidir_PAD[7]: U1.11 to L11, Au 20 um, STD20, seq 11, tier 1</title>
+    </line>
+    <line x1="7040" y1="9003" x2="7700" y2="11000" stroke-width="20" class="w sig" wb:kind="wire" wb:name="W12" wb:from="U1.12" wb:to="L12" wb:profile="STD20" wb:seq="12" wb:tier="1" wb:net="bidir_PAD[8]">
+      <title>W12 bidir_PAD[8]: U1.12 to L12, Au 20 um, STD20, seq 12, tier 1</title>
+    </line>
+    <line x1="7220" y1="9003" x2="8100" y2="11000" stroke-width="20" class="w sig" wb:kind="wire" wb:name="W13" wb:from="U1.13" wb:to="L13" wb:profile="STD20" wb:seq="13" wb:tier="1" wb:net="bidir_PAD[9]">
+      <title>W13 bidir_PAD[9]: U1.13 to L13, Au 20 um, STD20, seq 13, tier 1</title>
+    </line>
+    <line x1="7400" y1="9003" x2="8500" y2="11000" stroke-width="20" class="w sig" wb:kind="wire" wb:name="W14" wb:from="U1.14" wb:to="L14" wb:profile="STD20" wb:seq="14" wb:tier="1" wb:net="bidir_PAD[10]">
+      <title>W14 bidir_PAD[10]: U1.14 to L14, Au 20 um, STD20, seq 14, tier 1</title>
+    </line>
+    <line x1="7580" y1="9003" x2="8900" y2="11000" stroke-width="20" class="w sig" wb:kind="wire" wb:name="W15" wb:from="U1.15" wb:to="L15" wb:profile="STD20" wb:seq="15" wb:tier="1" wb:net="bidir_PAD[11]">
+      <title>W15 bidir_PAD[11]: U1.15 to L15, Au 20 um, STD20, seq 15, tier 1</title>
+    </line>
+    <line x1="7760" y1="9003" x2="9300" y2="11000" stroke-width="20" class="w sig" wb:kind="wire" wb:name="W16" wb:from="U1.16" wb:to="L16" wb:profile="STD20" wb:seq="16" wb:tier="1" wb:net="bidir_PAD[12]">
+      <title>W16 bidir_PAD[12]: U1.16 to L16, Au 20 um, STD20, seq 16, tier 1</title>
+    </line>
+    <line x1="7940" y1="9003" x2="9700" y2="11000" stroke-width="20" class="w sig" wb:kind="wire" wb:name="W17" wb:from="U1.17" wb:to="L17" wb:profile="STD20" wb:seq="17" wb:tier="1" wb:net="bidir_PAD[13]">
+      <title>W17 bidir_PAD[13]: U1.17 to L17, Au 20 um, STD20, seq 17, tier 1</title>
+    </line>
+    <line x1="8408" y1="8504.5" x2="10600" y2="10300" stroke-width="20" class="w pwr" wb:kind="wire" wb:name="W18" wb:from="U1.18" wb:to="L18" wb:profile="PWR20" wb:seq="18" wb:tier="1" wb:net="VDD">
+      <title>W18 VDD: U1.18 to L18, Au 20 um, PWR20, seq 18, tier 1</title>
+    </line>
+    <line x1="8408" y1="8293.5" x2="10600" y2="9900" stroke-width="20" class="w gnd" wb:kind="wire" wb:name="W19" wb:from="U1.19" wb:to="L19" wb:profile="PWR20" wb:seq="19" wb:tier="1" wb:net="VSS">
+      <title>W19 VSS: U1.19 to L19, Au 20 um, PWR20, seq 19, tier 1</title>
+    </line>
+    <line x1="8408" y1="8082.5" x2="10600" y2="9500" stroke-width="20" class="w sig" wb:kind="wire" wb:name="W20" wb:from="U1.20" wb:to="L20" wb:profile="STD20" wb:seq="20" wb:tier="1" wb:net="bidir_PAD[14]">
+      <title>W20 bidir_PAD[14]: U1.20 to L20, Au 20 um, STD20, seq 20, tier 1</title>
+    </line>
+    <line x1="8408" y1="7871.5" x2="10600" y2="9100" stroke-width="20" class="w sig" wb:kind="wire" wb:name="W21" wb:from="U1.21" wb:to="L21" wb:profile="STD20" wb:seq="21" wb:tier="1" wb:net="bidir_PAD[15]">
+      <title>W21 bidir_PAD[15]: U1.21 to L21, Au 20 um, STD20, seq 21, tier 1</title>
+    </line>
+    <line x1="8408" y1="7660.5" x2="10600" y2="8700" stroke-width="20" class="w sig" wb:kind="wire" wb:name="W22" wb:from="U1.22" wb:to="L22" wb:profile="STD20" wb:seq="22" wb:tier="1" wb:net="bidir_PAD[16]">
+      <title>W22 bidir_PAD[16]: U1.22 to L22, Au 20 um, STD20, seq 22, tier 1</title>
+    </line>
+    <line x1="8408" y1="7449.5" x2="10600" y2="8300" stroke-width="20" class="w sig" wb:kind="wire" wb:name="W23" wb:from="U1.23" wb:to="L23" wb:profile="STD20" wb:seq="23" wb:tier="1" wb:net="bidir_PAD[17]">
+      <title>W23 bidir_PAD[17]: U1.23 to L23, Au 20 um, STD20, seq 23, tier 1</title>
+    </line>
+    <line x1="8408" y1="7238.5" x2="10600" y2="7900" stroke-width="20" class="w sig" wb:kind="wire" wb:name="W24" wb:from="U1.24" wb:to="L24" wb:profile="STD20" wb:seq="24" wb:tier="1" wb:net="bidir_PAD[18]">
+      <title>W24 bidir_PAD[18]: U1.24 to L24, Au 20 um, STD20, seq 24, tier 1</title>
+    </line>
+    <line x1="8408" y1="7027.5" x2="10600" y2="7500" stroke-width="20" class="w sig" wb:kind="wire" wb:name="W25" wb:from="U1.25" wb:to="L25" wb:profile="STD20" wb:seq="25" wb:tier="1" wb:net="bidir_PAD[19]">
+      <title>W25 bidir_PAD[19]: U1.25 to L25, Au 20 um, STD20, seq 25, tier 1</title>
+    </line>
+    <line x1="8408" y1="6816.5" x2="10600" y2="7100" stroke-width="20" class="w pwr" wb:kind="wire" wb:name="W26" wb:from="U1.26" wb:to="L26" wb:profile="PWR20" wb:seq="26" wb:tier="1" wb:net="VDD">
+      <title>W26 VDD: U1.26 to L26, Au 20 um, PWR20, seq 26, tier 1</title>
+    </line>
+    <line x1="8408" y1="6605.5" x2="10600" y2="6700" stroke-width="20" class="w gnd" wb:kind="wire" wb:name="W27" wb:from="U1.27" wb:to="L27" wb:profile="PWR20" wb:seq="27" wb:tier="1" wb:net="VSS">
+      <title>W27 VSS: U1.27 to L27, Au 20 um, PWR20, seq 27, tier 1</title>
+    </line>
+    <line x1="8408" y1="6394.5" x2="10600" y2="6300" stroke-width="20" class="w sig" wb:kind="wire" wb:name="W28" wb:from="U1.28" wb:to="L28" wb:profile="STD20" wb:seq="28" wb:tier="1" wb:net="bidir_PAD[20]">
+      <title>W28 bidir_PAD[20]: U1.28 to L28, Au 20 um, STD20, seq 28, tier 1</title>
+    </line>
+    <line x1="8408" y1="6183.5" x2="10600" y2="5900" stroke-width="20" class="w sig" wb:kind="wire" wb:name="W29" wb:from="U1.29" wb:to="L29" wb:profile="STD20" wb:seq="29" wb:tier="1" wb:net="bidir_PAD[21]">
+      <title>W29 bidir_PAD[21]: U1.29 to L29, Au 20 um, STD20, seq 29, tier 1</title>
+    </line>
+    <line x1="8408" y1="5972.5" x2="10600" y2="5500" stroke-width="20" class="w sig" wb:kind="wire" wb:name="W30" wb:from="U1.30" wb:to="L30" wb:profile="STD20" wb:seq="30" wb:tier="1" wb:net="bidir_PAD[22]">
+      <title>W30 bidir_PAD[22]: U1.30 to L30, Au 20 um, STD20, seq 30, tier 1</title>
+    </line>
+    <line x1="8408" y1="5761.5" x2="10600" y2="5100" stroke-width="20" class="w sig" wb:kind="wire" wb:name="W31" wb:from="U1.31" wb:to="L31" wb:profile="STD20" wb:seq="31" wb:tier="1" wb:net="bidir_PAD[23]">
+      <title>W31 bidir_PAD[23]: U1.31 to L31, Au 20 um, STD20, seq 31, tier 1</title>
+    </line>
+    <line x1="8408" y1="5550.5" x2="10600" y2="4700" stroke-width="20" class="w sig" wb:kind="wire" wb:name="W32" wb:from="U1.32" wb:to="L32" wb:profile="STD20" wb:seq="32" wb:tier="1" wb:net="bidir_PAD[24]">
+      <title>W32 bidir_PAD[24]: U1.32 to L32, Au 20 um, STD20, seq 32, tier 1</title>
+    </line>
+    <line x1="8408" y1="5339.5" x2="10600" y2="4300" stroke-width="20" class="w sig" wb:kind="wire" wb:name="W33" wb:from="U1.33" wb:to="L33" wb:profile="STD20" wb:seq="33" wb:tier="1" wb:net="bidir_PAD[25]">
+      <title>W33 bidir_PAD[25]: U1.33 to L33, Au 20 um, STD20, seq 33, tier 1</title>
+    </line>
+    <line x1="8408" y1="5128.5" x2="10600" y2="3900" stroke-width="20" class="w gnd" wb:kind="wire" wb:name="W34" wb:from="U1.34" wb:to="L34" wb:profile="PWR20" wb:seq="34" wb:tier="1" wb:net="VSS">
+      <title>W34 VSS: U1.34 to L34, Au 20 um, PWR20, seq 34, tier 1</title>
+    </line>
+    <line x1="8408" y1="4917.5" x2="10600" y2="3500" stroke-width="20" class="w pwr" wb:kind="wire" wb:name="W35" wb:from="U1.35" wb:to="L35" wb:profile="PWR20" wb:seq="35" wb:tier="1" wb:net="VDD">
+      <title>W35 VDD: U1.35 to L35, Au 20 um, PWR20, seq 35, tier 1</title>
+    </line>
+    <line x1="8408" y1="4706.5" x2="10600" y2="3100" stroke-width="20" class="w gnd" wb:kind="wire" wb:name="W36" wb:from="U1.36" wb:to="L36" wb:profile="PWR20" wb:seq="36" wb:tier="1" wb:net="VSS">
+      <title>W36 VSS: U1.36 to L36, Au 20 um, PWR20, seq 36, tier 1</title>
+    </line>
+    <line x1="8408" y1="4495.5" x2="10600" y2="2700" stroke-width="20" class="w pwr" wb:kind="wire" wb:name="W37" wb:from="U1.37" wb:to="L37" wb:profile="PWR20" wb:seq="37" wb:tier="1" wb:net="VDD">
+      <title>W37 VDD: U1.37 to L37, Au 20 um, PWR20, seq 37, tier 1</title>
+    </line>
+    <line x1="7940" y1="3997" x2="9700" y2="2000" stroke-width="20" class="w sig" wb:kind="wire" wb:name="W38" wb:from="U1.38" wb:to="L38" wb:profile="STD20" wb:seq="38" wb:tier="1" wb:net="bidir_PAD[26]">
+      <title>W38 bidir_PAD[26]: U1.38 to L38, Au 20 um, STD20, seq 38, tier 1</title>
+    </line>
+    <line x1="7760" y1="3997" x2="9300" y2="2000" stroke-width="20" class="w sig" wb:kind="wire" wb:name="W39" wb:from="U1.39" wb:to="L39" wb:profile="STD20" wb:seq="39" wb:tier="1" wb:net="bidir_PAD[27]">
+      <title>W39 bidir_PAD[27]: U1.39 to L39, Au 20 um, STD20, seq 39, tier 1</title>
+    </line>
+    <line x1="7580" y1="3997" x2="8900" y2="2000" stroke-width="20" class="w sig" wb:kind="wire" wb:name="W40" wb:from="U1.40" wb:to="L40" wb:profile="STD20" wb:seq="40" wb:tier="1" wb:net="bidir_PAD[28]">
+      <title>W40 bidir_PAD[28]: U1.40 to L40, Au 20 um, STD20, seq 40, tier 1</title>
+    </line>
+    <line x1="7400" y1="3997" x2="8500" y2="2000" stroke-width="20" class="w sig" wb:kind="wire" wb:name="W41" wb:from="U1.41" wb:to="L41" wb:profile="STD20" wb:seq="41" wb:tier="1" wb:net="bidir_PAD[29]">
+      <title>W41 bidir_PAD[29]: U1.41 to L41, Au 20 um, STD20, seq 41, tier 1</title>
+    </line>
+    <line x1="7220" y1="3997" x2="8100" y2="2000" stroke-width="20" class="w sig" wb:kind="wire" wb:name="W42" wb:from="U1.42" wb:to="L42" wb:profile="STD20" wb:seq="42" wb:tier="1" wb:net="bidir_PAD[30]">
+      <title>W42 bidir_PAD[30]: U1.42 to L42, Au 20 um, STD20, seq 42, tier 1</title>
+    </line>
+    <line x1="7040" y1="3997" x2="7700" y2="2000" stroke-width="20" class="w sig" wb:kind="wire" wb:name="W43" wb:from="U1.43" wb:to="L43" wb:profile="STD20" wb:seq="43" wb:tier="1" wb:net="bidir_PAD[31]">
+      <title>W43 bidir_PAD[31]: U1.43 to L43, Au 20 um, STD20, seq 43, tier 1</title>
+    </line>
+    <line x1="6860" y1="3997" x2="7300" y2="2000" stroke-width="20" class="w sig" wb:kind="wire" wb:name="W44" wb:from="U1.44" wb:to="L44" wb:profile="STD20" wb:seq="44" wb:tier="1" wb:net="bidir_PAD[32]">
+      <title>W44 bidir_PAD[32]: U1.44 to L44, Au 20 um, STD20, seq 44, tier 1</title>
+    </line>
+    <line x1="6680" y1="3997" x2="6900" y2="2000" stroke-width="20" class="w sig" wb:kind="wire" wb:name="W45" wb:from="U1.45" wb:to="L45" wb:profile="STD20" wb:seq="45" wb:tier="1" wb:net="bidir_PAD[33]">
+      <title>W45 bidir_PAD[33]: U1.45 to L45, Au 20 um, STD20, seq 45, tier 1</title>
+    </line>
+    <line x1="6500" y1="3997" x2="6500" y2="2000" stroke-width="20" class="w gnd" wb:kind="wire" wb:name="W46" wb:from="U1.46" wb:to="L46" wb:profile="PWR20" wb:seq="46" wb:tier="1" wb:net="VSS">
+      <title>W46 VSS: U1.46 to L46, Au 20 um, PWR20, seq 46, tier 1</title>
+    </line>
+    <line x1="6320" y1="3997" x2="6100" y2="2000" stroke-width="20" class="w sig" wb:kind="wire" wb:name="W47" wb:from="U1.47" wb:to="L47" wb:profile="STD20" wb:seq="47" wb:tier="1" wb:net="bidir_PAD[34]">
+      <title>W47 bidir_PAD[34]: U1.47 to L47, Au 20 um, STD20, seq 47, tier 1</title>
+    </line>
+    <line x1="6140" y1="3997" x2="5700" y2="2000" stroke-width="20" class="w sig" wb:kind="wire" wb:name="W48" wb:from="U1.48" wb:to="L48" wb:profile="STD20" wb:seq="48" wb:tier="1" wb:net="bidir_PAD[35]">
+      <title>W48 bidir_PAD[35]: U1.48 to L48, Au 20 um, STD20, seq 48, tier 1</title>
+    </line>
+    <line x1="5960" y1="3997" x2="5300" y2="2000" stroke-width="20" class="w sig" wb:kind="wire" wb:name="W49" wb:from="U1.49" wb:to="L49" wb:profile="STD20" wb:seq="49" wb:tier="1" wb:net="bidir_PAD[36]">
+      <title>W49 bidir_PAD[36]: U1.49 to L49, Au 20 um, STD20, seq 49, tier 1</title>
+    </line>
+    <line x1="5780" y1="3997" x2="4900" y2="2000" stroke-width="20" class="w sig" wb:kind="wire" wb:name="W50" wb:from="U1.50" wb:to="L50" wb:profile="STD20" wb:seq="50" wb:tier="1" wb:net="bidir_PAD[37]">
+      <title>W50 bidir_PAD[37]: U1.50 to L50, Au 20 um, STD20, seq 50, tier 1</title>
+    </line>
+    <line x1="5600" y1="3997" x2="4500" y2="2000" stroke-width="20" class="w sig" wb:kind="wire" wb:name="W51" wb:from="U1.51" wb:to="L51" wb:profile="STD20" wb:seq="51" wb:tier="1" wb:net="bidir_PAD[38]">
+      <title>W51 bidir_PAD[38]: U1.51 to L51, Au 20 um, STD20, seq 51, tier 1</title>
+    </line>
+    <line x1="5420" y1="3997" x2="4100" y2="2000" stroke-width="20" class="w sig" wb:kind="wire" wb:name="W52" wb:from="U1.52" wb:to="L52" wb:profile="STD20" wb:seq="52" wb:tier="1" wb:net="bidir_PAD[39]">
+      <title>W52 bidir_PAD[39]: U1.52 to L52, Au 20 um, STD20, seq 52, tier 1</title>
+    </line>
+    <line x1="5240" y1="3997" x2="3700" y2="2000" stroke-width="20" class="w sig" wb:kind="wire" wb:name="W53" wb:from="U1.53" wb:to="L53" wb:profile="STD20" wb:seq="53" wb:tier="1" wb:net="analog_PAD[0]">
+      <title>W53 analog_PAD[0]: U1.53 to L53, Au 20 um, STD20, seq 53, tier 1</title>
+    </line>
+    <line x1="5060" y1="3997" x2="3300" y2="2000" stroke-width="20" class="w sig" wb:kind="wire" wb:name="W54" wb:from="U1.54" wb:to="L54" wb:profile="STD20" wb:seq="54" wb:tier="1" wb:net="analog_PAD[1]">
+      <title>W54 analog_PAD[1]: U1.54 to L54, Au 20 um, STD20, seq 54, tier 1</title>
+    </line>
+    <line x1="4592" y1="4495.5" x2="2400" y2="2700" stroke-width="20" class="w sig" wb:kind="wire" wb:name="W55" wb:from="U1.55" wb:to="L55" wb:profile="STD20" wb:seq="55" wb:tier="1" wb:net="input_PAD[0]">
+      <title>W55 input_PAD[0]: U1.55 to L55, Au 20 um, STD20, seq 55, tier 1</title>
+    </line>
+    <line x1="4592" y1="4706.5" x2="2400" y2="3100" stroke-width="20" class="w sig" wb:kind="wire" wb:name="W56" wb:from="U1.56" wb:to="L56" wb:profile="STD20" wb:seq="56" wb:tier="1" wb:net="input_PAD[1]">
+      <title>W56 input_PAD[1]: U1.56 to L56, Au 20 um, STD20, seq 56, tier 1</title>
+    </line>
+    <line x1="4592" y1="4917.5" x2="2400" y2="3500" stroke-width="20" class="w gnd" wb:kind="wire" wb:name="W57" wb:from="U1.57" wb:to="L57" wb:profile="PWR20" wb:seq="57" wb:tier="1" wb:net="VSS">
+      <title>W57 VSS: U1.57 to L57, Au 20 um, PWR20, seq 57, tier 1</title>
+    </line>
+    <line x1="4592" y1="5128.5" x2="2400" y2="3900" stroke-width="20" class="w pwr" wb:kind="wire" wb:name="W58" wb:from="U1.58" wb:to="L58" wb:profile="PWR20" wb:seq="58" wb:tier="1" wb:net="VDD">
+      <title>W58 VDD: U1.58 to L58, Au 20 um, PWR20, seq 58, tier 1</title>
+    </line>
+    <line x1="4592" y1="5339.5" x2="2400" y2="4300" stroke-width="20" class="w sig" wb:kind="wire" wb:name="W59" wb:from="U1.59" wb:to="L59" wb:profile="STD20" wb:seq="59" wb:tier="1" wb:net="input_PAD[2]">
+      <title>W59 input_PAD[2]: U1.59 to L59, Au 20 um, STD20, seq 59, tier 1</title>
+    </line>
+    <line x1="4592" y1="5550.5" x2="2400" y2="4700" stroke-width="20" class="w sig" wb:kind="wire" wb:name="W60" wb:from="U1.60" wb:to="L60" wb:profile="STD20" wb:seq="60" wb:tier="1" wb:net="input_PAD[3]">
+      <title>W60 input_PAD[3]: U1.60 to L60, Au 20 um, STD20, seq 60, tier 1</title>
+    </line>
+    <line x1="4592" y1="5761.5" x2="2400" y2="5100" stroke-width="20" class="w sig" wb:kind="wire" wb:name="W61" wb:from="U1.61" wb:to="L61" wb:profile="STD20" wb:seq="61" wb:tier="1" wb:net="input_PAD[4]">
+      <title>W61 input_PAD[4]: U1.61 to L61, Au 20 um, STD20, seq 61, tier 1</title>
+    </line>
+    <line x1="4592" y1="5972.5" x2="2400" y2="5500" stroke-width="20" class="w sig" wb:kind="wire" wb:name="W62" wb:from="U1.62" wb:to="L62" wb:profile="STD20" wb:seq="62" wb:tier="1" wb:net="input_PAD[5]">
+      <title>W62 input_PAD[5]: U1.62 to L62, Au 20 um, STD20, seq 62, tier 1</title>
+    </line>
+    <line x1="4592" y1="6183.5" x2="2400" y2="5900" stroke-width="20" class="w gnd" wb:kind="wire" wb:name="W63" wb:from="U1.63" wb:to="L63" wb:profile="PWR20" wb:seq="63" wb:tier="1" wb:net="VSS">
+      <title>W63 VSS: U1.63 to L63, Au 20 um, PWR20, seq 63, tier 1</title>
+    </line>
+    <line x1="4592" y1="6394.5" x2="2400" y2="6300" stroke-width="20" class="w pwr" wb:kind="wire" wb:name="W64" wb:from="U1.64" wb:to="L64" wb:profile="PWR20" wb:seq="64" wb:tier="1" wb:net="VDD">
+      <title>W64 VDD: U1.64 to L64, Au 20 um, PWR20, seq 64, tier 1</title>
+    </line>
+    <line x1="4592" y1="6605.5" x2="2400" y2="6700" stroke-width="20" class="w sig" wb:kind="wire" wb:name="W65" wb:from="U1.65" wb:to="L65" wb:profile="STD20" wb:seq="65" wb:tier="1" wb:net="input_PAD[6]">
+      <title>W65 input_PAD[6]: U1.65 to L65, Au 20 um, STD20, seq 65, tier 1</title>
+    </line>
+    <line x1="4592" y1="6816.5" x2="2400" y2="7100" stroke-width="20" class="w sig" wb:kind="wire" wb:name="W66" wb:from="U1.66" wb:to="L66" wb:profile="STD20" wb:seq="66" wb:tier="1" wb:net="input_PAD[7]">
+      <title>W66 input_PAD[7]: U1.66 to L66, Au 20 um, STD20, seq 66, tier 1</title>
+    </line>
+    <line x1="4592" y1="7027.5" x2="2400" y2="7500" stroke-width="20" class="w sig" wb:kind="wire" wb:name="W67" wb:from="U1.67" wb:to="L67" wb:profile="STD20" wb:seq="67" wb:tier="1" wb:net="input_PAD[8]">
+      <title>W67 input_PAD[8]: U1.67 to L67, Au 20 um, STD20, seq 67, tier 1</title>
+    </line>
+    <line x1="4592" y1="7238.5" x2="2400" y2="7900" stroke-width="20" class="w sig" wb:kind="wire" wb:name="W68" wb:from="U1.68" wb:to="L68" wb:profile="STD20" wb:seq="68" wb:tier="1" wb:net="input_PAD[9]">
+      <title>W68 input_PAD[9]: U1.68 to L68, Au 20 um, STD20, seq 68, tier 1</title>
+    </line>
+    <line x1="4592" y1="7449.5" x2="2400" y2="8300" stroke-width="20" class="w sig" wb:kind="wire" wb:name="W69" wb:from="U1.69" wb:to="L69" wb:profile="STD20" wb:seq="69" wb:tier="1" wb:net="input_PAD[10]">
+      <title>W69 input_PAD[10]: U1.69 to L69, Au 20 um, STD20, seq 69, tier 1</title>
+    </line>
+    <line x1="4592" y1="7660.5" x2="2400" y2="8700" stroke-width="20" class="w sig" wb:kind="wire" wb:name="W70" wb:from="U1.70" wb:to="L70" wb:profile="STD20" wb:seq="70" wb:tier="1" wb:net="input_PAD[11]">
+      <title>W70 input_PAD[11]: U1.70 to L70, Au 20 um, STD20, seq 70, tier 1</title>
+    </line>
+    <line x1="4592" y1="7871.5" x2="2400" y2="9100" stroke-width="20" class="w gnd" wb:kind="wire" wb:name="W71" wb:from="U1.71" wb:to="L71" wb:profile="PWR20" wb:seq="71" wb:tier="1" wb:net="VSS">
+      <title>W71 VSS: U1.71 to L71, Au 20 um, PWR20, seq 71, tier 1</title>
+    </line>
+    <line x1="4592" y1="8082.5" x2="2400" y2="9500" stroke-width="20" class="w pwr" wb:kind="wire" wb:name="W72" wb:from="U1.72" wb:to="L72" wb:profile="PWR20" wb:seq="72" wb:tier="1" wb:net="VDD">
+      <title>W72 VDD: U1.72 to L72, Au 20 um, PWR20, seq 72, tier 1</title>
+    </line>
+    <line x1="4592" y1="8293.5" x2="2400" y2="9900" stroke-width="20" class="w gnd" wb:kind="wire" wb:name="W73" wb:from="U1.73" wb:to="L73" wb:profile="PWR20" wb:seq="73" wb:tier="1" wb:net="VSS">
+      <title>W73 VSS: U1.73 to L73, Au 20 um, PWR20, seq 73, tier 1</title>
+    </line>
+    <line x1="4592" y1="8504.5" x2="2400" y2="10300" stroke-width="20" class="w pwr" wb:kind="wire" wb:name="W74" wb:from="U1.74" wb:to="L74" wb:profile="PWR20" wb:seq="74" wb:tier="1" wb:net="VDD">
+      <title>W74 VDD: U1.74 to L74, Au 20 um, PWR20, seq 74, tier 1</title>
+    </line>
+  </g>
+  <g inkscape:groupmode="layer" inkscape:label="bonds (derived)">
+    <circle cx="5060" cy="9003" r="26" fill="#b8860b"/>
+    <circle cx="5240" cy="9003" r="26" fill="#b8860b"/>
+    <circle cx="5420" cy="9003" r="26" fill="#b8860b"/>
+    <circle cx="5600" cy="9003" r="26" fill="#b8860b"/>
+    <circle cx="5780" cy="9003" r="26" fill="#b8860b"/>
+    <circle cx="5960" cy="9003" r="26" fill="#b8860b"/>
+    <circle cx="6140" cy="9003" r="26" fill="#b8860b"/>
+    <circle cx="6320" cy="9003" r="26" fill="#b8860b"/>
+    <circle cx="6500" cy="9003" r="26" fill="#2e7d32"/>
+    <circle cx="6680" cy="9003" r="26" fill="#b8860b"/>
+    <circle cx="6860" cy="9003" r="26" fill="#b8860b"/>
+    <circle cx="7040" cy="9003" r="26" fill="#b8860b"/>
+    <circle cx="7220" cy="9003" r="26" fill="#b8860b"/>
+    <circle cx="7400" cy="9003" r="26" fill="#b8860b"/>
+    <circle cx="7580" cy="9003" r="26" fill="#b8860b"/>
+    <circle cx="7760" cy="9003" r="26" fill="#b8860b"/>
+    <circle cx="7940" cy="9003" r="26" fill="#b8860b"/>
+    <circle cx="8408" cy="8504.5" r="26" fill="#c0392b"/>
+    <circle cx="8408" cy="8293.5" r="26" fill="#2e7d32"/>
+    <circle cx="8408" cy="8082.5" r="26" fill="#b8860b"/>
+    <circle cx="8408" cy="7871.5" r="26" fill="#b8860b"/>
+    <circle cx="8408" cy="7660.5" r="26" fill="#b8860b"/>
+    <circle cx="8408" cy="7449.5" r="26" fill="#b8860b"/>
+    <circle cx="8408" cy="7238.5" r="26" fill="#b8860b"/>
+    <circle cx="8408" cy="7027.5" r="26" fill="#b8860b"/>
+    <circle cx="8408" cy="6816.5" r="26" fill="#c0392b"/>
+    <circle cx="8408" cy="6605.5" r="26" fill="#2e7d32"/>
+    <circle cx="8408" cy="6394.5" r="26" fill="#b8860b"/>
+    <circle cx="8408" cy="6183.5" r="26" fill="#b8860b"/>
+    <circle cx="8408" cy="5972.5" r="26" fill="#b8860b"/>
+    <circle cx="8408" cy="5761.5" r="26" fill="#b8860b"/>
+    <circle cx="8408" cy="5550.5" r="26" fill="#b8860b"/>
+    <circle cx="8408" cy="5339.5" r="26" fill="#b8860b"/>
+    <circle cx="8408" cy="5128.5" r="26" fill="#2e7d32"/>
+    <circle cx="8408" cy="4917.5" r="26" fill="#c0392b"/>
+    <circle cx="8408" cy="4706.5" r="26" fill="#2e7d32"/>
+    <circle cx="8408" cy="4495.5" r="26" fill="#c0392b"/>
+    <circle cx="7940" cy="3997" r="26" fill="#b8860b"/>
+    <circle cx="7760" cy="3997" r="26" fill="#b8860b"/>
+    <circle cx="7580" cy="3997" r="26" fill="#b8860b"/>
+    <circle cx="7400" cy="3997" r="26" fill="#b8860b"/>
+    <circle cx="7220" cy="3997" r="26" fill="#b8860b"/>
+    <circle cx="7040" cy="3997" r="26" fill="#b8860b"/>
+    <circle cx="6860" cy="3997" r="26" fill="#b8860b"/>
+    <circle cx="6680" cy="3997" r="26" fill="#b8860b"/>
+    <circle cx="6500" cy="3997" r="26" fill="#2e7d32"/>
+    <circle cx="6320" cy="3997" r="26" fill="#b8860b"/>
+    <circle cx="6140" cy="3997" r="26" fill="#b8860b"/>
+    <circle cx="5960" cy="3997" r="26" fill="#b8860b"/>
+    <circle cx="5780" cy="3997" r="26" fill="#b8860b"/>
+    <circle cx="5600" cy="3997" r="26" fill="#b8860b"/>
+    <circle cx="5420" cy="3997" r="26" fill="#b8860b"/>
+    <circle cx="5240" cy="3997" r="26" fill="#b8860b"/>
+    <circle cx="5060" cy="3997" r="26" fill="#b8860b"/>
+    <circle cx="4592" cy="4495.5" r="26" fill="#b8860b"/>
+    <circle cx="4592" cy="4706.5" r="26" fill="#b8860b"/>
+    <circle cx="4592" cy="4917.5" r="26" fill="#2e7d32"/>
+    <circle cx="4592" cy="5128.5" r="26" fill="#c0392b"/>
+    <circle cx="4592" cy="5339.5" r="26" fill="#b8860b"/>
+    <circle cx="4592" cy="5550.5" r="26" fill="#b8860b"/>
+    <circle cx="4592" cy="5761.5" r="26" fill="#b8860b"/>
+    <circle cx="4592" cy="5972.5" r="26" fill="#b8860b"/>
+    <circle cx="4592" cy="6183.5" r="26" fill="#2e7d32"/>
+    <circle cx="4592" cy="6394.5" r="26" fill="#c0392b"/>
+    <circle cx="4592" cy="6605.5" r="26" fill="#b8860b"/>
+    <circle cx="4592" cy="6816.5" r="26" fill="#b8860b"/>
+    <circle cx="4592" cy="7027.5" r="26" fill="#b8860b"/>
+    <circle cx="4592" cy="7238.5" r="26" fill="#b8860b"/>
+    <circle cx="4592" cy="7449.5" r="26" fill="#b8860b"/>
+    <circle cx="4592" cy="7660.5" r="26" fill="#b8860b"/>
+    <circle cx="4592" cy="7871.5" r="26" fill="#2e7d32"/>
+    <circle cx="4592" cy="8082.5" r="26" fill="#c0392b"/>
+    <circle cx="4592" cy="8293.5" r="26" fill="#2e7d32"/>
+    <circle cx="4592" cy="8504.5" r="26" fill="#c0392b"/>
+  </g>
+  <g inkscape:groupmode="layer" inkscape:label="labels (derived)">
+    <text x="3300" y="11222" text-anchor="middle" class="lab">clk_PAD</text>
+    <text x="3700" y="11222" text-anchor="middle" class="lab">rst_n_PAD</text>
+    <text x="4100" y="11222" text-anchor="middle" class="lab">bidir_PAD[0]</text>
+    <text x="4500" y="11222" text-anchor="middle" class="lab">bidir_PAD[1]</text>
+    <text x="4900" y="11222" text-anchor="middle" class="lab">bidir_PAD[2]</text>
+    <text x="5300" y="11222" text-anchor="middle" class="lab">bidir_PAD[3]</text>
+    <text x="5700" y="11222" text-anchor="middle" class="lab">bidir_PAD[4]</text>
+    <text x="6100" y="11222" text-anchor="middle" class="lab">bidir_PAD[5]</text>
+    <text x="6500" y="11222" text-anchor="middle" class="lab">VSS</text>
+    <text x="6900" y="11222" text-anchor="middle" class="lab">bidir_PAD[6]</text>
+    <text x="7300" y="11222" text-anchor="middle" class="lab">bidir_PAD[7]</text>
+    <text x="7700" y="11222" text-anchor="middle" class="lab">bidir_PAD[8]</text>
+    <text x="8100" y="11222" text-anchor="middle" class="lab">bidir_PAD[9]</text>
+    <text x="8500" y="11222" text-anchor="middle" class="lab">bidir_PAD[10]</text>
+    <text x="8900" y="11222" text-anchor="middle" class="lab">bidir_PAD[11]</text>
+    <text x="9300" y="11222" text-anchor="middle" class="lab">bidir_PAD[12]</text>
+    <text x="9700" y="11222" text-anchor="middle" class="lab">bidir_PAD[13]</text>
+    <text x="10800" y="10322" text-anchor="middle" class="lab">VDD</text>
+    <text x="10800" y="9922" text-anchor="middle" class="lab">VSS</text>
+    <text x="10800" y="9522" text-anchor="middle" class="lab">bidir_PAD[14]</text>
+    <text x="10800" y="9122" text-anchor="middle" class="lab">bidir_PAD[15]</text>
+    <text x="10800" y="8722" text-anchor="middle" class="lab">bidir_PAD[16]</text>
+    <text x="10800" y="8322" text-anchor="middle" class="lab">bidir_PAD[17]</text>
+    <text x="10800" y="7922" text-anchor="middle" class="lab">bidir_PAD[18]</text>
+    <text x="10800" y="7522" text-anchor="middle" class="lab">bidir_PAD[19]</text>
+    <text x="10800" y="7122" text-anchor="middle" class="lab">VDD</text>
+    <text x="10800" y="6722" text-anchor="middle" class="lab">VSS</text>
+    <text x="10800" y="6322" text-anchor="middle" class="lab">bidir_PAD[20]</text>
+    <text x="10800" y="5922" text-anchor="middle" class="lab">bidir_PAD[21]</text>
+    <text x="10800" y="5522" text-anchor="middle" class="lab">bidir_PAD[22]</text>
+    <text x="10800" y="5122" text-anchor="middle" class="lab">bidir_PAD[23]</text>
+    <text x="10800" y="4722" text-anchor="middle" class="lab">bidir_PAD[24]</text>
+    <text x="10800" y="4322" text-anchor="middle" class="lab">bidir_PAD[25]</text>
+    <text x="10800" y="3922" text-anchor="middle" class="lab">VSS</text>
+    <text x="10800" y="3522" text-anchor="middle" class="lab">VDD</text>
+    <text x="10800" y="3122" text-anchor="middle" class="lab">VSS</text>
+    <text x="10800" y="2722" text-anchor="middle" class="lab">VDD</text>
+    <text x="9700" y="1822" text-anchor="middle" class="lab">bidir_PAD[26]</text>
+    <text x="9300" y="1822" text-anchor="middle" class="lab">bidir_PAD[27]</text>
+    <text x="8900" y="1822" text-anchor="middle" class="lab">bidir_PAD[28]</text>
+    <text x="8500" y="1822" text-anchor="middle" class="lab">bidir_PAD[29]</text>
+    <text x="8100" y="1822" text-anchor="middle" class="lab">bidir_PAD[30]</text>
+    <text x="7700" y="1822" text-anchor="middle" class="lab">bidir_PAD[31]</text>
+    <text x="7300" y="1822" text-anchor="middle" class="lab">bidir_PAD[32]</text>
+    <text x="6900" y="1822" text-anchor="middle" class="lab">bidir_PAD[33]</text>
+    <text x="6500" y="1822" text-anchor="middle" class="lab">VSS</text>
+    <text x="6100" y="1822" text-anchor="middle" class="lab">bidir_PAD[34]</text>
+    <text x="5700" y="1822" text-anchor="middle" class="lab">bidir_PAD[35]</text>
+    <text x="5300" y="1822" text-anchor="middle" class="lab">bidir_PAD[36]</text>
+    <text x="4900" y="1822" text-anchor="middle" class="lab">bidir_PAD[37]</text>
+    <text x="4500" y="1822" text-anchor="middle" class="lab">bidir_PAD[38]</text>
+    <text x="4100" y="1822" text-anchor="middle" class="lab">bidir_PAD[39]</text>
+    <text x="3700" y="1822" text-anchor="middle" class="lab">analog_PAD[0]</text>
+    <text x="3300" y="1822" text-anchor="middle" class="lab">analog_PAD[1]</text>
+    <text x="2200" y="2722" text-anchor="middle" class="lab">input_PAD[0]</text>
+    <text x="2200" y="3122" text-anchor="middle" class="lab">input_PAD[1]</text>
+    <text x="2200" y="3522" text-anchor="middle" class="lab">VSS</text>
+    <text x="2200" y="3922" text-anchor="middle" class="lab">VDD</text>
+    <text x="2200" y="4322" text-anchor="middle" class="lab">input_PAD[2]</text>
+    <text x="2200" y="4722" text-anchor="middle" class="lab">input_PAD[3]</text>
+    <text x="2200" y="5122" text-anchor="middle" class="lab">input_PAD[4]</text>
+    <text x="2200" y="5522" text-anchor="middle" class="lab">input_PAD[5]</text>
+    <text x="2200" y="5922" text-anchor="middle" class="lab">VSS</text>
+    <text x="2200" y="6322" text-anchor="middle" class="lab">VDD</text>
+    <text x="2200" y="6722" text-anchor="middle" class="lab">input_PAD[6]</text>
+    <text x="2200" y="7122" text-anchor="middle" class="lab">input_PAD[7]</text>
+    <text x="2200" y="7522" text-anchor="middle" class="lab">input_PAD[8]</text>
+    <text x="2200" y="7922" text-anchor="middle" class="lab">input_PAD[9]</text>
+    <text x="2200" y="8322" text-anchor="middle" class="lab">input_PAD[10]</text>
+    <text x="2200" y="8722" text-anchor="middle" class="lab">input_PAD[11]</text>
+    <text x="2200" y="9122" text-anchor="middle" class="lab">VSS</text>
+    <text x="2200" y="9522" text-anchor="middle" class="lab">VDD</text>
+    <text x="2200" y="9922" text-anchor="middle" class="lab">VSS</text>
+    <text x="2200" y="10322" text-anchor="middle" class="lab">VDD</text>
+  </g>
+  <g inkscape:groupmode="layer" inkscape:label="placement tolerance">
+    <circle cx="5060" cy="9003" r="25" class="zone"/>
+    <circle cx="5240" cy="9003" r="25" class="zone"/>
+    <circle cx="5420" cy="9003" r="25" class="zone"/>
+    <circle cx="5600" cy="9003" r="25" class="zone"/>
+    <circle cx="5780" cy="9003" r="25" class="zone"/>
+    <circle cx="5960" cy="9003" r="25" class="zone"/>
+    <circle cx="6140" cy="9003" r="25" class="zone"/>
+    <circle cx="6320" cy="9003" r="25" class="zone"/>
+    <circle cx="6500" cy="9003" r="25" class="zone"/>
+    <circle cx="6680" cy="9003" r="25" class="zone"/>
+    <circle cx="6860" cy="9003" r="25" class="zone"/>
+    <circle cx="7040" cy="9003" r="25" class="zone"/>
+    <circle cx="7220" cy="9003" r="25" class="zone"/>
+    <circle cx="7400" cy="9003" r="25" class="zone"/>
+    <circle cx="7580" cy="9003" r="25" class="zone"/>
+    <circle cx="7760" cy="9003" r="25" class="zone"/>
+    <circle cx="7940" cy="9003" r="25" class="zone"/>
+    <circle cx="8408" cy="8504.5" r="25" class="zone"/>
+    <circle cx="8408" cy="8293.5" r="25" class="zone"/>
+    <circle cx="8408" cy="8082.5" r="25" class="zone"/>
+    <circle cx="8408" cy="7871.5" r="25" class="zone"/>
+    <circle cx="8408" cy="7660.5" r="25" class="zone"/>
+    <circle cx="8408" cy="7449.5" r="25" class="zone"/>
+    <circle cx="8408" cy="7238.5" r="25" class="zone"/>
+    <circle cx="8408" cy="7027.5" r="25" class="zone"/>
+    <circle cx="8408" cy="6816.5" r="25" class="zone"/>
+    <circle cx="8408" cy="6605.5" r="25" class="zone"/>
+    <circle cx="8408" cy="6394.5" r="25" class="zone"/>
+    <circle cx="8408" cy="6183.5" r="25" class="zone"/>
+    <circle cx="8408" cy="5972.5" r="25" class="zone"/>
+    <circle cx="8408" cy="5761.5" r="25" class="zone"/>
+    <circle cx="8408" cy="5550.5" r="25" class="zone"/>
+    <circle cx="8408" cy="5339.5" r="25" class="zone"/>
+    <circle cx="8408" cy="5128.5" r="25" class="zone"/>
+    <circle cx="8408" cy="4917.5" r="25" class="zone"/>
+    <circle cx="8408" cy="4706.5" r="25" class="zone"/>
+    <circle cx="8408" cy="4495.5" r="25" class="zone"/>
+    <circle cx="7940" cy="3997" r="25" class="zone"/>
+    <circle cx="7760" cy="3997" r="25" class="zone"/>
+    <circle cx="7580" cy="3997" r="25" class="zone"/>
+    <circle cx="7400" cy="3997" r="25" class="zone"/>
+    <circle cx="7220" cy="3997" r="25" class="zone"/>
+    <circle cx="7040" cy="3997" r="25" class="zone"/>
+    <circle cx="6860" cy="3997" r="25" class="zone"/>
+    <circle cx="6680" cy="3997" r="25" class="zone"/>
+    <circle cx="6500" cy="3997" r="25" class="zone"/>
+    <circle cx="6320" cy="3997" r="25" class="zone"/>
+    <circle cx="6140" cy="3997" r="25" class="zone"/>
+    <circle cx="5960" cy="3997" r="25" class="zone"/>
+    <circle cx="5780" cy="3997" r="25" class="zone"/>
+    <circle cx="5600" cy="3997" r="25" class="zone"/>
+    <circle cx="5420" cy="3997" r="25" class="zone"/>
+    <circle cx="5240" cy="3997" r="25" class="zone"/>
+    <circle cx="5060" cy="3997" r="25" class="zone"/>
+    <circle cx="4592" cy="4495.5" r="25" class="zone"/>
+    <circle cx="4592" cy="4706.5" r="25" class="zone"/>
+    <circle cx="4592" cy="4917.5" r="25" class="zone"/>
+    <circle cx="4592" cy="5128.5" r="25" class="zone"/>
+    <circle cx="4592" cy="5339.5" r="25" class="zone"/>
+    <circle cx="4592" cy="5550.5" r="25" class="zone"/>
+    <circle cx="4592" cy="5761.5" r="25" class="zone"/>
+    <circle cx="4592" cy="5972.5" r="25" class="zone"/>
+    <circle cx="4592" cy="6183.5" r="25" class="zone"/>
+    <circle cx="4592" cy="6394.5" r="25" class="zone"/>
+    <circle cx="4592" cy="6605.5" r="25" class="zone"/>
+    <circle cx="4592" cy="6816.5" r="25" class="zone"/>
+    <circle cx="4592" cy="7027.5" r="25" class="zone"/>
+    <circle cx="4592" cy="7238.5" r="25" class="zone"/>
+    <circle cx="4592" cy="7449.5" r="25" class="zone"/>
+    <circle cx="4592" cy="7660.5" r="25" class="zone"/>
+    <circle cx="4592" cy="7871.5" r="25" class="zone"/>
+    <circle cx="4592" cy="8082.5" r="25" class="zone"/>
+    <circle cx="4592" cy="8293.5" r="25" class="zone"/>
+    <circle cx="4592" cy="8504.5" r="25" class="zone"/>
+    <g wb:kind="tolerance" wb:applies-to="U1" wb:char="position" wb:tol="50" wb:modifier="CZ" wb:datums="A B C">
+      <title>Position, diameter 50 um, combined zone (CZ), datums A | B | C: the centre of each of the 74 bonded pads of U1 lies in a 50 um circle around its nominal place, and the circles move together</title>
+      <rect x="398" y="970" width="1152" height="180" class="gdb"/>
+      <line x1="618" y1="970" x2="618" y2="1150" class="gd"/>
+      <line x1="1070" y1="970" x2="1070" y2="1150" class="gd"/>
+      <line x1="1230" y1="970" x2="1230" y2="1150" class="gd"/>
+      <line x1="1390" y1="970" x2="1390" y2="1150" class="gd"/>
+      <circle cx="508" cy="1060" r="50" class="gd"/>
+      <path d="M428 1060 H588 M508 980 V1140" class="gd"/>
+      <text x="844" y="1097" text-anchor="middle" class="t">⌀50 CZ</text>
+      <text x="1150" y="1097" text-anchor="middle" class="t">A</text>
+      <text x="1310" y="1097" text-anchor="middle" class="t">B</text>
+      <text x="1470" y="1097" text-anchor="middle" class="t">C</text>
+      <text x="398" y="930" class="t">74×</text>
+      <polyline points="1550,1060 1700,1060 4977.296,3924.708" class="gd"/>
+      <path d="M5030 3970.777 L4951.34 3939.208 L4988.195 3897.045 Z" fill="#222"/>
+    </g>
+    <path d="M1150 12160 L1150 12040 L1230 12100 Z" fill="#222"/>
+    <line x1="1230" y1="12100" x2="1310" y2="12100" class="gd"/>
+    <rect x="1310" y="12020" width="160" height="160" class="gdb"/>
+    <text x="1390" y="12137" text-anchor="middle" class="t">B</text>
+    <path d="M11850 840 L11850 960 L11770 900 Z" fill="#222"/>
+    <line x1="11770" y1="900" x2="11690" y2="900" class="gd"/>
+    <rect x="11530" y="820" width="160" height="160" class="gdb"/>
+    <text x="11610" y="937" text-anchor="middle" class="t">C</text>
+  </g>
+  <text x="0" y="13500" class="h">Section through die centre (true scale, z up)</text>
+  <g transform="translate(0 14500)" wb:kind="stack" inkscape:groupmode="layer" inkscape:label="stack">
+    <rect x="0" y="0" width="13000" height="400" style="fill:#eef3ea;stroke:#9aa;stroke-width:6" wb:kind="layer" wb:name="substrate" wb:role="substrate" wb:material="FR4/ENIG" wb:datum="A">
+      <title>substrate: FR4/ENIG, 400 um thick; its top face is datum A</title>
+    </rect>
+    <rect x="4514" y="-25" width="3972" height="25" style="fill:#888" wb:kind="layer" wb:name="attach" wb:role="attach" wb:material="Ag epoxy">
+      <title>attach: Ag epoxy, 25 um thick</title>
+    </rect>
+    <rect x="4534" y="-305" width="3932" height="280" style="fill:#c9ccd6;stroke:#667;stroke-width:6" wb:kind="layer" wb:name="U1" wb:role="die" wb:material="Si">
+      <title>U1: Si, 280 um thick</title>
+    </rect>
+    <rect x="900" y="-800" width="11200" height="800" style="fill:#7aa7c7;fill-opacity:.18;stroke:#7aa7c7;stroke-width:6;stroke-dasharray:40 30" wb:kind="layer" wb:name="glob" wb:role="mold" wb:material="epoxy">
+      <title>glob: epoxy, 800 um thick</title>
+    </rect>
+    <polyline points="8408,-305 8408,-525 8671.284,-555 9548.899,-525 10602.036,0" stroke-width="20" class="w gnd"/>
+    <polyline points="4592,-305 4592,-525 4328.716,-555 3451.101,-525 2397.964,0" stroke-width="20" class="w pwr"/>
+  </g>
+  <path d="M510 14500 L390 14500 L450 14420 Z" fill="#222"/>
+  <line x1="450" y1="14420" x2="450" y2="14340" class="gd"/>
+  <rect x="370" y="14180" width="160" height="160" class="gdb"/>
+  <text x="450" y="14297" text-anchor="middle" class="t">A</text>
+  <text x="6500" y="13800" text-anchor="middle" class="s">glob top envelope</text>
+  <text x="13500" y="-220" class="h">Loop profiles (drawn at reference span)</text>
+  <g transform="translate(13500 670)" wb:kind="profile" wb:name="STD20" wb:material="Au" wb:style="ball-wedge" wb:dir="forward" wb:moves="180/0 30/12% -20/35%" wb:interp="spline" wb:ref-span="1000" inkscape:groupmode="layer" inkscape:label="profile STD20">
+    <line x1="0" y1="0" x2="1000" y2="0" stroke="#bbb" stroke-width="6"/>
+    <polyline points="0,0 0,-180 120,-210 470,-190 1000,0" stroke-width="20" class="w sig">
+      <title>STD20 moves 180/0 30/12% -20/35%</title>
+    </polyline>
+  </g>
+  <text x="14750" y="390" class="t">STD20: Au 20 um, ball-wedge</text>
+  <text x="14750" y="540" class="s">forward, moves 180/0 30/12% -20/35%</text>
+  <text x="14750" y="650" class="s">control points shown at 1000 um span; spline between them</text>
+  <g transform="translate(13500 1350)" wb:kind="profile" wb:name="PWR20" wb:material="Au" wb:style="ball-wedge" wb:dir="forward" wb:moves="220/0 30/12% -30/40%" wb:interp="spline" wb:ref-span="1000" inkscape:groupmode="layer" inkscape:label="profile PWR20">
+    <line x1="0" y1="0" x2="1000" y2="0" stroke="#bbb" stroke-width="6"/>
+    <polyline points="0,0 0,-220 120,-250 520,-220 1000,0" stroke-width="20" class="w sig">
+      <title>PWR20 moves 220/0 30/12% -30/40%</title>
+    </polyline>
+  </g>
+  <text x="14750" y="1070" class="t">PWR20: Au 20 um, ball-wedge</text>
+  <text x="14750" y="1220" class="s">forward, moves 220/0 30/12% -30/40%</text>
+  <text x="14750" y="1330" class="s">control points shown at 1000 um span; spline between them</text>
+  <text x="13500" y="1730" class="h">Stack</text>
+  <text x="13500" y="1900" class="t">substrate: FR4/ENIG, 400 um, z -400 to 0</text>
+  <text x="13500" y="2040" class="t">attach: Ag epoxy, 25 um, z 0 to 25</text>
+  <text x="13500" y="2180" class="t">U1: Si, 280 um, z 25 to 305</text>
+  <text x="13500" y="2320" class="t">glob: epoxy, 800 um, z 0 to 800</text>
+  <text x="13500" y="2580" class="h">Key</text>
+  <line x1="13500" y1="2720" x2="13800" y2="2720" stroke-width="25" class="w sig"/>
+  <text x="13880" y="2750" class="t">Signal: STD20</text>
+  <line x1="13500" y1="2860" x2="13800" y2="2860" stroke-width="25" class="w pwr"/>
+  <text x="13880" y="2890" class="t">Supply: PWR20</text>
+  <line x1="13500" y1="3000" x2="13800" y2="3000" stroke-width="25" class="w gnd"/>
+  <text x="13880" y="3030" class="t">Ground: PWR20</text>
+  <text x="13500" y="3230" class="s">Illustrative data only. Hover any wire, pad or layer for details.</text>
+  <text x="13500" y="3530" class="h">Die placement (proposed)</text>
+  <text x="13500" y="3760" class="t">One tolerance indicator, beside the die</text>
+  <text x="13500" y="3910" class="s">Position ⌀50 CZ | A | B | C, on its 74 bonded pads</text>
+  <text x="13500" y="4030" class="s">Data: wb:kind="tolerance" wb:char="position" wb:tol="50" wb:modifier="CZ" wb:datums="A B C"</text>
+  <text x="13500" y="4150" class="s">Orange circles, 50 um across: each bonded pad's centre stays in its own</text>
+  <text x="13500" y="4270" class="s">Datums: A top of substrate (section), B fiducial F1, C fiducial F2</text>
+  <text x="13500" y="4450" class="t">Checked at the edges of the zone</text>
+  <text x="13500" y="4600" class="s">Die moved 25 um eight ways, and turned 0.50 deg each way</text>
+  <text x="13500" y="4720" class="s">Worst die edge clearance 187 um (rule 40), wire gap 141 um (rule 60)</text>
+  <text x="13500" y="4900" class="t">Largest error the checks allow</text>
+  <text x="13500" y="5050" class="s">Bonder finds the die: 1452.5 um or 17.17 deg, then W01/W02: gap 60</text>
+  <text x="13500" y="5170" class="s">Bonder doesn't: 4.0 um, then W01: ball leaves its pad</text>
+</svg>

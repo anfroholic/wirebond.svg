@@ -1,0 +1,92 @@
+{
+  "board": {
+    "design_settings": {
+      "defaults": {},
+      "diff_pair_dimensions": [],
+      "drc_exclusions": [],
+      "rules": {
+        "min_clearance": 0.1
+      },
+      "track_widths": [],
+      "via_dimensions": []
+    }
+  },
+  "boards": [],
+  "libraries": {
+    "pinned_footprint_libs": [],
+    "pinned_symbol_libs": []
+  },
+  "meta": {
+    "filename": "example.kicad_pro",
+    "version": 1
+  },
+  "net_settings": {
+    "classes": [
+      {
+        "name": "Default",
+        "clearance": 0.1
+      }
+    ],
+    "meta": {
+      "version": 0
+    }
+  },
+  "pcbnew": {
+    "page_layout_descr_file": ""
+  },
+  "sheets": [],
+  "text_variables": {
+    "wb_design": "wafer.space 1x1 logo die",
+    "wb_profile_1_d": "20",
+    "wb_profile_1_dir": "forward",
+    "wb_profile_1_interp": "spline",
+    "wb_profile_1_material": "Au",
+    "wb_profile_1_moves": "180/0 30/12% -20/35%",
+    "wb_profile_1_name": "STD20",
+    "wb_profile_1_ref_span": "1000",
+    "wb_profile_1_style": "ball-wedge",
+    "wb_profile_2_d": "20",
+    "wb_profile_2_dir": "forward",
+    "wb_profile_2_interp": "spline",
+    "wb_profile_2_material": "Au",
+    "wb_profile_2_moves": "220/0 30/12% -30/40%",
+    "wb_profile_2_name": "PWR20",
+    "wb_profile_2_ref_span": "1000",
+    "wb_profile_2_style": "ball-wedge",
+    "wb_rev": "A",
+    "wb_rule_edge_clear": "40",
+    "wb_rule_fid_clear": "150",
+    "wb_rule_wire_gap": "60",
+    "wb_stack_1_material": "FR4/ENIG",
+    "wb_stack_1_name": "substrate",
+    "wb_stack_1_role": "substrate",
+    "wb_stack_1_t": "400",
+    "wb_stack_1_w": "13000",
+    "wb_stack_1_x": "0",
+    "wb_stack_1_z": "-400",
+    "wb_stack_2_material": "Ag epoxy",
+    "wb_stack_2_name": "attach",
+    "wb_stack_2_role": "attach",
+    "wb_stack_2_t": "25",
+    "wb_stack_2_w": "3972",
+    "wb_stack_2_x": "4514",
+    "wb_stack_2_z": "0",
+    "wb_stack_3_material": "Si",
+    "wb_stack_3_name": "U1",
+    "wb_stack_3_role": "die",
+    "wb_stack_3_t": "280",
+    "wb_stack_3_w": "3932",
+    "wb_stack_3_x": "4534",
+    "wb_stack_3_z": "25",
+    "wb_stack_4_material": "epoxy",
+    "wb_stack_4_name": "glob",
+    "wb_stack_4_role": "mold",
+    "wb_stack_4_t": "800",
+    "wb_stack_4_w": "11200",
+    "wb_stack_4_x": "900",
+    "wb_stack_4_z": "0",
+    "wb_substrate_name": "SUB",
+    "wb_units": "um",
+    "wb_version": "0.1"
+  }
+}

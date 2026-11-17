@@ -1,0 +1,6 @@
+frame,name,role,datum,x_um,y_um
+board,F1,align,B,-5600,-5600
+board,F2,align,C,5600,5600
+board,P1,orient,,-4800,-4800
+U1,LOGO,align,,1868.375,2464.875
+U1,QR,align,,-1868.6,-2463.6

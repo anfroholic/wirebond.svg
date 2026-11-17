@@ -1,0 +1,738 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GD&amp;T Primer</title>
+<style>
+/* Same house style as wire-bonding-primer.html and fiducials.html: one reading column, Evezor palette, dark first. */
+:root{
+  color-scheme:dark;
+  --bg:#262c2a; --panel:#12302b; --panel2:#0c1311; --line:#1b5c50;
+  --txt:#e8eceb; --muted:#8fb5ac; --accent:#5bbbe6; --head:#0b6f5d; --head-txt:#ffffff; --head-sub:#d8f3ec;
+  --green:#36d9bb; --green-bg:#0b3a31; --blue:#5bbbe6; --blue-bg:#10303f;
+  --magenta:#e660bd; --magenta-bg:#3a1832; --amber:#e9c46a; --amber-bg:#3b3115;
+  --si:#6d7a86; --si-edge:#9aa7b2; --board:#1d5a3a; --board-edge:#2f7d55; --gold:#e3b23c; --copper:#e07a4b;
+  --code-bg:#04130a; --code-txt:#aff5b4;
+  --f-body:Arial,Helvetica,sans-serif; --f-mono:ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: light){ :root:not([data-theme="dark"]){
+  color-scheme:light;
+  --bg:#f7f9f9; --panel:#ffffff; --panel2:#eef3f2; --line:#c9d3d1;
+  --txt:#14201d; --muted:#4d5c58; --accent:#1f78a6; --head:#0b6f5d; --head-txt:#ffffff; --head-sub:#d8f3ec;
+  --green:#068770; --green-bg:#e3f4ef; --blue:#1f78a6; --blue-bg:#e4f2f9;
+  --magenta:#b5288a; --magenta-bg:#fbe9f5; --amber:#8a6a10; --amber-bg:#fbf3dc;
+  --si:#9aa5ae; --si-edge:#6d7a86; --board:#cfe3dd; --board-edge:#7fb0a2; --gold:#c8961e; --copper:#c8602f;
+  --code-bg:#e9efed; --code-txt:#0b5a4b;
+}}
+:root[data-theme="light"]{
+  color-scheme:light;
+  --bg:#f7f9f9; --panel:#ffffff; --panel2:#eef3f2; --line:#c9d3d1;
+  --txt:#14201d; --muted:#4d5c58; --accent:#1f78a6; --head:#0b6f5d; --head-txt:#ffffff; --head-sub:#d8f3ec;
+  --green:#068770; --green-bg:#e3f4ef; --blue:#1f78a6; --blue-bg:#e4f2f9;
+  --magenta:#b5288a; --magenta-bg:#fbe9f5; --amber:#8a6a10; --amber-bg:#fbf3dc;
+  --si:#9aa5ae; --si-edge:#6d7a86; --board:#cfe3dd; --board-edge:#7fb0a2; --gold:#c8961e; --copper:#c8602f;
+  --code-bg:#e9efed; --code-txt:#0b5a4b;
+}
+*{box-sizing:border-box}
+img{max-width:100%;height:auto}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--txt);font:16px/1.6 var(--f-body)}
+a{color:var(--accent);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:2px}
+a:focus-visible,button:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid var(--magenta);outline-offset:2px}
+code,.mono{font-family:var(--f-mono);font-size:.84em}
+code{background:var(--code-bg);color:var(--code-txt);border-radius:4px;padding:1px 5px}
+pre{background:var(--code-bg);color:var(--code-txt);border:1px solid var(--line);border-radius:10px;padding:12px 14px;overflow-x:auto;font:13px/1.5 var(--f-mono);margin:12px 0}
+pre code{background:none;padding:0;font-size:inherit}
+pre .c{color:var(--muted)}
+
+.mast{background:var(--head);color:var(--head-txt);border-bottom:4px solid #d93aa7}
+.wrap{max-width:920px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.mast .wrap{padding-block:26px 22px}
+.eyebrow{font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:var(--head-sub)}
+h1{font-size:clamp(28px,5vw,40px);line-height:1.15;margin:6px 0 8px;text-wrap:balance}
+.mast p{margin:0;color:var(--head-sub);max-width:680px;font-size:16.5px}
+.sitenav{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13.5px;margin-bottom:14px}
+.sitenav a{color:var(--head-sub);text-decoration:none}
+.sitenav a:hover{color:#fff;text-decoration:underline}
+
+main.wrap{padding-block:8px 96px}
+h2{font-size:24px;line-height:1.25;margin:56px 0 4px;padding-top:16px;border-top:1px solid var(--line);text-wrap:balance}
+h2 .k{color:var(--muted);font-weight:400;margin-right:8px;font-size:18px}
+h3{font-size:17px;margin:26px 0 6px}
+p{margin:10px 0;max-width:72ch}
+.lede{font-size:17px}
+.muted{color:var(--muted)} .small{font-size:13.5px}
+.tldr{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:10px;padding:14px 18px;margin:18px 0}
+.tldr ul{margin:6px 0 0;padding-left:20px} .tldr li{margin:4px 0}
+.say{font-size:17px;margin:8px 0 4px;max-width:none}
+.callout{border:1px solid var(--line);border-left:4px solid var(--amber);background:var(--amber-bg);border-radius:8px;padding:11px 15px;margin:14px 0;font-size:15px}
+.callout.info{border-left-color:var(--blue);background:var(--blue-bg)}
+.callout.good{border-left-color:var(--green);background:var(--green-bg)}
+.callout p{margin:4px 0}
+nav.toc{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:4px 20px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 18px;margin:18px 0;font-size:14.5px}
+nav.toc a{color:var(--txt);text-decoration:none} nav.toc a:hover{color:var(--accent)}
+nav.toc span{color:var(--muted);display:inline-block;width:22px}
+.fig{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;margin:16px 0}
+.scroll{overflow-x:auto}
+.fig svg{display:block;width:100%;height:auto}
+.fig svg.wide{min-width:620px}
+.cap{font-size:13px;color:var(--muted);margin-top:7px;max-width:80ch}
+
+.pill{display:inline-block;font-size:11.5px;font-weight:700;border-radius:999px;padding:0 9px;border:1px solid;white-space:nowrap;vertical-align:1px;line-height:1.6}
+.t-std{color:var(--green);border-color:var(--green);background:var(--green-bg)}
+.t-ven{color:var(--blue);border-color:var(--blue);background:var(--blue-bg)}
+.t-our{color:var(--muted);border-color:var(--line);background:var(--panel2)}
+.p-dec{color:var(--green);border-color:var(--green);background:var(--green-bg)}
+.p-lean{color:var(--blue);border-color:var(--blue);background:var(--blue-bg)}
+.p-open{color:var(--amber);border-color:var(--amber);background:var(--amber-bg)}
+
+dl.gl{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:2px 26px;margin:12px 0}
+dl.gl div{padding:9px 0;border-bottom:1px solid var(--line);min-width:0}
+dl.gl dt{font-weight:700}
+dl.gl dt i{font-weight:400;color:var(--muted);font-style:normal}
+dl.gl dd{margin:2px 0 0;font-size:14.5px}
+
+ol.steps{list-style:none;padding:0;margin:14px 0;display:grid;gap:10px;counter-reset:s}
+ol.steps li{counter-increment:s;display:grid;grid-template-columns:36px minmax(0,1fr);gap:12px;align-items:start;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:11px 14px}
+ol.steps li::before{content:counter(s);width:30px;height:30px;border-radius:50%;background:var(--head);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px}
+ol.steps b{display:block}
+ol.steps span{font-size:14.5px;color:var(--muted)}
+
+.tw{overflow-x:auto;margin:10px 0}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{border-bottom:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+th{color:var(--muted);font-weight:600;font-size:12.5px;background:var(--panel2);white-space:nowrap}
+td.key{font-family:var(--f-mono);font-weight:700;color:var(--magenta);white-space:nowrap}
+td.val{white-space:nowrap;font-variant-numeric:tabular-nums;font-weight:700}
+td .why{display:block;color:var(--muted);font-size:13px;margin-top:2px}
+
+.ctl{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;margin:4px 0 12px}
+.ctl label,.ctl .lb{font-size:13.5px;color:var(--muted);font-weight:600}
+.ctl .one{display:flex;gap:8px;align-items:center}
+.seg{display:inline-flex;flex-wrap:wrap;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg button{font:inherit;font-size:14px;background:var(--panel2);color:var(--txt);border:0;border-right:1px solid var(--line);padding:5px 12px;cursor:pointer}
+.seg button:last-child{border-right:0}
+.seg button:hover{background:var(--head);color:#fff}
+.seg button[aria-pressed="true"]{background:var(--head);color:#fff}
+input[type=range]{width:150px;accent-color:var(--green)}
+.num{display:inline-block;min-width:62px;font-variant-numeric:tabular-nums}
+.readout{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:10px;margin-top:12px}
+.ro{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:9px 12px;font-size:14px}
+.ro .v{font-size:20px;font-weight:700;font-variant-numeric:tabular-nums}
+.ro .s{color:var(--muted);font-size:12.5px}
+.ro.ok .v{color:var(--green)} .ro.bad .v{color:var(--magenta)}
+
+/* the box reader */
+.cellinfo{background:var(--panel2);border:1px solid var(--line);border-left:4px solid var(--blue);border-radius:8px;padding:10px 14px;margin-top:12px;min-height:96px}
+.cellinfo b{display:block;font-size:16px;margin-bottom:2px}
+.cellinfo p{margin:4px 0;font-size:15px}
+svg .hl{fill:transparent}
+svg .hl.on{fill:var(--blue-bg);stroke:var(--blue);stroke-width:2.5}
+svg .hit{fill:transparent;cursor:pointer}
+svg .hitline{fill:none;stroke:transparent;stroke-width:16;cursor:pointer}
+svg .nopt{pointer-events:none}
+svg .ldr.on{stroke:var(--blue);stroke-width:2.6}
+svg .cnt.on{fill:var(--blue)}
+
+.qs{display:grid;gap:10px;margin:14px 0}
+.q{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:11px 15px}
+.q b{display:block;margin-bottom:2px}
+.q p{margin:4px 0;font-size:14.5px}
+ol.src{padding-left:22px;font-size:14.5px} ol.src li{margin:8px 0}
+
+details.maint{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:4px 16px;margin:14px 0}
+details.maint>summary{cursor:pointer;font-weight:700;font-size:16px;padding:9px 0}
+details.maint>summary .muted{font-weight:400;font-size:14px}
+details.maint h3:first-of-type{margin-top:10px}
+
+svg text{font-family:var(--f-body);fill:var(--txt);font-size:13px}
+svg .lbl{font-size:12.5px} svg .lblm{fill:var(--muted);font-size:12px} svg .key{fill:var(--magenta);font-weight:700;font-size:12.5px}
+svg .big{font-size:17px;font-weight:700}
+svg .huge{font-size:24px;font-weight:700}
+svg .board{fill:var(--board);stroke:var(--board-edge)}
+svg .die{fill:var(--si);stroke:var(--si-edge)}
+svg .pad{fill:var(--gold)}
+svg .fid{fill:var(--copper)}
+svg .gd{fill:none;stroke:var(--txt);stroke-width:1.6}
+svg .gdf{fill:var(--txt)}
+svg .gdb{fill:var(--panel2);stroke:var(--txt);stroke-width:1.6}
+svg .band{fill:var(--amber);fill-opacity:.35;stroke:var(--amber);stroke-width:1}
+svg .nom{fill:none;stroke:var(--muted);stroke-dasharray:5 4;stroke-width:1.2}
+svg .tick{stroke:var(--muted);stroke-width:1}
+</style>
+</head>
+<body>
+
+<header class="mast">
+  <div class="wrap">
+    <nav class="sitenav" aria-label="Project pages">
+      <a href="../../app/index.html">← Wire Bond Bench</a>
+      <a href="wire-bonding-primer.html">Wire bonding primer</a>
+      <a href="fiducials.html">Fiducials</a>
+      <a href="files-in-and-out.html">Files in and out</a>
+      <a href="../../SPEC.md">wirebond.svg spec</a>
+    </nav>
+    <div class="eyebrow">Wire Bond Bench · learning page · November 2026</div>
+    <h1>GD&amp;T: reading the tolerance box on a bonding diagram</h1>
+    <p>What the little row of boxes next to the die means, where its letters come from, and what changes when you type a number into "Tolerance ⌀". No background in mechanical drawing needed.</p>
+  </div>
+</header>
+
+<main class="wrap">
+
+<div class="tldr">
+  <b>The whole idea in one sentence</b>
+  <p class="say">The box <b>⌖ ⌀50 CZ | A | B | C</b> with <b>74×</b> above it says: <i>the centre of each of the 74 bonded pads must be within a 50 µm circle of where it's drawn, measured from the board's top face, then fiducial F1, then fiducial F2.</i></p>
+  <ul>
+    <li><b>GD&amp;T</b>, geometric dimensioning and tolerancing, is the drawing language for "how far off is still OK". wirebond.svg follows the ISO version; the US version, ASME Y14.5, draws nearly the same boxes.</li>
+    <li>It has three ideas: a <b>zone</b> the real feature must fall in, <b>datums</b> that say where measuring starts, and the <b>box</b> that ties them to a feature with a leader.</li>
+    <li>wirebond.svg uses one kind of box so far, <b>position</b> on the die's bonded pads. In Wire Bond Bench you set it under Placement; the checker then tries the die at the edges of the zone to see if the wires still work.</li>
+  </ul>
+</div>
+
+<nav class="toc" aria-label="Contents">
+  <a href="#nominal"><span>1</span>Drawn versus built</a>
+  <a href="#box"><span>2</span>Reading the box</a>
+  <a href="#datums"><span>3</span>Datums: where measuring starts</a>
+  <a href="#zone"><span>4</span>The zone: position, ⌀ and CZ</a>
+  <a href="#try"><span>5</span>Try it: move the die</a>
+  <a href="#sawn"><span>6</span>Why the pads, not the die's edge</a>
+  <a href="#numbers"><span>7</span>From the box to x, y and θ</a>
+  <a href="#checker"><span>8</span>What the checker does with it</a>
+  <a href="#app"><span>9</span>Doing it in Wire Bond Bench</a>
+  <a href="#format"><span>10</span>How it's stored in the file</a>
+  <a href="#words"><span>11</span>Glossary, ISO and ASME</a>
+  <a href="#maint"><span>12</span>For maintainers</a>
+  <a href="#sources"><span>13</span>Sources</a>
+</nav>
+
+<!-- 1 -->
+<h2 id="nominal"><span class="k">1</span>Drawn versus built</h2>
+<p class="lede">Every coordinate in a wirebond.svg file is <b>nominal</b>: where a thing should be. The die drawn at x = 4534 µm won't land at exactly 4534 µm. The die attach machine, the glue spreading as it cures, and the board itself all add a little error. A <b>tolerance</b> says how much error is still acceptable, so the designer and the assembly house agree before anything is built.</p>
+<p>The obvious way to write one is plus and minus on each coordinate: x = 4534 ± 25 µm, y = 9061 ± 25 µm. It has three problems, and GD&amp;T exists largely to fix them.</p>
+<ul>
+  <li><b>The zone is a square.</b> ±25 in x and in y allows 35 µm along the diagonal, but only 25 µm straight across. A die doesn't care which way it's off.</li>
+  <li><b>It doesn't say "from what".</b> From the board edge? A fiducial? Two inspectors measuring from different places get different answers for the same part.</li>
+  <li><b>It doesn't cover turn.</b> A die can be perfectly centred and still be turned 2°, which moves its corner pads a long way. ± on x and y says nothing about that.</li>
+</ul>
+
+<div class="fig scroll">
+<svg class="wide" viewBox="0 0 860 250" role="img" aria-labelledby="cmpT">
+  <title id="cmpT">Three tolerance zones at the same scale. Left: plus and minus 25 µm gives a square, with 35 µm allowed along the diagonal. Middle: a position tolerance of diameter 50 gives a circle. Right: a profile tolerance gives a band around the whole outline.</title>
+  <text x="20" y="22" class="lbl" font-weight="700">Plus and minus</text>
+  <rect class="band" x="90" y="70" width="100" height="100"/>
+  <path class="tick" d="M130,120 h20 M140,110 v20"/>
+  <path d="M140,120 L190,70" stroke="var(--magenta)" stroke-width="1.6" stroke-dasharray="4 3"/>
+  <text x="196" y="72" class="key">35 µm</text>
+  <path d="M140,120 L190,120" stroke="var(--green)" stroke-width="1.6"/>
+  <text x="196" y="124" class="lbl" style="fill:var(--green)">25 µm</text>
+  <text x="20" y="208" class="lblm">±25 in x and y: a square. More room</text>
+  <text x="20" y="226" class="lblm">at the corners; "from what" unstated.</text>
+
+  <text x="300" y="22" class="lbl" font-weight="700">Position, ⌀50 <tspan class="lblm">(what we use)</tspan></text>
+  <circle class="band" cx="430" cy="120" r="50"/>
+  <path class="tick" d="M420,120 h20 M430,110 v20"/>
+  <path d="M430,120 L465,85" stroke="var(--green)" stroke-width="1.6"/>
+  <text x="470" y="84" class="lbl" style="fill:var(--green)">25 µm</text>
+  <text x="300" y="208" class="lblm">A circle: the same every way,</text>
+  <text x="300" y="226" class="lblm">measured from named datums.</text>
+
+  <text x="590" y="22" class="lbl" font-weight="700">Profile, 50 <tspan class="lblm">(for comparison)</tspan></text>
+  <path class="band" fill-rule="evenodd" d="M640,48 H820 V188 H640 Z M660,68 V168 H800 V68 Z"/>
+  <rect class="nom" x="650" y="58" width="160" height="120"/>
+  <rect class="die" x="652" y="60" width="160" height="120" transform="rotate(2 732 120)" opacity=".85"/>
+  <text x="590" y="208" class="lblm">A band round a whole outline:</text>
+  <text x="590" y="226" class="lblm">shift, turn and size, all at once.</text>
+</svg>
+<div class="cap">Left and middle share one scale, 2 px per µm. The profile panel is schematic, its band exaggerated so it shows against a whole die; the dashed rectangle is the nominal outline. Profile is another common control, and our first draft used it on the die's sawn edge; section 6 explains why we moved to position on the pads.</div>
+</div>
+
+<!-- 2 -->
+<h2 id="box"><span class="k">2</span>Reading the box</h2>
+<p>A GD&amp;T requirement is a row of boxes joined by a leader to the feature it controls. ISO calls it a <b>tolerance indicator</b>; ASME calls it a <b>feature control frame</b>. Read it left to right: <i>what kind of control, how much, measured from what</i>. This is the one Wire Bond Bench and <code>wbx.py</code> draw for the example die. Click any part of it.</p>
+
+<div class="fig">
+<div class="scroll">
+<svg class="wide" id="boxSvg" viewBox="0 40 860 215" role="img" aria-labelledby="boxT">
+  <title id="boxT">The example's tolerance indicator: a position symbol, then diameter 50 CZ, then datum boxes A, B and C, with 74× written above it. A short shoulder and a leader run from its right end to an arrow on the top-left bonded pad of a die drawn to the right; each pad has a small circle around its centre.</title>
+  <!-- highlight backgrounds, behind everything -->
+  <rect class="hl" data-c="sym" x="40" y="80" width="80" height="64"/>
+  <rect class="hl" data-c="dia" x="120" y="80" width="170" height="64"/>
+  <rect class="hl" data-c="cz" x="120" y="80" width="170" height="64"/>
+  <rect class="hl" data-c="A" x="290" y="80" width="60" height="64"/>
+  <rect class="hl" data-c="B" x="350" y="80" width="60" height="64"/>
+  <rect class="hl" data-c="C" x="410" y="80" width="60" height="64"/>
+  <g class="nopt">
+    <rect x="40" y="80" width="430" height="64" fill="none" stroke="var(--txt)" stroke-width="1.8"/>
+    <path class="gd" d="M120,80 v64 M290,80 v64 M350,80 v64 M410,80 v64"/>
+    <circle class="gd" cx="80" cy="112" r="13"/><path class="gd" d="M58,112 h44 M80,90 v44"/>
+    <text x="178" y="121" text-anchor="middle" class="huge">⌀50</text>
+    <text x="252" y="121" text-anchor="middle" class="huge">CZ</text>
+    <text x="320" y="121" text-anchor="middle" class="huge">A</text>
+    <text x="380" y="121" text-anchor="middle" class="huge">B</text>
+    <text x="440" y="121" text-anchor="middle" class="huge">C</text>
+    <text x="80" y="166" text-anchor="middle" class="lblm">what</text>
+    <text x="205" y="166" text-anchor="middle" class="lblm">how much, zone shape</text>
+    <text x="320" y="166" text-anchor="middle" class="lblm">1st</text>
+    <text x="380" y="166" text-anchor="middle" class="lblm">2nd</text>
+    <text x="440" y="166" text-anchor="middle" class="lblm">3rd</text>
+    <path class="tick" d="M290,176 h180"/>
+    <text x="380" y="192" text-anchor="middle" class="lblm">datums, in order</text>
+    <!-- the die corner, its pads and their zones -->
+    <rect class="die" x="590" y="160" width="270" height="90"/>
+    <g class="pad"><rect x="614" y="166" width="12" height="12"/><rect x="646" y="166" width="12" height="12"/><rect x="678" y="166" width="12" height="12"/><rect x="710" y="166" width="12" height="12"/><rect x="742" y="166" width="12" height="12"/><rect x="774" y="166" width="12" height="12"/><rect x="806" y="166" width="12" height="12"/><rect x="838" y="166" width="12" height="12"/>
+      <rect x="596" y="198" width="12" height="12"/><rect x="596" y="228" width="12" height="12"/></g>
+    <g class="band"><circle cx="620" cy="172" r="4.5"/><circle cx="652" cy="172" r="4.5"/><circle cx="684" cy="172" r="4.5"/><circle cx="716" cy="172" r="4.5"/><circle cx="748" cy="172" r="4.5"/><circle cx="780" cy="172" r="4.5"/><circle cx="812" cy="172" r="4.5"/><circle cx="844" cy="172" r="4.5"/>
+      <circle cx="602" cy="204" r="4.5"/><circle cx="602" cy="234" r="4.5"/></g>
+    <text x="725" y="222" text-anchor="middle" class="lbl">die U1, top-left corner</text>
+  </g>
+  <text class="cnt nopt" data-c="n" x="40" y="70" font-weight="700" font-size="17">74×</text>
+  <polyline class="gd ldr nopt" data-c="lead" points="470,112 510,112 603.5,163"/>
+  <path class="gdf nopt" d="M614,168.7 L601.3,167 L605.7,159.1 Z"/>
+  <!-- click targets, on top -->
+  <rect class="hit" data-c="sym" x="40" y="80" width="80" height="64"/>
+  <rect class="hit" data-c="dia" x="120" y="80" width="105" height="64"/>
+  <rect class="hit" data-c="cz" x="225" y="80" width="65" height="64"/>
+  <rect class="hit" data-c="A" x="290" y="80" width="60" height="64"/>
+  <rect class="hit" data-c="B" x="350" y="80" width="60" height="64"/>
+  <rect class="hit" data-c="C" x="410" y="80" width="60" height="64"/>
+  <rect class="hit" data-c="n" x="34" y="48" width="50" height="28"/>
+  <polyline class="hitline" data-c="lead" points="470,112 510,112 610,167"/>
+</svg>
+</div>
+<div class="ctl" style="margin-top:10px">
+  <span class="lb">Explain</span>
+  <div class="seg" id="boxBtns">
+    <button type="button" data-c="sym">Symbol</button>
+    <button type="button" data-c="dia">⌀50</button>
+    <button type="button" data-c="cz">CZ</button>
+    <button type="button" data-c="A">A</button>
+    <button type="button" data-c="B">B</button>
+    <button type="button" data-c="C">C</button>
+    <button type="button" data-c="n">74×</button>
+    <button type="button" data-c="lead">Leader</button>
+  </div>
+</div>
+<div class="cellinfo" id="cellInfo" aria-live="polite"></div>
+</div>
+
+<h3>Why the box sits beside the die</h3>
+<p>A drawing keeps the tolerance indicator in clear space, off the part, and joins it to the feature with a thin leader. The box never hides what it controls, and one glance tells you which feature it means. Wire Bond Bench and <code>wbx.py</code> put it just outside the top-left corner of the area the die and its lands cover, with a short horizontal shoulder from its right end, then a straight leader to the nearest bonded pad. Earlier versions drew it over the middle of the die; that held the same data, but hid the part.</p>
+
+<!-- 3 -->
+<h2 id="datums"><span class="k">3</span>Datums: where measuring starts</h2>
+<p>"50 µm from where it's drawn" only means something once everyone agrees where the drawing is anchored. That anchor is the <b>datum system</b>. A loose part can move six ways: slide in x, y and z, and turn about each of those axes. Datums take those freedoms away one at a time, which is why the box lists them in order:</p>
+
+<div class="fig scroll">
+<svg class="wide" viewBox="0 0 860 320" role="img" aria-labelledby="datT">
+  <title id="datT">Left, a plan view of the 13 mm example board with the die in the middle and fiducials F1, bottom left, and F2, top right, flagged as datums B and C. Right, a section through the board with the substrate's top face flagged as datum A, and a list of which freedoms each datum removes.</title>
+  <text x="40" y="20" class="lbl" font-weight="700">Plan, to scale</text>
+  <rect class="board" x="40" y="30" width="260" height="260"/>
+  <rect class="die" x="130.7" y="108.8" width="78.6" height="102.4"/>
+  <circle class="fid" cx="58" cy="272" r="5"/>
+  <circle class="fid" cx="282" cy="48" r="5"/>
+  <path class="gdf" d="M63,267 L63,277 L72,272 Z"/><path class="gd" d="M72,272 H90"/>
+  <rect class="gdb" x="90" y="261" width="22" height="22"/><text x="101" y="277" text-anchor="middle" class="lbl" font-weight="700">B</text>
+  <path class="gdf" d="M277,43 L277,53 L268,48 Z"/><path class="gd" d="M268,48 H250"/>
+  <rect class="gdb" x="228" y="37" width="22" height="22"/><text x="239" y="53" text-anchor="middle" class="lbl" font-weight="700">C</text>
+  <text x="70" y="258" class="lblm">F1</text><text x="262" y="74" class="lblm">F2</text>
+  <text x="170" y="306" text-anchor="middle" class="lblm">13 × 13 mm board; F1 to F2 is 15.8 mm</text>
+
+  <text x="380" y="20" class="lbl" font-weight="700">Section, not to scale</text>
+  <rect class="board" x="380" y="110" width="440" height="40"/>
+  <rect x="555" y="104" width="90" height="6" fill="var(--gold)" opacity=".6"/>
+  <rect class="die" x="560" y="76" width="80" height="28"/>
+  <text x="600" y="95" text-anchor="middle" class="lbl">die</text>
+  <path class="gdf" d="M410,110 L430,110 L420,98 Z"/><path class="gd" d="M420,98 V70"/>
+  <rect class="gdb" x="408" y="46" width="24" height="24"/><text x="420" y="63" text-anchor="middle" class="lbl" font-weight="700">A</text>
+  <text x="740" y="135" text-anchor="middle" class="lblm">substrate</text>
+
+  <text x="380" y="190" class="key">A</text><text x="396" y="190" class="lbl">top face of the substrate. Fixes height and both tilts:</text>
+  <text x="396" y="208" class="lblm">3 of the 6 freedoms. Everything is measured square to it.</text>
+  <text x="380" y="236" class="key">B</text><text x="396" y="236" class="lbl">centre of fiducial F1. Fixes x and y: 2 more.</text>
+  <text x="380" y="264" class="key">C</text><text x="396" y="264" class="lbl">centre of fiducial F2. Fixes the turn about A: the last one.</text>
+  <text x="380" y="292" class="lblm">A plan-view file can't show A, so it's flagged on the section.</text>
+</svg>
+<div class="cap">The plan matches <code>examples/example.wb.svg</code>: a 13 mm board, the 3932 × 5122 µm wafer.space die, and F1 and F2, 0.5 mm copper dots 0.9 mm in from opposite corners. The triangle-and-letter flags are the standard datum symbol.</div>
+</div>
+
+<dl class="gl">
+  <div><dt>Datum feature</dt><dd>The real thing on the part you measure from: the board's top surface, a copper dot. It's flagged with a triangle and a boxed letter.</dd></div>
+  <div><dt>Datum</dt><dd>The perfect plane or point the feature stands for. A real board isn't perfectly flat; datum A is the ideal plane it rests on.</dd></div>
+  <div><dt>Order matters</dt><dd>The primary wins any disagreement with the ones after it. Set the board down on A first, then find B in that plane, then turn about B until C lines up.</dd></div>
+  <div><dt>Why two fiducials, far apart</dt><dd>B alone can't stop a turn. C does, and the farther it is from B, the less a small error in finding C turns the whole frame.</dd></div>
+</dl>
+
+<p>Why fiducials and not the board edge? Because the machines can find them. A die attach machine or a bonder locates the board by its fiducials, so a tolerance measured from the same features means what the machine sees. A routed board edge is held only to a tenth of a millimetre or so, and no machine's camera looks at it. The <a href="fiducials.html">fiducials page</a> covers how machines use them.</p>
+
+<!-- 4 -->
+<h2 id="zone"><span class="k">4</span>The zone: position, ⌀ and CZ</h2>
+<p>A <b>position</b> tolerance controls where a feature's <b>centre</b> is. For us the features are the die's bonded pads. Each pad gets its own circle, centred where the GDS puts the pad's centre; the real centre must land inside.</p>
+
+<div class="fig scroll">
+<svg class="wide" viewBox="0 0 860 280" role="img" aria-labelledby="zoneT">
+  <title id="zoneT">Left: one 60 µm pad, magnified, with a 50 µm circle around its drawn centre and the real centre inside the circle. Right: a row of five pads, 180 µm apart as a boxed exact dimension, each with its circle; the real pads have all shifted together and each centre is inside its own circle.</title>
+  <text x="20" y="22" class="lbl" font-weight="700">One pad, 2.5 px per µm</text>
+  <rect class="pad" x="60" y="60" width="150" height="150" opacity=".55"/>
+  <circle class="band" cx="135" cy="135" r="62.5"/>
+  <path class="tick" d="M125,135 h20 M135,125 v20"/>
+  <path d="M157,111 l12,12 M169,111 l-12,12" stroke="var(--magenta)" stroke-width="2.2"/>
+  <path d="M135,135 L72.5,135" stroke="var(--green)" stroke-width="1.4"/>
+  <text x="78" y="129" class="lbl" style="fill:var(--green)">25</text>
+  <text x="230" y="80" class="lbl">pad, 60 × 60 µm</text>
+  <text x="230" y="120" class="key">× real centre</text>
+  <text x="230" y="138" class="lblm">here 14 µm off: inside</text>
+  <text x="230" y="174" class="lbl" style="fill:var(--amber)">⌀50 zone</text>
+  <text x="230" y="192" class="lblm">around the drawn centre</text>
+  <text x="20" y="246" class="lblm">The zone is smaller than the pad. It holds the</text>
+  <text x="20" y="264" class="lblm">pad's centre, not its outline.</text>
+
+  <text x="470" y="22" class="lbl" font-weight="700">The pattern, CZ</text>
+  <path class="tick" d="M492,72 v14 M562,72 v14 M492,79 H562"/>
+  <rect class="gdb" x="510" y="66" width="34" height="22"/><text x="527" y="82" text-anchor="middle" class="lbl" font-weight="700">180</text>
+  <g>
+    <rect class="pad" x="480" y="128" width="24" height="24" opacity=".55"/><rect class="pad" x="550" y="128" width="24" height="24" opacity=".55"/><rect class="pad" x="620" y="128" width="24" height="24" opacity=".55"/><rect class="pad" x="690" y="128" width="24" height="24" opacity=".55"/><rect class="pad" x="760" y="128" width="24" height="24" opacity=".55"/>
+    <circle class="band" cx="492" cy="140" r="16"/><circle class="band" cx="562" cy="140" r="16"/><circle class="band" cx="632" cy="140" r="16"/><circle class="band" cx="702" cy="140" r="16"/><circle class="band" cx="772" cy="140" r="16"/>
+    <path d="M508,140 H546 M578,140 H616 M648,140 H686 M718,140 H756" stroke="var(--amber)" stroke-dasharray="3 3"/>
+    <g fill="var(--magenta)"><circle cx="500" cy="134" r="3"/><circle cx="570" cy="134.5" r="3"/><circle cx="640" cy="135" r="3"/><circle cx="710" cy="135.5" r="3"/><circle cx="780" cy="136" r="3"/></g>
+  </g>
+  <text x="470" y="192" class="lbl">Boxed <tspan font-weight="700">180</tspan>: an exact spacing, from the GDS.</text>
+  <text x="470" y="212" class="lblm">The drawing gives it no tolerance of its own;</text>
+  <text x="470" y="230" class="lblm">the box above supplies it.</text>
+  <text x="470" y="256" class="lbl">Dashed: CZ ties the circles into one pattern.</text>
+  <text x="470" y="274" class="lblm">Dots: real centres, all moved together.</text>
+</svg>
+<div class="cap">Left to scale; right schematic. The example's pads are 60 µm square, 180 µm apart along the top and bottom edges.</div>
+</div>
+
+<dl class="gl">
+  <div><dt>⌀ makes it a circle</dt><dd>With ⌀ the zone is a circle, so a 50 µm tolerance allows 25 µm in any direction. Without it, the zone would be the space between two parallel lines, holding only one direction.</dd></div>
+  <div><dt>The number is the whole width</dt><dd>⌀50 is the circle's diameter. Half of it, 25 µm, is how far a centre may stray. This trips up nearly everyone once.</dd></div>
+  <div><dt>Exact spacing, TED</dt><dd>The pads' drawn places are <b>theoretically exact dimensions</b>: numbers with no ± of their own, because the box supplies the tolerance. In wirebond.svg every coordinate is one.</dd></div>
+  <div><dt>CZ, combined zone</dt><dd>The 74 circles are one pattern, held at their exact spacing. A die is one rigid piece of silicon, so its pads move together anyway. With all three datums the circles are already pinned to the board, so CZ doesn't change the check; it says plainly that the pads are judged as a set.</dd></div>
+</dl>
+
+<!-- 5 -->
+<h2 id="try"><span class="k">5</span>Try it: move the die</h2>
+<p>Below is the example die with its 74 real bonded pads, each in its zone. Shift it and turn it, and watch which pad leaves its circle first. Moving straight, every pad moves the same, so the limit is half the diameter. Turning about the centre, the pads farthest from the centre move most, so they set the limit.</p>
+
+<div class="fig">
+  <div class="ctl">
+    <div class="one"><label for="tw">Tolerance ⌀</label><input type="range" id="tw" min="10" max="200" step="10" value="50"><span class="mono num" id="twO"></span></div>
+    <div class="one"><label for="dx">Shift x</label><input type="range" id="dx" min="-150" max="150" step="1" value="12"><span class="mono num" id="dxO"></span></div>
+    <div class="one"><label for="dy">Shift y</label><input type="range" id="dy" min="-150" max="150" step="1" value="-8"><span class="mono num" id="dyO"></span></div>
+    <div class="one"><label for="th">Turn</label><input type="range" id="th" min="-2" max="2" step="0.01" value="0.15"><span class="mono num" id="thO"></span></div>
+  </div>
+  <div class="ctl">
+    <span class="lb">Try</span>
+    <div class="seg" id="presets">
+      <button type="button" data-p="shift">Shift to the edge</button>
+      <button type="button" data-p="turn">Turn to the edge</button>
+      <button type="button" data-p="both">70% of each at once</button>
+      <button type="button" data-p="zero">Centre it</button>
+    </div>
+  </div>
+  <div class="scroll"><svg id="pfSvg" class="wide" viewBox="0 0 860 420" role="img" aria-label="The example die's 74 bonded pads, each inside its position tolerance zone, with the die's shift and turn magnified four times"></svg></div>
+  <div class="cap">Errors and zones are drawn four times larger than true, or a 25 µm move would be invisible next to a 5 mm die. Pad places are the example's, from <code>examples/example.wb.svg</code>. The die turns about its centre, as <code>wbx.py</code> checks it.</div>
+  <div class="readout" id="pfRead"></div>
+</div>
+
+<p>"70% of each at once" fails even though neither number is at its limit. Shift and turn share the same circles: a die that uses most of its zone shifting has little left for turning. That's the point of one zone instead of three separate numbers that each assume the other two are zero.</p>
+
+<!-- 6 -->
+<h2 id="sawn"><span class="k">6</span>Why the pads, not the die's edge</h2>
+<p>"Where is the die?" sounds like one question, but it has two answers. Dies are built side by side on a wafer, with a narrow empty lane between them called the <b>saw street</b>. A blade cuts down each street to separate them, and it's never exactly in the middle. So <b>the sawn edge isn't at an exact distance from the circuit</b>: one side of a die can have more spare silicon than the other.</p>
+
+<div class="fig scroll">
+<svg class="wide" viewBox="0 0 860 300" role="img" aria-labelledby="sawT">
+  <title id="sawT">Left: two dies on a wafer with a saw street between them. The blade was planned down the middle of the street but cut a little to the right. Right: the die that results. Its pads are where the circuit put them, but it has more silicon left on its right side than on its left, so its sawn outline is off-centre from its pads.</title>
+  <text x="30" y="22" class="lbl" font-weight="700">On the wafer</text>
+  <rect x="30" y="50" width="380" height="180" fill="var(--si)" opacity=".55"/>
+  <rect class="die" x="40" y="60" width="150" height="160"/>
+  <rect class="die" x="250" y="60" width="150" height="160"/>
+  <g fill="var(--gold)">
+    <rect x="172" y="80" width="10" height="10"/><rect x="172" y="110" width="10" height="10"/><rect x="172" y="140" width="10" height="10"/><rect x="172" y="170" width="10" height="10"/>
+    <rect x="258" y="80" width="10" height="10"/><rect x="258" y="110" width="10" height="10"/><rect x="258" y="140" width="10" height="10"/><rect x="258" y="170" width="10" height="10"/>
+  </g>
+  <rect x="210" y="40" width="20" height="200" fill="none" stroke="var(--muted)" stroke-dasharray="4 3" stroke-width="1.4"/>
+  <rect x="219" y="40" width="20" height="200" fill="var(--bg)" stroke="var(--magenta)" stroke-width="1.6"/>
+  <text x="220" y="262" text-anchor="middle" class="lblm">saw street</text>
+  <path class="tick" d="M190,250 v-8 M250,250 v-8 M190,246 H250"/>
+  <text x="150" y="36" text-anchor="end" class="lblm">dashed: blade as planned</text>
+  <text x="246" y="36" class="key">as cut</text>
+
+  <path class="tick" d="M425,140 h30" stroke-dasharray="3 3"/>
+
+  <text x="480" y="22" class="lbl" font-weight="700">The die you get</text>
+  <rect class="nom" x="520" y="60" width="200" height="160"/>
+  <rect class="die" x="512" y="60" width="216" height="160" opacity=".85"/>
+  <g fill="var(--gold)">
+    <rect x="534" y="80" width="10" height="10"/><rect x="534" y="110" width="10" height="10"/><rect x="534" y="140" width="10" height="10"/><rect x="534" y="170" width="10" height="10"/>
+    <rect x="696" y="80" width="10" height="10"/><rect x="696" y="110" width="10" height="10"/><rect x="696" y="140" width="10" height="10"/><rect x="696" y="170" width="10" height="10"/>
+  </g>
+  <rect x="566" y="190" width="18" height="18" fill="none" stroke="var(--green)" stroke-width="2"/>
+  <path d="M664,72 L684,72 L684,92 Z" fill="none" stroke="var(--green)" stroke-width="2"/>
+  <path class="tick" d="M512,234 v8 M534,234 v8 M512,238 H534"/><text x="523" y="258" text-anchor="middle" class="lblm">less</text>
+  <path class="tick" d="M706,234 v8 M728,234 v8 M706,238 H728"/><text x="717" y="258" text-anchor="middle" class="lblm">more</text>
+  <text x="742" y="96" class="lbl">Pads and eye</text>
+  <text x="742" y="114" class="lbl">points (green):</text>
+  <text x="742" y="132" class="lblm">where the circuit</text>
+  <text x="742" y="150" class="lblm">put them.</text>
+  <text x="742" y="186" class="lbl">Grey outline:</text>
+  <text x="742" y="204" class="lblm">where the blade went.</text>
+  <text x="620" y="284" text-anchor="middle" class="lblm">Dashed: the outline in the GDS. Edge-to-pad distance differs side to side.</text>
+</svg>
+<div class="cap">Schematic, offsets exaggerated. We don't yet have wafer.space's street width or how far their saw can wander; that's a question for them.</div>
+</div>
+
+<p>A tolerance has to pick one of the two. wirebond.svg picks the pads:</p>
+<div class="tw"><table>
+  <thead><tr><th>The zone holds…</th><th>For</th><th>Against</th></tr></thead>
+  <tbody>
+    <tr><td class="key">Pads<span class="why">what we use</span></td><td>What the wires actually connect to. Matches how a bonder finds a die, by marks in its artwork (<a href="fiducials.html#bonder">fiducials page, section 5</a>). Saw error doesn't count against it, and dies separated less precisely than by a saw still work.</td><td>The assembler has to align on the die's eye points, the QR code and the corner mark, not its outline. The edge clearance check needs a separate allowance for the saw.</td></tr>
+    <tr><td class="key">Sawn edge<span class="why">the first draft</span></td><td>Anyone can measure it under a microscope, and some die attach machines centre a die on its outline.</td><td>Saw error uses up part of the zone before placement starts, and it isn't what the wires follow.</td></tr>
+  </tbody>
+</table></div>
+<p>Holding pads by their centres is why the control is <b>position</b>. Holding an outline would need <b>profile</b>, which sits on a surface, the band in section 1. For the example it hardly matters: with a bonder that finds the die, the wires still pass with the die 1,370 µm off (section 8), far more than any saw error. It matters more for a tight design, or lands close to the die edge.</p>
+
+<!-- 7 -->
+<h2 id="numbers"><span class="k">7</span>From the box to x, y and θ</h2>
+<p>Die attach machines are usually specified as so many µm in x and y and so many degrees of turn, θ. The box converts to those, for one die at a time. These numbers are worked out from the box, never stored beside it, so they can't disagree with it.</p>
+<div class="tw"><table>
+  <thead><tr><th>Number</th><th>Example, ⌀50</th><th>Where it comes from</th></tr></thead>
+  <tbody>
+    <tr><td>Shift, any direction</td><td class="val">25 µm</td><td>Half the diameter. Every pad moves the same distance.</td></tr>
+    <tr><td>Shift in x alone, or y alone</td><td class="val">±25 µm</td><td>The same circle. Not a ±25 square: on the diagonal it's still 25 µm, not 35.</td></tr>
+    <tr><td>Turn alone, about the die's centre</td><td class="val">0.50°</td><td>The farthest bonded pad is 2,888 µm from the centre. It reaches its circle's edge when it has moved 25 µm: θ = 2 · asin(25 / (2 × 2888)), about 25 / 2888 radians.</td></tr>
+    <tr><td>Shift and turn together</td><td class="val">less of each</td><td>Every pad's total move, shift plus turn, must stay within 25 µm. Section 5 lets you try it.</td></tr>
+  </tbody>
+</table></div>
+<p>A bigger die gets less turn from the same tolerance, because its outer pads swing farther. That's one more reason a single zone beats a fixed angle: the box stays right whatever the die's size.</p>
+
+<!-- 8 -->
+<h2 id="checker"><span class="k">8</span>What the checker does with it</h2>
+<p><code>wbx.py check</code> treats the tolerance as a promise from the assembler and asks: if the die is anywhere in its zone, is the design still good?</p>
+<ol class="steps">
+  <li><div><b>The box is well formed.</b><span><code>wb:char</code> is <code>position</code>, <code>wb:modifier</code> is <code>CZ</code>, <code>wb:tol</code> is above 0, and <code>wb:applies-to</code> names the die.</span></div></li>
+  <li><div><b>Each datum exists.</b><span>Every letter in <code>wb:datums</code> must be on some element's <code>wb:datum</code>.</span></div></li>
+  <li><div><b>Every check still passes at the edge of the zone.</b><span>The die is moved half the diameter eight ways, 45° apart, and turned each way until its farthest bonded pad reaches its circle's edge: ten positions. Wire gap, edge clearance and land reach all run again at each.</span></div></li>
+  <li><div><b>How far could it really go?</b><span><code>wbx.py place</code> searches for the largest shift and turn that still pass, so you can see how much margin the stated tolerance leaves.</span></div></li>
+</ol>
+<p>It assumes the bonder finds the die by vision, as automatic bonders do: first bonds follow the die, second bonds stay on the lands, and only the wires between them bend. It also works out the other case, a bonder that bonds blind where it was programmed. Results for the example, from <code>python tools/wbx.py check</code> and <code>python tools/wbx.py place</code> on <code>examples/example.wb.svg</code>:</p>
+<div class="tw"><table>
+  <thead><tr><th>Case</th><th>Result</th><th>What limits it</th></tr></thead>
+  <tbody>
+    <tr><td>At the edge of the ⌀50 µm zone<span class="why">8 shifts of 25 µm, and ±0.50°</span></td><td class="val">Passes</td><td>Worst edge clearance 187 µm, rule 40. Worst wire gap 141 µm, rule 60.</td></tr>
+    <tr><td>Bonder finds the die</td><td class="val">1,370 µm or 17.2°</td><td>W01 and W02, the first two wires, come within the 60 µm wire gap.</td></tr>
+    <tr><td>Bonder doesn't</td><td class="val">4.0 µm</td><td>W01's ball leaves its 60 µm pad.</td></tr>
+  </tbody>
+</table></div>
+<p>The gap between those last two rows is the practical lesson. With vision, a ⌀50 tolerance is very loose for this design, and a looser one would cost less at the assembler. Without vision, even ⌀50 is far too much, because the ball lands where the pad used to be.</p>
+<p class="small muted">Limits come only from the checks in <code>wbx.py</code>. The app's other rules, such as wire angle and length, aren't in it, so the true limits may be tighter. The bonder's vision capture range, how far off a die can be and still be found, isn't checked either; no bonding house has given us that number yet.</p>
+
+<!-- 9 -->
+<h2 id="app"><span class="k">9</span>Doing it in Wire Bond Bench</h2>
+<ol class="steps">
+  <li><div><b>Bond the die first.</b><span>The tolerance holds every pad with a wire on it. Until there are wires, it holds all the die's pads.</span></div></li>
+  <li><div><b>Type a diameter under Placement.</b><span>"Tolerance ⌀, µm", for example 50. Empty or 0 means none. A note under it reads the box back in words, such as <i>74× pads: position ⌀50 CZ | A | B | C</i>.</span></div></li>
+  <li><div><b>See it in the plan.</b><span>An orange circle appears round each bonded pad at true scale; zoom in to see them. The box appears beside the die, off the top-left corner of its lands, with its leader to the nearest bonded pad.</span></div></li>
+  <li><div><b>Check the datums.</b><span>A is always the board's top face. B and C start on the two align fiducials farthest apart. To change them, click a copper mark in the plan and use its Datum buttons. If fewer than two marks are datums, the Placement panel warns you.</span></div></li>
+  <li><div><b>Export.</b><span>The .wb.svg carries the box, its zone circles and the datum flags; KiCad exports carry <code>wb_position_tol_um</code> and <code>wb_datum_&lt;mark&gt;</code>. Reopening either keeps the tolerance.</span></div></li>
+  <li><div><b>Check at the zone's edges with wbx.py.</b><span>The app's Checks tab doesn't move the die to the edges of its zone. The <b>Check at the zone's edges</b> button under the tolerance does, by running wbx.py on the layout. Or run <code>python tools/wbx.py check</code> and <code>python tools/wbx.py place</code> on the exported file.</span></div></li>
+</ol>
+
+<!-- 10 -->
+<h2 id="format"><span class="k">10</span>How it's stored in the file</h2>
+<p>One group per die, <code>wb:kind="tolerance"</code>, the ISO name for the box. The group is both the print and the data, because an SVG file is XML. A browser or Inkscape <b>draws</b> the children, the boxes, lines and text, and ignores attributes it doesn't know, such as <code>wb:tol</code>. A program does the opposite: it <b>reads</b> the <code>wb:</code> attributes and ignores the drawing.</p>
+<pre><code>&lt;g <b>wb:kind="tolerance" wb:applies-to="U1" wb:char="position" wb:tol="50" wb:modifier="CZ" wb:datums="A B C"</b>&gt;  <span class="c">&lt;- the data: a program reads only this line</span>
+  &lt;title&gt;Position, diameter 50 um, combined zone (CZ), datums A | B | C ...&lt;/title&gt;   <span class="c">&lt;- hover text, for people</span>
+  &lt;rect .../&gt; &lt;line .../&gt; &lt;line .../&gt;                                  <span class="c">&lt;- the boxes, for people</span>
+  &lt;circle .../&gt; &lt;path .../&gt;                                           <span class="c">&lt;- the position symbol</span>
+  &lt;text&gt;⌀50 CZ&lt;/text&gt; &lt;text&gt;A&lt;/text&gt; &lt;text&gt;B&lt;/text&gt; &lt;text&gt;C&lt;/text&gt;      <span class="c">&lt;- the values, for people</span>
+  &lt;text&gt;74×&lt;/text&gt;                                                     <span class="c">&lt;- how many pads it holds</span>
+  &lt;polyline .../&gt; &lt;path .../&gt;                                         <span class="c">&lt;- shoulder and leader, its arrow on a bonded pad</span>
+&lt;/g&gt;
+&lt;circle cx="..." cy="..." r="25" class="zone"/&gt;                             <span class="c">&lt;- a zone circle per pad, drawn from it, not read</span>
+&lt;rect wb:kind="layer" wb:name="substrate" <b>wb:datum="A"</b> .../&gt;             <span class="c">&lt;- datum A, in the section</span>
+&lt;circle class="cu" wb:kind="fiducial" wb:name="F1" <b>wb:datum="B"</b> .../&gt;    <span class="c">&lt;- datum B: the copper dot, and its letter as data</span>
+&lt;path .../&gt; &lt;rect .../&gt; &lt;text&gt;B&lt;/text&gt;                                    <span class="c">&lt;- its flag, for people</span></code></pre>
+<p>The two can't drift apart because the writer draws the children <i>from</i> the attributes, both from the same number. A reader takes only the attributes, and redraws the picture when it writes the file again. Open <code>examples/example.wb.svg</code> in a browser to see the print; open it in a text editor to see the data. The spec's rule 1, "if it isn't drawn, it isn't in the file", holds.</p>
+<div class="callout info"><p><b>The CAD world splits this the same way.</b> STEP AP242, the standard 3D exchange format, carries GD&amp;T two ways: <b>semantic</b> ("representation"), which software can read, and <b>graphic</b> ("presentation"), the lines and text a person sees. NIST notes that presentation alone carries no meaning a computer can use. Our group is both, linked in one element, as the CAx-IF practices for AP242 recommend.</p></div>
+
+<!-- 11 -->
+<h2 id="words"><span class="k">11</span>Glossary, ISO and ASME</h2>
+<p>wirebond.svg uses the ISO words. Where ASME Y14.5 says something different, it's in grey.</p>
+<dl class="gl">
+  <div><dt>Nominal <i>/ true position</i></dt><dd>Where the drawing puts a feature, exactly. Every coordinate in wirebond.svg is nominal.</dd></div>
+  <div><dt>Tolerance indicator <i>/ feature control frame</i></dt><dd>The row of boxes: characteristic, tolerance, datums.</dd></div>
+  <div><dt>Characteristic</dt><dd>What kind of control: position, profile, flatness, parallelism and so on, each with its own symbol. ISO 1101 and ASME Y14.5 share most of them.</dd></div>
+  <div><dt>Tolerance zone</dt><dd>The region the real feature, or its centre, must lie in. For position with ⌀, a circle.</dd></div>
+  <div><dt>Theoretically exact dimension, TED <i>/ basic dimension</i></dt><dd>A dimension with no tolerance of its own, drawn in a box; the indicator supplies the tolerance.</dd></div>
+  <div><dt>Datum feature, datum</dt><dd>The real feature you measure from, and the perfect plane or point it stands for.</dd></div>
+  <div><dt>Datum system <i>/ datum reference frame</i></dt><dd>The coordinate system the datums build, in the order the indicator lists them, primary first.</dd></div>
+  <div><dt>CZ, combined zone</dt><dd>Several zones treated as one pattern at their exact spacing. ISO's pattern rules are in ISO 5458. ASME has no CZ mark; patterns located from the same datums in the same order are treated together by default, its "simultaneous requirement".</dd></div>
+  <div><dt>n×</dt><dd>Written above the indicator: the rule applies to n features at once.</dd></div>
+  <div><dt>Leader</dt><dd>The thin line from the indicator to the feature, ending in an arrow on it.</dd></div>
+  <div><dt>ISO GPS</dt><dd>Geometrical product specifications, the family of ISO standards that includes ISO 1101 (tolerances), ISO 5459 (datums) and ISO 5458 (patterns).</dd></div>
+</dl>
+
+<!-- 12 -->
+<h2 id="maint"><span class="k">12</span>For maintainers</h2>
+<p>Where the code is, what's left before the draft becomes part of the standard, and the decisions behind it. Folded away, since you don't need it to use the tolerance.</p>
+
+<details class="maint">
+<summary>Where it lives in the repo <span class="muted">· files and functions</span></summary>
+<div class="tw"><table>
+  <thead><tr><th>What</th><th>Where</th><th>Notes</th></tr></thead>
+  <tbody>
+    <tr><td>The rule</td><td><a href="../../SPEC.md">SPEC.md</a>, "Placement tolerance (draft)"</td><td>Datums, the tolerance indicator's attributes, what's decided, and the checker's results for the example.</td></tr>
+    <tr><td>Element kinds</td><td>SPEC.md, "Element kinds" table</td><td>Rows for <code>layer</code> (<code>datum</code>), <code>fiducial</code> (<code>datum</code>) and <code>tolerance</code>.</td></tr>
+    <tr><td>Datums on fiducials</td><td>SPEC.md, "Fiducials (draft)"; <a href="fiducials.html#format">fiducials page, section 7</a></td><td>One fiducial can be both a datum and an alignment point.</td></tr>
+    <tr><td>Drawing it</td><td><code>wbx.py</code>, <code>write()</code>, its helper <code>datum()</code>, and the "placement tolerance" layer after the wires</td><td>Writes the indicator beside the die, the zone circles, the datum flags, and the "Die placement" panel.</td></tr>
+    <tr><td>Reading it</td><td><code>wbx.py</code>, <code>rd()</code></td><td>Reads the indicator's attributes only.</td></tr>
+    <tr><td>Checking it</td><td><code>wbx.py</code>, <code>check()</code>, <code>tol_pads()</code>, <code>corners()</code>, <code>shift()</code>, <code>place_limit()</code></td><td>Grammar, datums exist, every check passes at the zone's edges. <code>python tools/wbx.py place file.wb.svg</code> finds the real limits.</td></tr>
+    <tr><td>Tests</td><td><code>tests/test_wbx.py</code>, the <code>placement</code> tests; <code>tests/test_app.py</code>, <code>test_placement_tolerance_is_drawn_once_and_read_back</code></td><td></td></tr>
+    <tr><td>Example</td><td><code>examples/make_example.py</code> (<code>tol=dict(width=50, datums="A B C")</code>), <code>examples/example.wb.svg</code></td><td>The indicator sits off the top-left corner of the lands, on the "placement tolerance" layer, with its leader to a pad.</td></tr>
+    <tr><td>Exports</td><td><code>examples/example.fiducials.csv</code> (datum column); KiCad <code>wb_datum</code>, and from the app <code>wb_position_tol_um</code> and <code>wb_datum_&lt;mark&gt;</code></td><td>The derived x, y and θ limits aren't exported yet.</td></tr>
+    <tr><td>The app</td><td><code>app/js/model.js</code> (<code>tolOf</code>, <code>tolPads</code>, <code>tolClear</code>, <code>datumLetters</code>), <code>app.js</code> (Placement panel, a copper mark's Datum buttons), <code>view.js</code> (<code>paintTolZones</code>, <code>paintTolFrames</code>), <code>export.js</code>, <code>wbsvg.js</code></td><td><code>tolClear</code> is the area the die and its lands cover; the plan and the .wb.svg put the indicator outside it.</td></tr>
+  </tbody>
+</table></div>
+</details>
+
+<details class="maint">
+<summary>From draft to standard <span class="muted">· nine steps</span></summary>
+<p>The draft works: the example carries it, the checker uses it, tests cover it. To make it a real part of wirebond.svg, each of these needs to be done, roughly in this order. None of them needs the ISO standards' text: we cite them and use their symbols, but they're paid, copyrighted documents, so the spec explains our one control in its own words.</p>
+<ol class="steps">
+  <li><div><b>Keep one form.</b> <span class="pill p-dec">Done</span><span>The indicator's attributes are the data; the zone is drawn with no <code>wb:kind</code>, and <code>wb:place-tol</code> is gone.</span></div></li>
+  <li><div><b>Write the grammar into SPEC.md, in ISO terms.</b> <span class="pill p-dec">Done</span><span>Required attributes, <code>wb:char</code> a closed list of one value, <code>position</code>; <code>wb:tol</code> the diameter in µm, positive; <code>wb:datums</code> one to three letters, primary first; <code>wb:applies-to</code> one die. The zone in one sentence. Cites ISO 1101, ISO 1660 and ISO 5459.</span></div></li>
+  <li><div><b>Say what may be a datum.</b><span>Today any <code>wb:datum</code> works. Tighten it: the primary is a stack layer's top face; secondary and tertiary are <code>align</code> fiducials. Two datums with the same letter is an error.</span></div></li>
+  <li><div><b>Say what "no tolerance" means.</b><span>A file without one is "not specified", not "zero". The checker should print a note, and leave the edge-of-zone checks out.</span></div></li>
+  <li><div><b>Make the checker enforce it.</b><span>Still to do: datum rules, a saw allowance on the die edge in the edge clearance check, and a margin report, the stated tolerance against what <code>place</code> finds. A test for each in <code>tests/test_wbx.py</code>.</span></div></li>
+  <li><div><b>Carry it to the people who use it.</b><span>Write the derived x, y and θ limits into the bond list CSV header and the fiducials CSV, draw the indicator in the DXF, and put it on the die footprint in KiCad as fab-layer text.</span></div></li>
+  <li><div><b>Teach the app.</b> <span class="pill p-lean">Half done</span><span>Wire Bond Bench sets the diameter and the datums, draws the zones and the indicator beside the die, writes them in its exports and reads them back. Still to do: check at the zone's edges in its Checks tab.</span></div></li>
+  <li><div><b>Ask an assembler.</b><span>Ask a house to read our indicator, and what numbers they would sign up to. Ask a bonding house for their vision capture range. Adjust before freezing.</span></div></li>
+  <li><div><b>Promote it.</b><span>Remove "(draft)" from the SPEC section, bump the spec version, and note the change.</span></div></li>
+</ol>
+</details>
+
+<details class="maint">
+<summary>Decisions so far <span class="muted">· Q1 to Q8, all decided November 2026</span></summary>
+<div class="qs">
+  <div class="q"><b>Q1. Which form is the one source of truth? <span class="pill p-dec">The indicator</span></b><p>Drawn and machine-readable at once, the AP242 pattern. The zone circles are drawn from it as decoration; attributes on the die group were dropped.</p></div>
+  <div class="q"><b>Q2. Does the zone hold the sawn edge, or the pads? <span class="pill p-dec">The pads</span></b><p>Section 6. Follows: position instead of profile (Q8), a saw allowance in the edge clearance check, and assemblers aligning on the eye points.</p></div>
+  <div class="q"><b>Q3. Store x, y, θ as well? <span class="pill p-dec">Derive, don't store</span></b><p>Section 7. Computed for exports, so there's no second number in the file that could disagree.</p></div>
+  <div class="q"><b>Q4. Which other characteristics? <span class="pill p-dec">None for now</span></b><p>Candidates later: parallelism of the die's top to A, since a tilted die changes bond heights, and die and bondline thickness.</p></div>
+  <div class="q"><b>Q5. ASME or ISO? <span class="pill p-dec">ISO GPS</span></b><p>ISO 1101 for the tolerance, ISO 5459 for datums. For our one control the drawing barely changes between the two; the words in the spec do.</p></div>
+  <div class="q"><b>Q6. Per die, or one per file? <span class="pill p-dec">Per die</span></b><p><code>wb:applies-to</code> names a die and stays required, which leaves room for multi-die files.</p></div>
+  <div class="q"><b>Q7. Rename <code>wb:kind="fcf"</code>? <span class="pill p-dec"><code>tolerance</code></span></b><p>"Feature control frame" is ASME's term; ISO says "tolerance indicator".</p></div>
+  <div class="q"><b>Q8. Position with CZ, in place of profile? <span class="pill p-dec">Yes</span></b><p>Follows from Q2. The shift limit stays 25 µm; the turn is now set by the farthest bonded pad, 0.50° in the example, rather than the die's corner, 0.56°.</p></div>
+</div>
+</details>
+
+<!-- 13 -->
+<h2 id="sources"><span class="k">13</span>Sources</h2>
+<p>Looked up in November 2026. We haven't read the full standards; the summaries below come from the pages listed, including ISO's own free preview pages.</p>
+<ol class="src">
+  <li><a href="https://standards.iteh.ai/catalog/standards/iso/8171a5e2-c3f2-4bbe-997a-ad8f3e82969c/iso-1101-2017">ISO 1101:2017, Geometrical tolerancing</a> (<a href="https://cdn.standards.iteh.ai/samples/66777/accb9f85e8b64f108b5b205a0471539c/ISO-1101-2017.pdf">preview</a>). <span class="pill t-std">Standard</span> Tolerance indicator, theoretically exact dimensions, the CZ and UF modifiers.</li>
+  <li><a href="https://cdn.standards.iteh.ai/samples/63218/a3a7a765c3a34e2ebac0fe3f21bb4fc7/ISO-1660-2017.pdf">ISO 1660:2017, Profile tolerancing, preview</a>. <span class="pill t-std">Standard</span> Profile, the control the first draft used.</li>
+  <li><a href="https://cdn.standards.iteh.ai/samples/87855/beb1d5de3e76428a93a438572d6be272/ISO-5459-2024.pdf">ISO 5459:2024, Datums and datum systems, preview</a>. <span class="pill t-std">Standard</span> The third edition, replacing 2011.</li>
+  <li><a href="https://www.mmscience.eu/journal/issues/november-2020/articles/application-of-new-rules-for-pattern-specification-according-iso-gps/download">MM Science Journal, November 2020, new rules for pattern specification in ISO GPS</a>. The pattern rules of ISO 5458, and the practical difference between CZ and separate zones.</li>
+  <li><a href="https://www.asme.org/codes-standards/find-codes-standards/y14-5-dimensioning-tolerancing">ASME, Y14.5 Dimensioning and Tolerancing</a>. <span class="pill t-std">Standard</span> The standard's own page. The current edition is Y14.5-2018, reaffirmed 2024.</li>
+  <li><a href="https://en.wikipedia.org/wiki/ASME_Y14.5">Wikipedia, ASME Y14.5</a>. History, and the 2018 edition's changes.</li>
+  <li><a href="https://www.nist.gov/services-resources/software/step-file-analyzer-and-viewer">NIST, STEP File Analyzer and Viewer</a>, and its user's guide (NIST AMS 200-4). Semantic PMI (representation) versus graphic PMI (presentation) in STEP AP242.</li>
+  <li><a href="https://www.mbx-if.org/home/wp-content/uploads/2024/06/rec_pracs_pmi_v41.pdf">CAx-IF, Recommended Practices for PMI, v4.1</a>. How AP242 links semantic GD&amp;T to its drawn presentation.</li>
+  <li><a href="https://www.cadinterop.com/en/formats/neutral-format/qif.html">CADInterop, QIF</a>. <span class="pill t-ven">Vendor page</span> QIF, an XML format that carries semantic GD&amp;T for measurement. Worth a look if we ever export to inspection.</li>
+  <li>This repo: <code>SPEC.md</code>, <code>wbx.py</code>, <code>examples/make_example.py</code>, <code>tests/test_wbx.py</code>, and the <a href="fiducials.html">fiducials page</a>. Numbers in sections 7 and 8 are from running <code>wbx.py</code> on <code>examples/example.wb.svg</code>.</li>
+</ol>
+
+</main>
+
+<script>
+(function(){
+function $(i){return document.getElementById(i);}
+
+/* ---- the box reader: click a part of the indicator, or its button, to explain it ---- */
+var CELLS={
+  sym:["The symbol: what kind of control","The first box always holds a symbol for the characteristic, what's being controlled. A circle with a cross is position: how far a feature's centre may be from where the drawing puts it. Other symbols mean flatness, profile, parallelism and so on. wirebond.svg uses only this one."],
+  dia:["⌀50: the zone's shape and size","The tolerance, in the file's unit, µm. The ⌀ makes the zone a circle 50 µm across, centred on each pad's drawn centre, so a centre may be up to 25 µm off in any direction. In 3D it's a cylinder standing square to datum A. Without the ⌀, the zone would be the space between two parallel lines."],
+  cz:["CZ: one pattern, not 74 separate rules","Combined zone. The 74 circles are held at their exact drawn spacing and judged as one pattern. A die is one rigid piece, so its pads move together anyway; CZ makes the drawing say so. Section 4 shows it."],
+  A:["A: the primary datum","The substrate's top face. Measuring starts here, and everything is square to this plane. It takes away 3 of the die's 6 ways to move: up and down, and the two tilts."],
+  B:["B: the secondary datum","The centre of fiducial F1, a copper dot near one corner of the board. It takes away 2 more: sliding in x and in y."],
+  C:["C: the tertiary datum","The centre of fiducial F2, near the opposite corner. It takes away the last one, the turn about A. Order matters: A wins over B, and B over C."],
+  n:["74×: how many features","The rule applies to 74 features at once: each pad with a wire bonded to it. Pads with no wire aren't held."],
+  lead:["The leader: which features","Its arrow touches one of the 74 pads, and the 74× says it means all of them. The box sits in clear space beside the part, joined only by the leader, so it never hides what it controls."]
+};
+var box=$("boxSvg"), btns=$("boxBtns");
+function pick(c){
+  box.querySelectorAll("[data-c]").forEach(function(e){ e.classList.toggle("on", e.getAttribute("data-c")===c); });
+  btns.querySelectorAll("button").forEach(function(b){ b.setAttribute("aria-pressed", b.getAttribute("data-c")===c ? "true" : "false"); });
+  $("cellInfo").innerHTML="<b>"+CELLS[c][0]+"</b><p>"+CELLS[c][1]+"</p>";
+}
+box.addEventListener("click",function(e){ var t=e.target.closest(".hit,.hitline"); if(t) pick(t.getAttribute("data-c")); });
+btns.addEventListener("click",function(e){ var b=e.target.closest("button"); if(b) pick(b.getAttribute("data-c")); });
+pick("sym");
+
+/* ---- position explorer ----
+   Die-centred µm, y down. The example's 3932 x 5122 µm die and its 74 bonded pads: 17 along the top and bottom edges,
+   180 µm apart, and 20 down each side. A pad passes when its centre, after the shift and turn, is within half the
+   diameter of where it's drawn. Errors are drawn magnified by M. */
+var W=3932, H=5122, M=4, K=380/H, CX=200, CY=210, P=[], i;
+for(i=0;i<17;i++){ P.push([-1440+180*i,-2503],[-1440+180*i,2503]); }
+[106,316,528,738,950,1160,1372,1582,1794,2004].forEach(function(y){ P.push([-1908,-y],[-1908,y],[1908,-y],[1908,y]); });
+var R=Math.max.apply(null,P.map(function(p){return Math.hypot(p[0],p[1]);}));
+function px(x,y){return [CX+x*K, CY+y*K];}
+function maxTurn(h){ return 2*Math.asin(Math.min(1,h/(2*R))); }   // the turn that moves the farthest pad by h
+function draw(){
+  var t=+$("tw").value, h=t/2, dx=+$("dx").value, dy=+$("dy").value, thd=+$("th").value, th=thd*Math.PI/180;
+  $("twO").textContent=t+" µm"; $("dxO").textContent=dx+" µm"; $("dyO").textContent=dy+" µm"; $("thO").textContent=thd.toFixed(2)+"°";
+  var c=Math.cos(th), s=Math.sin(th);
+  function real(p){return [c*p[0]-s*p[1]+dx, s*p[0]+c*p[1]+dy];}
+  function mag(p){var r=real(p); return px(p[0]+M*(r[0]-p[0]), p[1]+M*(r[1]-p[1]));}
+  var worst=0, wi=0, out=0;
+  var err=P.map(function(p,k){var r=real(p), e=Math.hypot(r[0]-p[0], r[1]-p[1]); if(e>worst){worst=e; wi=k;} if(e>h+1e-9) out++; return e;});
+  var ok=out===0, col=ok?'var(--green)':'var(--magenta)';
+  var o='', a=px(-W/2,-H/2), b=px(W/2,H/2);
+  o+='<rect class="nom" x="'+a[0]+'" y="'+a[1]+'" width="'+(b[0]-a[0])+'" height="'+(b[1]-a[1])+'"/>';
+  var C=[[-W/2,-H/2],[W/2,-H/2],[W/2,H/2],[-W/2,H/2]].map(mag);
+  o+='<path d="M'+C.map(function(q){return q[0]+","+q[1];}).join(" L")+' Z" fill="var(--si)" fill-opacity=".45" stroke="'+col+'" stroke-width="2"/>';
+  var rz=h*K*M;
+  P.forEach(function(p){var q=px(p[0],p[1]); o+='<circle class="band" cx="'+q[0]+'" cy="'+q[1]+'" r="'+rz+'" stroke-width=".6"/>';});
+  P.forEach(function(p,k){var q=mag(p); o+='<circle cx="'+q[0]+'" cy="'+q[1]+'" r="2.2" fill="'+(err[k]>h+1e-9?'var(--magenta)':'var(--green)')+'"/>';});
+  var wq=mag(P[wi]); o+='<circle cx="'+wq[0]+'" cy="'+wq[1]+'" r="8" fill="none" stroke="'+col+'" stroke-width="2"/>';
+  o+='<text x="'+CX+'" y="'+(CY+4)+'" text-anchor="middle" class="lbl">U1, 3932 × 5122 µm</text>';
+  var lx=470;
+  o+='<text x="'+lx+'" y="40" class="lbl" font-weight="700">Key</text>';
+  o+='<circle class="band" cx="'+(lx+20)+'" cy="62" r="8"/><text x="'+(lx+52)+'" y="66" class="lblm">a pad\'s zone, ⌀'+t+' µm (×'+M+')</text>';
+  o+='<circle cx="'+(lx+20)+'" cy="88" r="3" fill="var(--green)"/><text x="'+(lx+52)+'" y="92" class="lblm">a pad\'s centre as placed, inside</text>';
+  o+='<circle cx="'+(lx+20)+'" cy="112" r="3" fill="var(--magenta)"/><text x="'+(lx+52)+'" y="116" class="lblm">outside its zone</text>';
+  o+='<path class="nom" d="M'+lx+',138 h40"/><text x="'+(lx+52)+'" y="142" class="lblm">the die as drawn</text>';
+  o+='<path d="M'+lx+',162 h40" stroke="'+col+'" stroke-width="2"/><text x="'+(lx+52)+'" y="166" class="lblm">the die as placed (error ×'+M+')</text>';
+  o+='<circle cx="'+(lx+20)+'" cy="188" r="7" fill="none" stroke="var(--muted)" stroke-width="2"/><text x="'+(lx+52)+'" y="192" class="lblm">the pad farthest off</text>';
+  o+='<text x="'+lx+'" y="236" class="lbl" font-weight="700">The box for this zone</text>';
+  var fx=lx, fy=268, ws=[36,78,30,30,30], xs=[fx]; ws.forEach(function(w){xs.push(xs[xs.length-1]+w);});
+  o+='<text x="'+fx+'" y="'+(fy-5)+'" class="lblm">74×</text>';
+  o+='<rect class="gdb" x="'+fx+'" y="'+fy+'" width="'+(xs[5]-fx)+'" height="30"/>';
+  for(var j=1;j<5;j++) o+='<path class="gd" d="M'+xs[j]+','+fy+' v30"/>';
+  var sx=fx+18, sy=fy+15; o+='<circle class="gd" cx="'+sx+'" cy="'+sy+'" r="6"/><path class="gd" d="M'+(sx-10)+','+sy+' h20 M'+sx+','+(sy-10)+' v20"/>';
+  ["⌀"+t+" CZ","A","B","C"].forEach(function(z,k){o+='<text x="'+((xs[k+1]+xs[k+2])/2)+'" y="'+(fy+20)+'" text-anchor="middle" font-weight="700">'+z+'</text>';});
+  $("pfSvg").innerHTML=o;
+  var mt=maxTurn(h)*180/Math.PI;
+  function card(cls,tl,v,sb){return '<div class="ro '+cls+'"><div class="s">'+tl+'</div><div class="v">'+v+'</div><div class="s">'+sb+'</div></div>';}
+  $("pfRead").innerHTML=
+    card(ok?'ok':'bad',"Result",ok?"Every pad inside":out+" of 74 pads outside",ok?"Each bonded pad's centre is within "+h+" µm of where it's drawn.":"Their centres are more than "+h+" µm from where they're drawn.")+
+    card('',"Pad farthest off",worst.toFixed(1)+" µm","The zone allows "+h+" µm, half the diameter.")+
+    card('',"Limits for ⌀"+t,h+" µm or "+mt.toFixed(2)+"°","Shift alone, or turn alone about the centre. The farthest pad is "+Math.round(R)+" µm out.");
+}
+["tw","dx","dy","th"].forEach(function(id){$(id).addEventListener("input",draw);});
+$("presets").addEventListener("click",function(e){
+  var btn=e.target.closest("button"); if(!btn)return;
+  var h=+$("tw").value/2, mt=maxTurn(h)*180/Math.PI, p=btn.getAttribute("data-p");
+  var v={shift:[Math.floor(h*Math.SQRT1_2),Math.floor(h*Math.SQRT1_2),0], turn:[0,0,Math.floor(mt*100)/100], both:[Math.round(h*0.7),0,Math.round(mt*70)/100], zero:[0,0,0]}[p];
+  $("dx").value=v[0]; $("dy").value=v[1]; $("th").value=v[2]; draw();
+});
+draw();
+})();
+</script>
+</body>
+</html>

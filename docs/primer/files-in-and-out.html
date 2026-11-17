@@ -1,0 +1,1004 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Files In and Out</title>
+<style>
+/* Same house style as wire-bonding-primer.html: one reading column, Evezor palette, dark first. */
+:root{
+  color-scheme:dark;
+  --bg:#262c2a; --panel:#12302b; --panel2:#0c1311; --line:#1b5c50;
+  --txt:#e8eceb; --muted:#8fb5ac; --accent:#5bbbe6; --head:#0b6f5d; --head-txt:#ffffff; --head-sub:#d8f3ec;
+  --green:#36d9bb; --green-bg:#0b3a31; --blue:#5bbbe6; --blue-bg:#10303f;
+  --magenta:#e660bd; --magenta-bg:#3a1832; --amber:#e9c46a; --amber-bg:#3b3115;
+  --si:#6d7a86; --si-edge:#9aa7b2; --board:#1d5a3a; --board-edge:#2f7d55; --gold:#e3b23c; --copper:#e07a4b;
+  --cmts:#7aa7ff;
+  --code-bg:#04130a; --code-txt:#aff5b4;
+  --f-body:Arial,Helvetica,sans-serif; --f-mono:ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: light){ :root:not([data-theme="dark"]){
+  color-scheme:light;
+  --bg:#f7f9f9; --panel:#ffffff; --panel2:#eef3f2; --line:#c9d3d1;
+  --txt:#14201d; --muted:#4d5c58; --accent:#1f78a6; --head:#0b6f5d; --head-txt:#ffffff; --head-sub:#d8f3ec;
+  --green:#068770; --green-bg:#e3f4ef; --blue:#1f78a6; --blue-bg:#e4f2f9;
+  --magenta:#b5288a; --magenta-bg:#fbe9f5; --amber:#8a6a10; --amber-bg:#fbf3dc;
+  --si:#9aa5ae; --si-edge:#6d7a86; --board:#cfe3dd; --board-edge:#7fb0a2; --gold:#c8961e; --copper:#c8602f;
+  --cmts:#2f5fd0;
+  --code-bg:#e9efed; --code-txt:#0b5a4b;
+}}
+:root[data-theme="light"]{
+  color-scheme:light;
+  --bg:#f7f9f9; --panel:#ffffff; --panel2:#eef3f2; --line:#c9d3d1;
+  --txt:#14201d; --muted:#4d5c58; --accent:#1f78a6; --head:#0b6f5d; --head-txt:#ffffff; --head-sub:#d8f3ec;
+  --green:#068770; --green-bg:#e3f4ef; --blue:#1f78a6; --blue-bg:#e4f2f9;
+  --magenta:#b5288a; --magenta-bg:#fbe9f5; --amber:#8a6a10; --amber-bg:#fbf3dc;
+  --si:#9aa5ae; --si-edge:#6d7a86; --board:#cfe3dd; --board-edge:#7fb0a2; --gold:#c8961e; --copper:#c8602f;
+  --cmts:#2f5fd0;
+  --code-bg:#e9efed; --code-txt:#0b5a4b;
+}
+*{box-sizing:border-box}
+img{max-width:100%;height:auto}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--txt);font:16px/1.6 var(--f-body)}
+a{color:var(--accent);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:2px}
+a:focus-visible,button:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--magenta);outline-offset:2px}
+code,.mono{font-family:var(--f-mono);font-size:.84em}
+code{background:var(--code-bg);color:var(--code-txt);border-radius:4px;padding:1px 5px}
+
+/* masthead */
+.mast{background:var(--head);color:var(--head-txt);border-bottom:4px solid #d93aa7}
+.wrap{max-width:960px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.mast .wrap{padding-block:26px 22px}
+.eyebrow{font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:var(--head-sub)}
+h1{font-size:clamp(28px,5vw,40px);line-height:1.15;margin:6px 0 8px;text-wrap:balance}
+.mast p{margin:0;color:var(--head-sub);max-width:700px;font-size:16.5px}
+.sitenav{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13.5px;margin-bottom:14px}
+.sitenav a{color:var(--head-sub);text-decoration:none}
+.sitenav a:hover{color:#fff;text-decoration:underline}
+
+main.wrap{padding-block:8px 96px}
+h2{font-size:24px;line-height:1.25;margin:60px 0 4px;padding-top:16px;border-top:1px solid var(--line);text-wrap:balance}
+h2 .k{color:var(--muted);font-weight:400;margin-right:8px;font-size:18px}
+h3{font-size:17px;margin:26px 0 6px}
+p{margin:10px 0;max-width:74ch}
+.lede{font-size:17px}
+.muted{color:var(--muted)} .small{font-size:13.5px}
+
+.tldr{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:10px;padding:14px 18px;margin:22px 0 18px}
+.tldr ul{margin:6px 0 0;padding-left:20px} .tldr li{margin:4px 0}
+.callout{border:1px solid var(--line);border-left:4px solid var(--amber);background:var(--amber-bg);border-radius:8px;padding:11px 15px;margin:14px 0;font-size:15px}
+.callout.info{border-left-color:var(--blue);background:var(--blue-bg)}
+.callout.gap{border-left-color:var(--magenta);background:var(--magenta-bg)}
+.callout p{margin:4px 0;max-width:none}
+
+nav.toc{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:4px 20px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 18px;margin:18px 0;font-size:14.5px}
+nav.toc a{color:var(--txt);text-decoration:none} nav.toc a:hover{color:var(--accent)}
+nav.toc span{color:var(--muted);display:inline-block;width:22px}
+
+.fig{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;margin:16px 0}
+.scroll{overflow-x:auto}
+figcaption,.cap{font-size:13px;color:var(--muted);margin-top:7px;max-width:80ch}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,330px),1fr));gap:14px}
+.grid2>*{min-width:0}
+
+/* pills */
+.pill{display:inline-block;font-size:11.5px;font-weight:700;border-radius:999px;padding:0 9px;border:1px solid;white-space:nowrap;vertical-align:1px;line-height:1.6}
+.p-si{color:var(--amber);border-color:var(--amber);background:var(--amber-bg)}
+.p-kicad{color:var(--green);border-color:var(--green);background:var(--green-bg)}
+.p-exch{color:var(--magenta);border-color:var(--magenta);background:var(--magenta-bg)}
+.p-rules{color:var(--blue);border-color:var(--blue);background:var(--blue-bg)}
+.p-plan{color:var(--amber);border-color:var(--amber);background:transparent;border-style:dashed}
+.p-prop{color:var(--magenta);border-color:var(--magenta);background:transparent;border-style:dashed}
+h2 .pill{font-size:12px;vertical-align:4px;margin-left:6px}
+.p-no{color:var(--muted);border-color:var(--line);background:var(--panel2)}
+
+/* the map */
+.map svg{display:block;width:100%;min-width:760px;height:auto}
+.map text{font-family:var(--f-body);fill:var(--txt)}
+.map .nd rect.box{fill:var(--panel2);stroke:var(--line);stroke-width:1.2}
+.map .nd rect.stripe{stroke:none}
+.map .nd .t{font-size:14px;font-weight:700}
+.map .nd .x{font-family:var(--f-mono);font-size:11.5px;fill:var(--muted)}
+.map .nd{cursor:pointer;transition:opacity .15s}
+.map .nd:hover rect.box,.map .nd:focus rect.box{stroke:var(--accent)}
+.map .nd.sel rect.box{stroke:var(--magenta);stroke-width:2}
+.map .tool rect.box{fill:var(--panel2);stroke:var(--accent);stroke-width:1.6}
+.map .tool .t{font-size:17px;font-weight:700}
+.map .tool .x{font-family:var(--f-mono);font-size:11.5px;fill:var(--muted)}
+.map .tool .s{font-size:12.5px;fill:var(--txt)}
+.map .tool .n{font-size:11px;font-weight:700;fill:var(--accent)}
+.map .ed{fill:none;stroke:var(--line);stroke-width:1.6;transition:opacity .15s,stroke .15s}
+.map .ed.wb{stroke:var(--magenta);stroke-width:2;stroke-dasharray:6 4}
+.map .ed.plan{stroke:var(--amber);stroke-width:1.6;stroke-dasharray:3 4}
+.map .head{fill:var(--line)}
+.map.focus .nd:not(.lit),.map.focus .tool:not(.lit){opacity:.32}
+.map.focus .ed:not(.lit){opacity:.15}
+.map .ed.lit{stroke:var(--accent);stroke-width:2.4}
+.map .ed.wb.lit{stroke:var(--magenta)}
+.map .ed.plan.lit{stroke:var(--amber)}
+.map .colh{font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;fill:var(--muted);font-weight:700}
+.map .badge circle{stroke-width:1.4}
+.map .badge.yes circle{fill:var(--green-bg);stroke:var(--green)}
+.map .badge.plan circle{fill:var(--amber-bg);stroke:var(--amber);stroke-dasharray:2 2}
+.map .badge text{font-size:11px;font-weight:700;text-anchor:middle}
+.map .badge.yes text{fill:var(--green)} .map .badge.plan text{fill:var(--amber)}
+.legend{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:13px;color:var(--muted);margin:10px 2px 0;align-items:center}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.legend .b{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;font-size:10px;font-weight:700;margin-right:6px;font-style:normal}
+
+.detail{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-top:12px;min-height:150px}
+.detail h4{margin:0;font-size:18px;display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center}
+.detail h4 code{font-size:13px}
+.detail p{margin:0;font-size:15px}
+.detail dl{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:4px 14px;margin:4px 0 0;font-size:14.5px}
+.detail dt{color:var(--muted);font-weight:700}
+.detail dd{margin:0}
+
+/* ingest cards */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:14px;margin:16px 0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:8px;min-width:0;border-top:4px solid var(--line)}
+.card.si{border-top-color:var(--amber)} .card.kicad{border-top-color:var(--green)} .card.exch{border-top-color:var(--magenta)} .card.rules{border-top-color:var(--blue)}
+.card h3{margin:0;font-size:18px;display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline}
+.card h3 code{font-size:13px}
+.card p{margin:0;font-size:15px}
+.card ul{margin:0;padding-left:18px;font-size:14.5px} .card li{margin:3px 0}
+.card .lab{font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-top:4px}
+.gives{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-size:12.5px;border-radius:6px;padding:1px 8px;background:var(--panel2);border:1px solid var(--line);white-space:nowrap}
+.chip.no{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--magenta)}
+
+/* level ladder */
+.seg{display:inline-flex;flex-wrap:wrap;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg button{font:inherit;font-size:14px;background:var(--panel2);color:var(--txt);border:0;border-right:1px solid var(--line);padding:6px 14px;cursor:pointer}
+.seg button:last-child{border-right:0}
+.seg button[aria-pressed="true"]{background:var(--head);color:#fff;font-weight:700}
+.ladder{display:grid;grid-template-columns:minmax(0,260px) minmax(0,1fr);gap:18px;align-items:start;margin-top:14px}
+@media (max-width:680px){.ladder{grid-template-columns:minmax(0,1fr)}}
+.ladder svg{display:block;width:100%;height:auto;background:var(--panel2);border:1px solid var(--line);border-radius:10px}
+.ladder h4{margin:0 0 4px;font-size:18px}
+.ladder .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:12px;margin-top:10px}
+.ladder .col{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:14.5px}
+.ladder .col b{display:block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.ladder .col ul{margin:0;padding-left:18px} .ladder .col li{margin:3px 0}
+.reg{display:inline-block;font-size:12.5px;font-weight:700;border-radius:6px;padding:1px 8px;margin:2px 4px 2px 0;border:1px solid var(--green);color:var(--green);background:var(--green-bg)}
+.reg.new{border-color:var(--magenta);color:var(--magenta);background:var(--magenta-bg)}
+.lv svg .board{fill:var(--board);stroke:var(--board-edge)}
+.lv svg .land{fill:var(--gold);stroke:none}
+.lv svg .paddle{fill:var(--gold);opacity:.35}
+.lv svg .die{fill:var(--si);stroke:var(--si-edge);stroke-width:1}
+.lv svg .ghost{fill:none;stroke:var(--si-edge);stroke-width:1;stroke-dasharray:4 3}
+.lv svg .pad{fill:var(--metal,#c9ced3)}
+.lv svg .cm{stroke:var(--cmts);stroke-width:1.4;stroke-dasharray:3 2;fill:none}
+.lv svg .wr{stroke:var(--gold);stroke-width:1.6;fill:none;stroke-linecap:round}
+.lv svg text{font-family:var(--f-body);font-size:10px;fill:var(--muted)}
+
+/* outputs */
+.outs{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr));gap:14px;margin:16px 0}
+.out{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.out h3{margin:0;font-size:17px}
+.out .menu{font-size:12.5px;color:var(--muted)}
+.out p{margin:0;font-size:14.5px}
+.tree{font-family:var(--f-mono);font-size:12.5px;line-height:1.55;background:var(--code-bg);color:var(--code-txt);border-radius:8px;padding:10px 12px;margin:0;overflow-x:auto;white-space:pre}
+.tree .c{color:var(--muted)}
+.out .use{font-size:13.5px;color:var(--muted);border-top:1px solid var(--line);padding-top:8px;margin-top:auto}
+.out .use b{color:var(--txt)}
+
+/* annotated code */
+.anno{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:16px;align-items:start}
+@media (max-width:760px){.anno{grid-template-columns:minmax(0,1fr)}}
+pre.code{font-family:var(--f-mono);font-size:12.5px;line-height:1.6;background:var(--code-bg);color:var(--code-txt);border-radius:10px;padding:12px 14px;margin:0;overflow-x:auto}
+pre.code .m.sp{background:none}
+pre.code .m{display:inline-block;min-width:18px;height:18px;line-height:18px;border-radius:50%;background:var(--magenta);color:#fff;font:700 11px/18px var(--f-body);text-align:center;margin-right:6px;vertical-align:1px}
+pre.code .d{color:var(--muted)}
+pre.code .k{color:var(--magenta);font-weight:700}
+ol.notes{list-style:none;padding:0;margin:0;display:grid;gap:8px;counter-reset:n}
+ol.notes li{counter-increment:n;display:grid;grid-template-columns:24px minmax(0,1fr);gap:8px;font-size:14.5px}
+ol.notes li::before{content:counter(n);width:20px;height:20px;border-radius:50%;background:var(--magenta);color:#fff;font-weight:700;font-size:11px;display:flex;align-items:center;justify-content:center;margin-top:2px}
+
+/* steps */
+ol.steps{list-style:none;padding:0;margin:12px 0;display:grid;gap:8px;counter-reset:s}
+ol.steps li{counter-increment:s;display:grid;grid-template-columns:32px minmax(0,1fr);gap:12px;align-items:start;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 14px}
+ol.steps li::before{content:counter(s);width:28px;height:28px;border-radius:50%;background:var(--head);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13.5px}
+ol.steps li>b,ol.steps li>span{grid-column:2}
+ol.steps b{display:block}
+ol.steps span{font-size:14.5px;color:var(--muted)}
+details.recipe{background:var(--panel);border:1px solid var(--line);border-radius:12px;margin:12px 0;padding:0 16px}
+details.recipe summary{cursor:pointer;padding:13px 0;font-weight:700;font-size:16.5px;list-style:none;display:flex;gap:10px;align-items:center}
+details.recipe summary::-webkit-details-marker{display:none}
+details.recipe summary::before{content:"▸";color:var(--accent);transition:transform .15s}
+details.recipe[open] summary::before{transform:rotate(90deg)}
+details.recipe summary small{font-weight:400;color:var(--muted);font-size:14px}
+details.recipe ol.steps li{background:var(--panel2)}
+details.recipe > :last-child{margin-bottom:14px}
+
+/* tables */
+.tw{overflow-x:auto;margin:10px 0}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{border-bottom:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+th{color:var(--muted);font-weight:600;font-size:12.5px;background:var(--panel2);white-space:nowrap}
+td.f{white-space:nowrap;font-weight:700}
+td.c{text-align:center;white-space:nowrap}
+table.opts th{white-space:normal}
+table.opts td.f{white-space:normal;min-width:11em}
+table.opts td:last-child{min-width:16em}
+.y{color:var(--green);font-weight:700} .n{color:var(--muted)}
+
+ul.lim{list-style:none;padding:0;margin:12px 0;display:grid;gap:8px}
+ul.lim li{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:9px 12px;font-size:15px}
+
+footer{border-top:1px solid var(--line);margin-top:56px;padding-top:14px;font-size:13px;color:var(--muted)}
+@media (prefers-reduced-motion:reduce){ .map .nd,.map .ed,details.recipe summary::before{transition:none} }
+</style>
+</head>
+<body>
+
+<header class="mast">
+  <div class="wrap">
+    <nav class="sitenav" aria-label="Project pages">
+      <a href="../../app/index.html">← Wire Bond Bench</a>
+      <a href="wire-bonding-primer.html">Wire bonding primer</a>
+      <a href="fiducials.html">Fiducials</a>
+      <a href="../../SPEC.md">wirebond.svg spec</a>
+    </nav>
+    <div class="eyebrow">Wire Bond Bench · guide · November 2026</div>
+    <h1>Files in and out</h1>
+    <p>Which files Wire Bond Bench and <code style="background:rgba(0,0,0,.2);color:inherit">wbx.py</code> can read, what each one gives them, how much of a bonded design to put in your KiCad board, and what comes back out.</p>
+  </div>
+</header>
+
+<main class="wrap">
+
+<div class="tldr">
+  <b>The short version</b>
+  <ul>
+    <li><b>Two things go in: a substrate and a die.</b> The substrate is a KiCad footprint or board with the bond lands. The die is a GDS, or a footprint if you don't have the GDS yet.</li>
+    <li><b>KiCad files can carry as much as you like.</b> A bare padring is enough. Nets, sketched lines or full wire footprints let the app pair pads with lands for you.</li>
+    <li><b>Most of what comes out is for KiCad:</b> the assembled board with the die and wires in 3D as one STEP, a die footprint, or a die kit with symbol and STEP model. The bondlist and <code>.wb.svg</code> are for the bonding house.</li>
+    <li><b>An exported board reads back in,</b> and so does a <code>.wb.svg</code>. Load either and the die, wires and wire types return. <code>wbx.py</code> reads the <code>.wb.svg</code> too.</li>
+    <li><b>The 3D is one STEP file.</b> It holds the die and every wire, and it is embedded in the board, so there's no folder of models to keep with it. Section 6 has how that was decided and what is still open.</li>
+  </ul>
+</div>
+
+<nav class="toc" aria-label="Contents">
+  <a href="#map"><span>1</span>The map</a>
+  <a href="#in"><span>2</span>What each file brings in</a>
+  <a href="#levels"><span>3</span>How much to put in KiCad</a>
+  <a href="#out"><span>4</span>What comes out</a>
+  <a href="#inside"><span>5</span>Inside the exported board</a>
+  <a href="#next"><span>6</span>Where the export should go</a>
+  <a href="#recipes"><span>7</span>Recipes</a>
+  <a href="#round"><span>8</span>Round trips</a>
+  <a href="#units"><span>9</span>Units and coordinates</a>
+  <a href="#limits"><span>10</span>Limits</a>
+</nav>
+
+<!-- 1 -->
+<h2 id="map"><span class="k">1</span>The map</h2>
+<p class="lede">There are two tools. <b>Wire Bond Bench</b> is the browser app in <code>app/</code>. It reads design files, pairs pads with lands and writes KiCad files. <b>wbx.py</b> is a small Python tool that checks a <code>.wb.svg</code> and turns it into files a bonder can use. Click any file to see what it carries.</p>
+
+<div class="fig map" id="map-fig">
+  <div class="scroll"><svg id="mapSvg" viewBox="0 -14 960 560" role="group" aria-label="Files read and written by Wire Bond Bench and wbx.py"></svg></div>
+  <div class="legend" aria-hidden="true">
+    <span><i style="background:var(--amber)"></i>Silicon</span>
+    <span><i style="background:var(--green)"></i>KiCad</span>
+    <span><i style="background:var(--magenta)"></i>Exchange</span>
+    <span><i style="background:var(--blue)"></i>Rules</span>
+    <span><em class="b" style="border:1.4px solid var(--green);color:var(--green);background:var(--green-bg)">↺</em>The app reads it back</span>
+  </div>
+  <div class="detail" id="detail" aria-live="polite"></div>
+  <noscript><p class="small muted">The map needs JavaScript. Every file it shows is also described in sections 2 and 4.</p></noscript>
+</div>
+
+<!-- 2 -->
+<h2 id="in"><span class="k">2</span>What each file brings in</h2>
+<p>Drop files anywhere on the app, or on the Substrate and Die boxes on the left. A <code>.kicad_pcb</code> becomes the substrate. A GDS becomes the die. Drop two footprints together and the smaller one becomes the die. A single footprint becomes the substrate, unless you already have one or it says it's a die (<code>wb_kind</code> = <code>die</code>).</p>
+
+<div class="cards">
+
+  <article class="card si" id="in-gds">
+    <h3>GDS <code>.gds</code> <code>.gds2</code> <code>.gdsii</code> <code>.gds.gz</code></h3>
+    <p>The die as it was taped out. This is the best source, because it holds the real pad openings and the artwork.</p>
+    <div class="gives"><span class="chip">Die size</span><span class="chip">Pad openings</span><span class="chip">Pad numbers</span><span class="chip">Net names</span><span class="chip">Artwork</span><span class="chip no">Thickness</span></div>
+    <div class="lab">How it's read</div>
+    <ul>
+      <li><b>Size</b> comes from the top cell's bounding box.</li>
+      <li><b>Pads.</b> Bond pads are nearly all one size and sit around the die edge, so the app ranks each layer by how regular its edge boxes are. You can pick a different layer, set size limits, drop internal shapes, or remove single pads.</li>
+      <li><b>Net names</b> come from text labels over each pad, on any layer. A label like <code>12:clk</code> gives pad number 12 and net <code>clk</code>.</li>
+      <li><b>Pin 1.</b> Labels with numbers set the numbering. Without them, it starts from the corner with the QR code cell and goes round the die. You can override both.</li>
+      <li><b>Artwork</b> is drawn from the metal layers. It goes into the KiCad footprint image, and onto the die in the STEP model in two colours, the die's and one accent.</li>
+    </ul>
+    <div class="lab">Not read</div>
+    <ul><li>Die thickness and attach height, which a GDS doesn't hold. The app assumes them, and you can change them under Placement. OASIS isn't read, so export the die as GDS first.</li></ul>
+  </article>
+
+  <article class="card kicad" id="in-mod-sub">
+    <h3>KiCad footprint, as substrate <code>.kicad_mod</code></h3>
+    <p>A padring footprint, like wafer.space's COB padrings. It's the quickest way in when the board isn't drawn yet.</p>
+    <div class="gives"><span class="chip">Lands</span><span class="chip">Land nets</span><span class="chip">Paddle</span><span class="chip">Sketched wires</span></div>
+    <div class="lab">How it's read</div>
+    <ul>
+      <li><b>Lands</b> are the numbered SMD pads on front copper. A pad marked as a fiducial is never a land.</li>
+      <li><b>The paddle</b> is the biggest pad, when it's too long to be a land. The die is centred on it.</li>
+      <li><b>Nets</b> on the lands make the Net names regime work.</li>
+      <li><b>Lines on <code>Cmts.User</code></b> inside the footprint are read as wire sketches for the Drawn lines regime.</li>
+    </ul>
+  </article>
+
+  <article class="card kicad" id="in-mod-die">
+    <h3>KiCad footprint, as die <code>.kicad_mod</code></h3>
+    <p>For when you don't have the GDS yet, or only have a vendor's pad table. <code>examples/waferspace/waferspace_1x1_die.kicad_mod</code> is one.</p>
+    <div class="gives"><span class="chip">Die size</span><span class="chip">Pads</span><span class="chip">Pad numbers</span><span class="chip">Net names</span><span class="chip no">Artwork</span></div>
+    <div class="lab">How it's read</div>
+    <ul>
+      <li><b>Pads</b> are the footprint's numbered pads. A pad's net name is its pin function, or else its net.</li>
+      <li><b>The app's own die footprint</b> has no copper pads. It has filled <code>F.Fab</code> rectangles with <code>number net</code> text over each one. Those are read as pads too, so an exported die comes back.</li>
+      <li><b>Outline</b> is the largest unfilled rectangle on <code>F.Fab</code>, <code>F.CrtYd</code>, <code>Edge.Cuts</code> or <code>Dwgs.User</code>. Without one, it's the extent of the Fab and courtyard lines, or the pads plus 0.1 mm as a last resort.</li>
+    </ul>
+  </article>
+
+  <article class="card kicad" id="in-pcb">
+    <h3>KiCad board <code>.kicad_pcb</code></h3>
+    <p>Your real board. The app works on one footprint in it, the substrate, and leaves the rest of the board as it is.</p>
+    <div class="gives"><span class="chip">Lands</span><span class="chip">Land nets</span><span class="chip">Die</span><span class="chip">Wires</span><span class="chip">Wire types</span></div>
+    <div class="lab">How it's read</div>
+    <ul>
+      <li><b>Substrate.</b> The app suggests the footprint with the most front-copper SMD pads, and prefers one whose library name says padring, COB, bond or substrate. You can pick another, or use the whole board.</li>
+      <li><b>Die.</b> Any footprint with <code>wb_kind</code> = <code>die</code> comes in as a die, at its position and rotation. It also brings <code>wb_thickness_um</code> and <code>wb_attach_um</code> if set.</li>
+      <li><b>Wires.</b> Footprints with <code>wb_kind</code> = <code>wire</code> feed the From the board regime.</li>
+      <li><b>Wire types</b> come from the <code>WBLIB</code> footprint's <code>wb_type_&lt;name&gt;</code> fields, or from the older <code>wb_profile_&lt;i&gt;_…</code> board properties.</li>
+    </ul>
+  </article>
+
+  <article class="card kicad" id="in-pro">
+    <h3>Project files <code>.kicad_pro</code> <code>.kicad_sch</code></h3>
+    <p>They aren't read for data. They're carried, unchanged, into the exported board zip.</p>
+    <div class="gives"><span class="chip">Design rules</span><span class="chip">Schematic</span></div>
+    <ul>
+      <li>KiCad keeps design rules in the <code>.kicad_pro</code>. A board copied without it gets KiCad's defaults. On the 1x0p5 COB that meant 1381 DRC items instead of 22.</li>
+      <li>Drop them with the board or afterwards. The app says when they're loaded.</li>
+    </ul>
+  </article>
+
+  <article class="card rules" id="in-rules">
+    <h3>DRC rules <code>.json</code></h3>
+    <p>The limits the Checks tab measures against: wire gap, edge clearance, longest wire and the rest. Each rule says where its number comes from.</p>
+    <div class="gives"><span class="chip">Rule values</span><span class="chip">On or off</span></div>
+    <ul>
+      <li>Open <b>DRC rules</b> in the top bar, then <b>Import JSON</b>. <b>Export JSON</b> writes <code>wbx_drc_rules.json</code>, so a bonding house's numbers can be shared and reused.</li>
+    </ul>
+  </article>
+
+  <article class="card exch" id="in-wbsvg">
+    <h3>Bond diagram <code>.wb.svg</code></h3>
+    <p>The wirebond.svg format from <a href="../../SPEC.md">SPEC.md</a>. It's a true-scale drawing that is also the data. The app opens one whole, its own or one from <code>wbx.py</code>, as a session to change and export again. <code>wbx.py</code> reads it too.</p>
+    <div class="gives"><span class="chip">Die</span><span class="chip">Pads</span><span class="chip">Lands</span><span class="chip">Wires</span><span class="chip">Loop profiles</span><span class="chip">Layer stack</span><span class="chip">Fiducials</span><span class="chip">Tolerance</span></div>
+    <ul>
+      <li><code>python tools/wbx.py check file.wb.svg</code> validates it. <code>place</code> finds how far the die can move or turn before a check fails. <code>export</code> writes CSV and DXF.</li>
+      <li><code>wbx.py</code> reads one die at 0°. The app writes turned and stacked die correctly, but <code>wbx.py</code> can't read them yet.</li>
+    </ul>
+  </article>
+</div>
+
+<!-- 3 -->
+<h2 id="levels"><span class="k">3</span>How much to put in KiCad</h2>
+<p class="lede">You don't have to adopt a convention to use the app. Each level below is something you can add to the substrate in KiCad, and each one gives the app more to work from. Pick a level to see what to add and what it gives you.</p>
+
+<div class="fig lv">
+  <div class="seg" role="group" aria-label="Level" id="lvSeg">
+    <button data-l="0" aria-pressed="true">0 · Padring only</button>
+    <button data-l="1" aria-pressed="false">1 · Nets</button>
+    <button data-l="2" aria-pressed="false">2 · Sketched wires</button>
+    <button data-l="3" aria-pressed="false">3 · Full convention</button>
+  </div>
+  <div class="ladder">
+    <svg id="lvSvg" viewBox="0 0 260 220" role="img" aria-label="Sketch of the substrate at this level"></svg>
+    <div id="lvText" aria-live="polite"></div>
+  </div>
+</div>
+
+<div class="callout info"><p><b>Whatever the level, keep the <code>.kicad_pro</code> with the board.</b> It holds the design rules. Level 3 is rarely written by hand. You export it from the app once, and after that it reads back in.</p></div>
+
+<!-- 4 -->
+<h2 id="out"><span class="k">4</span>What comes out</h2>
+<p>Everything in the app is under <b>Put it in KiCad</b> in the top bar. Files are written in the browser and downloaded. Nothing is uploaded anywhere.</p>
+
+<div class="outs">
+  <article class="out">
+    <h3>Assembled board, with 3D</h3>
+    <div class="menu">.zip · needs a substrate</div>
+    <p>Your board with the die and every wire added. Everything else on the board is unchanged, byte for byte.</p>
+<pre class="tree">&lt;board&gt;_bonded.zip
+├─ &lt;board&gt;_bonded.kicad_pcb
+├─ &lt;board&gt;_bonded.kicad_pro  <span class="c">if loaded</span>
+├─ &lt;board&gt;_bonded.kicad_sch  <span class="c">if loaded</span>
+└─ &lt;board&gt;_bond.step         <span class="c">copy of the embedded STEP</span></pre>
+    <p>The 3D is one STEP: the die, its attach layer, its pads and every wire as named, coloured solids. The die's top face is split into faces of two colours traced from its artwork, so you see your chip on the board. It is embedded in the board on the first die's footprint, and KiCad's own STEP export carries it on. The loose copy is for mechanical CAD. Change anything and export again; the new STEP replaces the old one in the board.</p>
+    <div class="use"><b>Use it to</b> see the bonded assembly in KiCad's 3D viewer, hand the board's STEP to mechanical CAD with the wires in it, and keep the wiring in version control with the board.</div>
+  </article>
+
+  <article class="out">
+    <h3>Die footprint</h3>
+    <div class="menu">.kicad_mod</div>
+    <p>The die alone, for a footprint library. It has the outline on Fab and courtyard, a filled Fab rectangle with <code>number net</code> text for each pad, and the artwork as an image. It has no copper.</p>
+<pre class="tree">&lt;die&gt;.kicad_mod
+<span class="c">several die: wbx_die_footprints.zip
+  └─ wbx_die.pretty/&lt;die&gt;.kicad_mod …</span></pre>
+    <div class="use"><b>Use it to</b> place the die by hand on another board, or as a stand-in before the wiring is decided.</div>
+  </article>
+
+  <article class="out">
+    <h3>Die kit</h3>
+    <div class="menu">.zip</div>
+    <p>Everything KiCad needs to treat the die as a part: footprint with its STEP model embedded, schematic symbol, the same STEP loose, and a JSON record of the pads.</p>
+<pre class="tree">&lt;die&gt;_kit.zip
+├─ wbx_die.pretty/&lt;die&gt;.kicad_mod
+├─ &lt;die&gt;.kicad_sym   <span class="c">pins by side, VDD/VSS power</span>
+├─ &lt;die&gt;.step        <span class="c">3D die with its artwork, assumed thickness</span>
+└─ &lt;die&gt;.die.json    <span class="c">size, pads, pin 1, source</span></pre>
+    <div class="use"><b>Use it to</b> put the die in a schematic and a footprint library, so the board can be designed around it.</div>
+  </article>
+
+  <article class="out">
+    <h3>Bondlist</h3>
+    <div class="menu">.csv</div>
+    <p>One row per wire, with both ends in µm from the die centre, y up, and the bond heights.</p>
+<pre class="tree"><span class="c">seq,wire,net,from,to,</span>
+<span class="c">x1_um,y1_um,z1_um,x2_um,y2_um,z2_um,</span>
+<span class="c">type,length_um,peak_um</span>
+1,W01,clk,die.1,1,-1440,…</pre>
+    <div class="use"><b>Use it for</b> a bonding house, a spreadsheet, or your own scripts. With several die it gains <code>to_kind</code> and <code>origin</code> columns.</div>
+  </article>
+
+  <article class="out">
+    <h3>Bond diagram</h3>
+    <div class="menu">.wb.svg · also in the Diagram view</div>
+    <p>A true-scale drawing of the bond area that any browser opens, with hover text on every wire, pad and land. It has a plan view, a side view of the layer stack, and the loop profiles.</p>
+<pre class="tree">&lt;board&gt;.wb.svg
+<span class="c">1 unit = 1 µm · wb: attributes are the data</span></pre>
+    <div class="use"><b>Use it to</b> review the bonding with people who don't use KiCad, check it with <code>wbx.py check</code>, or turn it into bonder files with <code>wbx.py export</code>.</div>
+  </article>
+
+  <article class="out">
+    <h3>From wbx.py</h3>
+    <div class="menu">python tools/wbx.py export file.wb.svg base</div>
+    <p>Files for offline programming of a bonder, all centred on the die.</p>
+<pre class="tree">base.bondlist.csv    <span class="c">seq, tier, ends, profile</span>
+base.fiducials.csv   <span class="c">eye points, if any</span>
+base.dxf             <span class="c">3D polyline per wire,</span>
+                     <span class="c">layer WIRE_T&lt;tier&gt;</span></pre>
+    <div class="use"><b>Use it for</b> a bonding house's CAD or teach step. <code>wbx.py</code> needs <code>lxml</code> and <code>ezdxf</code>.</div>
+  </article>
+</div>
+
+<div class="callout"><p><b>The two bondlists have different columns.</b> The app's has <code>type</code>, <code>length_um</code> and <code>peak_um</code>. <code>wbx.py</code>'s has <code>tier</code> and <code>profile</code>, because it reads them from the <code>.wb.svg</code>. Both use µm from the die centre, with y up.</p></div>
+
+<!-- 5 -->
+<h2 id="inside"><span class="k">5</span>Inside the exported board</h2>
+<p class="lede">KiCad has no bond wire object. The export uses ordinary footprints and hidden <code>wb_</code> fields instead, which KiCad keeps and lets you edit without understanding them. This is one wire as the app writes it, with the UUIDs and font settings left out.</p>
+
+<div class="anno">
+<pre class="code"><span class="m sp"></span>(footprint <span class="k">"wbx_wire"</span>
+<span class="m">1</span>  (layer "F.Cu") (at 104.66 98.2)
+<span class="m sp"></span>  (property "Reference" "W01" (hide yes))
+<span class="m sp"></span>  (property "Value" "STD25" (hide yes))
+<span class="m">2</span>  (property "wb_kind" <span class="k">"wire"</span>)
+<span class="m">3</span>  (property "wb_from" "D1.1")
+<span class="m sp"></span>  (property "wb_to"   "L.1")
+<span class="m">4</span>  (property "wb_type" "STD25")
+<span class="m sp"></span>  (property "wb_net"  "clk")
+<span class="m sp"></span>  (property "wb_seq"  "1")
+<span class="m">5</span>  (attr board_only exclude_from_pos_files
+<span class="m sp"></span>        exclude_from_bom allow_missing_courtyard)
+<span class="m">6</span>  (fp_line (start 0 0) (end -1.62 -0.44)
+<span class="m sp"></span>    (stroke (width 0.025) (type solid))
+<span class="m sp"></span>    (layer "User.1")))</pre>
+<ol class="notes">
+  <li><span>The footprint sits at the <b>first bond</b>, on the die pad, in board mm.</span></li>
+  <li><span><code>wb_kind</code> is how a reader finds the app's footprints: <code>die</code>, <code>wire</code> or <code>type_library</code>. Anything without it is your board.</span></li>
+  <li><span><code>wb_from</code> is <code>&lt;die&gt;.&lt;pad&gt;</code>. <code>wb_to</code> is the land, as <code>&lt;ref&gt;.&lt;pad&gt;</code>. A wire to another die names its pad and adds <code>wb_to_kind</code> = <code>die</code>.</span></li>
+  <li><span><code>wb_type</code> names an entry in the <code>WBLIB</code> footprint, for example <code>wb_type_STD25</code> = <code>ball-wedge Au 25 forward 180/0 30/12% -20/35%</code>: style, material, diameter in µm, direction and loop moves. <code>GENERIC</code> and <code>UNDEFINED</code> are reserved.</span></li>
+  <li><span>Wires take no board space, so they're left out of the BOM and position files and don't need a courtyard. Without that, boards that require courtyards would flag every wire.</span></li>
+  <li><span>The line runs to the <b>second bond</b> on the first free <code>User.1</code> to <code>User.9</code> layer, shown as <b>Wirebond</b>. Its width is the wire diameter. A generic or undefined wire's line has width zero, solid or dashed.</span></li>
+</ol>
+<p>A wire footprint has no 3D model of its own. Its tube is in the one STEP on the die footprint, named <code>W01</code> like the footprint.</p>
+</div>
+
+<h3>What each footprint carries</h3>
+<div class="tw"><table>
+<thead><tr><th>Footprint</th><th><code>wb_kind</code></th><th>Drawn</th><th>Fields</th></tr></thead>
+<tbody>
+<tr><td class="f">Die, named <code>D1</code>, <code>D2</code>…</td><td><code>die</code></td><td>Outline on <code>F.Fab</code> and <code>F.CrtYd</code>, filled Fab pad rectangles with <code>number net</code> text, the artwork image. The first die also carries the STEP of the whole assembly. No copper.</td><td><code>wb_thickness_um</code>, <code>wb_attach_um</code>. A die that isn't on the board also has <code>wb_sits_on</code> and <code>wb_bottom_um</code>.</td></tr>
+<tr><td class="f">Wire, <code>W01</code>…</td><td><code>wire</code></td><td>One line on the Wirebond layer. Its tube is in the assembly STEP</td><td><code>wb_from</code>, <code>wb_to</code>, <code>wb_type</code>, <code>wb_net</code>, <code>wb_seq</code>, maybe <code>wb_to_kind</code></td></tr>
+<tr><td class="f">Type library, <code>WBLIB</code></td><td><code>type_library</code></td><td>Nothing</td><td>One <code>wb_type_&lt;name&gt;</code> per wire type that's used</td></tr>
+</tbody></table></div>
+
+<div class="grid2">
+  <div class="callout info" style="margin:0"><p><b>Nets stay on the lands.</b> The die has no copper, so KiCad's ratsnest and DRC see only your board's copper. A die pad's number and net are Fab text, because KiCad clears the number of a pad with no copper when it loads one.</p></div>
+  <div class="callout" style="margin:0"><p><b>If you move the die in KiCad, the wires stay where they were.</b> KiCad doesn't know they're connected. Load the board back into the app, let the wires follow the die, and export again. The new export replaces the old die, wires and type library.</p></div>
+</div>
+
+<div class="callout gap"><p><b>There are two KiCad conventions in this repo.</b> The app writes the one above. <code>examples/kicad/example.kicad_pcb</code> was generated from <code>example.wb.svg</code> by <code>make_kicad.py</code> and uses an older one: die pads on <code>F.Cu</code>, one footprint per land, and loop profiles as <code>wb_profile_&lt;i&gt;_…</code> board properties. The app reads both. See <a href="../../examples/kicad/README.md">examples/kicad/README.md</a> for the older one.</p></div>
+
+<!-- 6 -->
+<h2 id="next"><span class="k">6</span>Where the export is going <span class="pill p-prop">partly built</span></h2>
+<p class="lede">This section answers four questions: which 3D format to write, how the 3D gets into KiCad, what a KiCad library package should hold, and whether the wirebond.svg itself goes into the KiCad file. The first two are decided and built: one STEP, embedded in the board. The other two are still proposals.</p>
+<p>The KiCad behaviour described here was checked with <code>kicad-cli</code> 10.0 on 15 November 2026. What was checked and what is still to test is listed at the end of the section.</p>
+
+<h3>Why one WRL per wire didn't work</h3>
+<ul class="lim">
+  <li><b>KiCad's STEP export leaves the wires and the die out.</b> It prints <code>Cannot use VRML models when exporting to non-mesh formats</code> and writes the board without them. The board's STEP is what goes to mechanical CAD, so mechanical CAD never sees the bonding.</li>
+  <li><b>The workaround is opt-in.</b> With a STEP file of the same name next to each WRL, KiCad uses the STEP, but only with <code>--subst-models</code> or the matching box ticked in the export dialog. Most exports would still miss the wires.</li>
+  <li><b>It's a lot of loose files.</b> The 74-wire example writes 75 files into <code>3d/</code>, linked by <code>${KIPRJMOD}/3d/…</code> paths. Copy the board without that folder and the 3D is gone.</li>
+  <li><b>VRML is a picture, not a part.</b> It's a mesh for rendering. Mechanical CAD tools mostly don't import it, and it isn't true geometry to check clearances against.</li>
+</ul>
+
+<h3>Ways to do the 3D</h3>
+<div class="tw"><table class="opts">
+<thead><tr><th>Option</th><th>Loose files</th><th class="c">KiCad 3D viewer</th><th class="c">Board STEP export</th><th class="c">Board file alone is enough</th><th>Notes</th></tr></thead>
+<tbody>
+<tr><td class="f">A · Before: one WRL per wire, one for the die</td><td>75</td><td class="c y">Yes</td><td class="c n">No</td><td class="c n">No</td><td>Shows gold wires and the die artwork in KiCad, and nowhere else.</td></tr>
+<tr><td class="f">B · WRL plus a STEP twin for each</td><td>150</td><td class="c y">Yes</td><td class="c">Only with <code>--subst-models</code></td><td class="c n">No</td><td>Keeps today's look, doubles the files, and depends on a checkbox.</td></tr>
+<tr><td class="f">C · One STEP for the bond assembly, loose</td><td>1</td><td class="c y">Yes</td><td class="c y">Yes</td><td class="c n">No</td><td>Die and every wire as named solids in one file, attached to the die footprint.</td></tr>
+<tr><td class="f">D · C, embedded in the board</td><td>0</td><td class="c y">Yes</td><td class="c y">Yes</td><td class="c y">Yes</td><td>The board file carries the STEP. Nothing to lose along the way.</td></tr>
+<tr><td class="f">E · One STEP per wire, embedded</td><td>0</td><td class="c y">Yes</td><td class="c y">Yes</td><td class="c y">Yes</td><td>Each wire's 3D follows its footprint if someone moves or deletes a wire in KiCad. 75 embedded files.</td></tr>
+</tbody></table></div>
+
+<div class="callout info"><p><b>Decided and built: D.</b> One STEP holds the die and all the wires, attached to the first die's footprint and embedded in the board. VRML is gone. The zip also has the same STEP as a loose file for anyone who wants it in mechanical CAD directly.</p>
+<p>E is not needed. The app is where the bonding is edited: to change anything, change it there and export again, and the new STEP replaces the old one in the board.</p></div>
+
+<h3>Embedding files in a KiCad board</h3>
+<p>KiCad 9 added embedded files, and the KiCad 10 demos use them for 3D models. A footprint's model path is <code>kicad-embed://name.step</code>. The file's data sits once at the end of the board, and each footprint that uses it lists its name and checksum. The data is zstd-compressed and then base64-encoded.</p>
+<p>The browser can write this with no extra library, which was the main doubt. A zstd frame may hold uncompressed ("raw") blocks, which takes a dozen lines to write. KiCad accepts a lowercase SHA-256 of the uncompressed bytes as the checksum, and browsers compute that natively with <code>crypto.subtle</code>. A test board built that way exported to STEP with the embedded model in it. Because the data isn't compressed, the board grows by about 1.33 times the file's size. KiCad keeps the data as it was written when it saves the board, so the board stays that size.</p>
+
+<h3>Writing STEP in the browser</h3>
+<p>The die is easy: a box for the attach layer, a box for the die and thin boxes for the pads. Wires are tubes along a curve. There are several ways to write a tube in STEP:</p>
+<div class="tw"><table>
+<thead><tr><th>Wire geometry</th><th>For</th><th>Against</th></tr></thead>
+<tbody>
+<tr><td class="f">A chain of short exact cylinders</td><td>True wire diameter for clearance checks. Each piece is three simple faces, so it's the easiest to get right.</td><td>Small steps at the bends. Roughly 3&nbsp;kB per segment, so a few MB for the 74-wire example. That's a guess to measure.</td></tr>
+<tr><td class="f">One swept B-spline face per wire</td><td>Smooth, and the smallest file, around 10&nbsp;kB per wire.</td><td>The hardest to write correctly: the seam, the end caps and the surface's orientation.</td></tr>
+<tr><td class="f">A faceted mesh, as flat faces</td><td>Trivial maths, the same mesh as today's WRL.</td><td>Each triangle becomes about 15 STEP entities, so files get very large.</td></tr>
+<tr><td class="f">OpenCascade in <code>wbx.py</code></td><td>Exact sweeps, joined solids, colours, all from a mature library (CadQuery or build123d).</td><td>A heavy Python dependency, and not in the browser, so the app couldn't write it.</td></tr>
+</tbody></table></div>
+<p><b>Built: the chain of cylinders</b>, in <code>app/js/step.js</code>. Each wire's path is thinned to what its own diameter can show, about 12 cylinders a wire, and each cylinder runs a little past a bend so the outside of the bend has no notch. The 74-wire example is 964 solids in 1.9&nbsp;MB of STEP, which puts 2.5&nbsp;MB into the board. KiCad renders it in colour and passes it to its board STEP export. B-spline sweeps remain the way to shrink it if that size becomes a problem. Each solid is coloured: wires by their type, the die grey and the pads white. The die artwork is what was lost. The old WRL drew it as a mosaic of coloured rectangles. In STEP that would be thousands of small faces, so the STEP leaves it out. The footprint keeps it as an image.</p>
+
+<h3>What goes into the KiCad board</h3>
+<p>The structure stays as it is: ordinary footprints with hidden <code>wb_</code> fields. Three things are added: the embedded STEP, which is built, and a KiCad group and the wirebond.svg as an embedded snapshot, which are still proposals. UUIDs and formatting are left out.</p>
+<div class="anno">
+<pre class="code"><span class="m sp"></span>(kicad_pcb …
+<span class="m">1</span>  (footprint <span class="k">"wbx_die"</span>  <span class="d">; D1, wb_kind die, as today</span>
+<span class="m sp"></span>    …
+<span class="m sp"></span>    (embedded_files (file (name "wbx_bond.step")
+<span class="m sp"></span>      (type model) (checksum "…")))
+<span class="m sp"></span>    (model "kicad-embed://wbx_bond.step"))
+<span class="m">2</span>  (footprint <span class="k">"wbx_wire"</span> …)  <span class="d">; W01…, no model</span>
+<span class="m">3</span>  (footprint <span class="k">"wbx_types"</span>  <span class="d">; WBLIB</span>
+<span class="m sp"></span>    (property "wb_type_STD25" "…")
+<span class="m sp"></span>    (property "wb_snapshot" "sha256:…"))
+<span class="m">4</span>  (group <span class="k">"wirebond D1"</span>
+<span class="m sp"></span>    (members &lt;D1&gt; &lt;W01&gt; … &lt;WBLIB&gt;))
+<span class="m">5</span>  (embedded_files
+<span class="m sp"></span>    (file (name "wbx_bond.step") (type model)
+<span class="m sp"></span>      (data |KLUv…|) (checksum "&lt;sha256&gt;"))
+<span class="m">6</span>    (file (name "bonding.wb.svg") (type other)
+<span class="m sp"></span>      (data |KLUv…|) (checksum "&lt;sha256&gt;"))))</pre>
+<ol class="notes">
+  <li><span>The die footprint carries the assembly STEP, so the die and every wire appear in 3D wherever the die sits.</span></li>
+  <li><span>Wire footprints keep their fields and their line on the Wirebond layer, and drop their models. They're still what a KiCad user selects, inspects and edits.</span></li>
+  <li><span><code>wb_snapshot</code> is a hash of the die, wire and type fields and positions as they were exported. Reading the board back, the app compares it with what it finds.</span></li>
+  <li><span>A KiCad group holds the die, wires and type library together. Moving the group moves the 3D and the wire lines with the die, which fixes the most common way today's export goes stale. Moving the die out of the group still breaks the wires, as it does now.</span></li>
+  <li><span>The STEP's data lives once, at the end of the board.</span></li>
+  <li><span>The wirebond.svg rides along as a file of type <code>other</code>. KiCad keeps it through a save. Board Setup lists it, and it can be saved out from there.</span></li>
+</ol>
+</div>
+
+<h3>Should the wirebond.svg itself go in?</h3>
+<div class="tw"><table>
+<thead><tr><th>Where it goes</th><th class="c">Survives a KiCad save</th><th class="c">Readable in a git diff</th><th class="c">Can go stale</th><th>Notes</th></tr></thead>
+<tbody>
+<tr><td class="f">Nowhere: the fields are the record (today)</td><td class="c y">Yes</td><td class="c y">Yes</td><td class="c n">No</td><td>The app rebuilds a <code>.wb.svg</code> from the board. Anything the fields can't hold is lost.</td></tr>
+<tr><td class="f">As text in a property</td><td class="c y">Yes</td><td class="c">Badly</td><td class="c">Yes</td><td>A 70&nbsp;kB string in one field, shown in KiCad's properties dialog, with every edit a one-line diff. Not recommended.</td></tr>
+<tr><td class="f">As an embedded file</td><td class="c y">Yes</td><td class="c n">No</td><td class="c">Yes, detectably</td><td>Checked: KiCad keeps it, compresses it and rewrites its checksum when it saves.</td></tr>
+<tr><td class="f">As a file next to the board</td><td class="c">Not touched</td><td class="c y">Yes</td><td class="c">Yes</td><td>Opens in a browser and diffs well in git. It's one more file to keep with the board, like the <code>.kicad_pro</code>.</td></tr>
+</tbody></table></div>
+<div class="callout info"><p><b>Proposal: the fields stay the source of truth, and the embedded file is a snapshot.</b> When the board is read back and <code>wb_snapshot</code> still matches the fields, nobody has changed the bonding in KiCad, and the app opens the embedded <code>.wb.svg</code> whole. When it doesn't match, the fields win. The app rebuilds from them, takes only what the fields can't hold from the snapshot, and says what it did.</p>
+<p>Today the app can rebuild almost everything from the fields, so the snapshot matters most for what the format grows into, such as placement tolerance, fiducial roles, notes and new wire data, and for a <code>.wb.svg</code> someone else wrote. The zip also has the same <code>.wb.svg</code> as a loose file, for git and for the bonding house.</p></div>
+
+<h3>Packages for a KiCad library</h3>
+<p>KiCad treats a part as three things that agree with each other: a schematic symbol, a footprint and a 3D model. The die kit already has the first two, and has a WRL as its model. The proposal makes every KiCad export a complete part, with a STEP for the model and a <code>.wb.svg</code> as the record.</p>
+<div class="outs">
+  <article class="out">
+    <h3>Assembled board</h3>
+    <div class="menu">.zip · replaces today's</div>
+<pre class="tree">&lt;board&gt;_bonded.zip
+├─ &lt;board&gt;_bonded.kicad_pcb  <span class="c">STEP and .wb.svg embedded</span>
+├─ &lt;board&gt;_bonded.kicad_pro  <span class="c">if loaded</span>
+├─ &lt;board&gt;_bonded.kicad_sch  <span class="c">if loaded</span>
+├─ &lt;board&gt;_bond.step         <span class="c">same STEP, for MCAD</span>
+└─ &lt;board&gt;.wb.svg            <span class="c">same snapshot, readable</span></pre>
+    <div class="use"><b>Use it to</b> carry on with the board. No <code>3d/</code> folder to keep with it.</div>
+  </article>
+  <article class="out">
+    <h3>Die part</h3>
+    <div class="menu">.zip · replaces the die kit</div>
+<pre class="tree">&lt;die&gt;_part.zip
+├─ &lt;die&gt;.kicad_sym           <span class="c">pins by side</span>
+├─ wbx_die.pretty/
+│  └─ &lt;die&gt;.kicad_mod        <span class="c">die STEP embedded</span>
+├─ &lt;die&gt;.step
+└─ &lt;die&gt;.wb.svg              <span class="c">die only: outline, pads,</span>
+                             <span class="c">nets, pin 1. Replaces .die.json</span></pre>
+    <div class="use"><b>Use it to</b> put the bare die in a schematic and a footprint library before the bonding is decided.</div>
+  </article>
+  <article class="out">
+    <h3>Bonded module <span class="pill p-prop">new</span></h3>
+    <div class="menu">.zip</div>
+<pre class="tree">&lt;die&gt;_on_&lt;padring&gt;.zip
+├─ &lt;name&gt;.kicad_sym          <span class="c">pin numbers = land numbers,</span>
+│                            <span class="c">pin names = nets</span>
+├─ wbx_bonded.pretty/
+│  └─ &lt;name&gt;.kicad_mod       <span class="c">lands in copper, die, wire</span>
+│                            <span class="c">lines, STEP embedded</span>
+├─ &lt;name&gt;.step
+└─ &lt;name&gt;.wb.svg</pre>
+    <div class="use"><b>Use it to</b> place a bonded die on any board like a packaged chip. The symbol's pins match the footprint's copper, which is the padring's lands, so KiCad's netlist and DRC work as they do for a QFN.</div>
+  </article>
+</div>
+<p class="small muted">The bonded module bakes the wiring in. Change the bonding and you regenerate the module. It suits a padring used on several boards, like wafer.space's COB padrings, where the same die and wiring repeat.</p>
+
+<h3>Decisions</h3>
+<div class="tw"><table>
+<thead><tr><th>Question</th><th>Proposal</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td class="f">Which 3D format</td><td>STEP only. VRML dropped.</td><td><span class="y">Built</span></td></tr>
+<tr><td class="f">One STEP or one per wire</td><td>One for the whole assembly, on the first die's footprint. Regenerate to change it</td><td><span class="y">Built</span></td></tr>
+<tr><td class="f">Embedded or loose</td><td>Embedded in the board, with a loose copy in the zip. The die kit's footprint embeds its own</td><td><span class="y">Built</span></td></tr>
+<tr><td class="f">wirebond.svg in the board</td><td>Embedded snapshot. The fields win when they differ</td><td><span class="y">Checked possible</span></td></tr>
+<tr><td class="f">Group the die and wires</td><td>Yes, one KiCad group per die</td><td>To test</td></tr>
+<tr><td class="f">Library packages</td><td>Die part, and a new bonded module</td><td>To decide</td></tr>
+<tr><td class="f"><code>.die.json</code></td><td>Replace it with a die-only <code>.wb.svg</code></td><td>To decide</td></tr>
+</tbody></table></div>
+
+<div class="grid2">
+  <div class="callout info" style="margin:0"><p><b>Checked with kicad-cli 10.0</b></p>
+  <p>· STEP export drops VRML models, with the message quoted above.</p>
+  <p>· <code>--subst-models</code> swaps in a same-named STEP.</p>
+  <p>· An embedded model lives at board level, and the footprint refers to it by name and checksum.</p>
+  <p>· A raw-block zstd frame with a lowercase SHA-256 loads. Uppercase, or a wrong checksum, gives "Checksum error" and the model is dropped.</p>
+  <p>· A file of type <code>other</code> survives <code>kicad-cli pcb upgrade</code>, which loads and saves the board.</p>
+  <p>· The app's STEP loads, renders in colour, follows a turned die, and passes through to the board STEP export.</p>
+  <p>· The 74-wire example: 964 solids, 1.9&nbsp;MB of STEP, 2.5&nbsp;MB in the board. A save keeps the raw blocks as they are.</p>
+  <p>· A die kit footprint with its STEP embedded survives <code>kicad-cli fp upgrade</code>.</p>
+  <p>· Exporting an exported board again replaces its STEP, rather than adding a second.</p></div>
+  <div class="callout" style="margin:0"><p><b>Still to test</b></p>
+  <p>· Moving a group in KiCad keeps the die, its model and the wire lines together.</p>
+  <p>· The board STEP opens in FreeCAD, or another MCAD tool, with the wires in it.</p>
+  <p>· The bonded module's symbol and footprint pass KiCad's footprint and symbol checks.</p></div>
+</div>
+
+<!-- 7 -->
+<h2 id="recipes"><span class="k">7</span>Recipes</h2>
+
+<details class="recipe" open>
+  <summary>From a KiCad board and a GDS to a bonded board <small>the usual way in</small></summary>
+  <ol class="steps">
+    <li><b>Draw the padring in KiCad.</b><span>One footprint, with numbered SMD pads on <code>F.Cu</code> for the lands and one big pad for the paddle. Give the lands nets if you know them (level 1).</span></li>
+    <li><b>Drop the board, its <code>.kicad_pro</code> and <code>.kicad_sch</code>.</b><span>Check the app picked the padring footprint as the substrate. If not, choose it under Substrate.</span></li>
+    <li><b>Drop the die's GDS.</b><span>Check the pad count and pin 1 under Die. If the pad layer is wrong, pick another or change the size limits.</span></li>
+    <li><b>Pick a regime.</b><span>The Regimes tab compares every way of pairing pads with lands. Hover to preview one, click to use it, then fix single wires by hand. Wires you edit are pinned.</span></li>
+    <li><b>Read the Checks tab.</b><span>Set the rules to your bonding house's numbers under DRC rules if you have them.</span></li>
+    <li><b>Put it in KiCad → Assembled board.</b><span>Unzip it and open the <code>_bonded.kicad_pcb</code>. The wires are on the Wirebond layer and in the 3D viewer.</span></li>
+  </ol>
+</details>
+
+<details class="recipe">
+  <summary>No GDS yet <small>a die from a footprint</small></summary>
+  <ol class="steps">
+    <li><b>Make a footprint for the die.</b><span>One numbered pad per bond pad, at its centre, with the pad opening as its size. Put the net name in the pin function. Draw the die outline as a rectangle on <code>F.Fab</code>.</span></li>
+    <li><b>Drop it with the padring.</b><span>Drop both footprints together and the smaller becomes the die. Or drop it on the Die box.</span></li>
+    <li><b>Work as usual, then swap in the GDS later.</b><span>Drop the GDS on the Die box to replace the footprint. Check the pad numbering matches what you used, then run the regimes again.</span></li>
+  </ol>
+</details>
+
+<details class="recipe">
+  <summary>Edit a bonded board and bring it back <small>the round trip</small></summary>
+  <ol class="steps">
+    <li><b>Open the exported board in KiCad and work on it.</b><span>Route, move other parts, add things. You can also edit a wire's <code>wb_to</code> or <code>wb_type</code> in its properties.</span></li>
+    <li><b>Drop the saved board back into the app.</b><span>The die comes back from its <code>wb_kind</code> = <code>die</code> footprint, the types from <code>WBLIB</code>, and the wires under the From the board regime.</span></li>
+    <li><b>Export again.</b><span>The old die, wire and type footprints are removed and new ones written. Nothing else on the board changes.</span></li>
+  </ol>
+</details>
+
+<details class="recipe">
+  <summary>Send it to a bonding house <small>files they can use</small></summary>
+  <ol class="steps">
+    <li><b>Export the bond diagram (.wb.svg) and the bondlist (.csv).</b><span>The diagram is the drawing a person reviews. The bondlist is the table.</span></li>
+    <li><b>Check it.</b><span><code>python tools/wbx.py check board.wb.svg</code> lists errors, warnings and notes, and returns non-zero on errors. <code>wbx.py place</code> says how far the die can sit off its nominal place before a check fails.</span></li>
+    <li><b>Make bonder files.</b><span><code>python tools/wbx.py export board.wb.svg board</code> writes the 3D DXF, the bondlist and the fiducials.</span></li>
+    <li><b>Send a PDF and the table too.</b><span>No bonding house expects <code>.wb.svg</code> yet. Print the diagram from a browser.</span></li>
+  </ol>
+</details>
+
+<!-- 8 -->
+<h2 id="round"><span class="k">8</span>Round trips</h2>
+<p class="lede">A file that can be written and read again lets a design go out to KiCad and come back without losing anything. This is where each format stands.</p>
+
+<div class="tw"><table>
+<thead><tr><th>File</th><th class="c">App reads</th><th class="c">App writes</th><th class="c">wbx.py reads</th><th class="c">wbx.py writes</th><th>Notes</th></tr></thead>
+<tbody>
+<tr><td class="f">GDS</td><td class="c y">Yes</td><td class="c n">—</td><td class="c n">—</td><td class="c n">—</td><td>Input only. Artwork goes out inside the footprint image.</td></tr>
+<tr><td class="f"><code>.kicad_mod</code></td><td class="c y">Yes</td><td class="c y">Yes</td><td class="c n">—</td><td class="c n">—</td><td>An exported die footprint reads back as a die, from its Fab pads and text.</td></tr>
+<tr><td class="f"><code>.kicad_pcb</code></td><td class="c y">Yes</td><td class="c y">Yes</td><td class="c n">—</td><td class="c n">—</td><td>Full round trip: die, wires and types come back, and exporting again replaces them.</td></tr>
+<tr><td class="f"><code>.kicad_pro</code> <code>.kicad_sch</code></td><td class="c y">Carried</td><td class="c y">Carried</td><td class="c n">—</td><td class="c n">—</td><td>Passed through unchanged.</td></tr>
+<tr><td class="f"><code>.kicad_sym</code> <code>.step</code> <code>.die.json</code></td><td class="c n">No</td><td class="c y">Yes</td><td class="c n">—</td><td class="c n">—</td><td>In the die kit, and the board's STEP beside the board. For KiCad and MCAD, not for reading back.</td></tr>
+<tr><td class="f">DRC rules <code>.json</code></td><td class="c y">Yes</td><td class="c y">Yes</td><td class="c n">—</td><td class="c n">—</td><td>Import and export in the DRC rules panel.</td></tr>
+<tr><td class="f"><code>.wb.svg</code></td><td class="c y">Yes</td><td class="c y">Yes</td><td class="c y">Yes</td><td class="c y">Yes</td><td>The app opens its own and <code>wbx.py</code>'s. <code>wbx.py</code> reads one die at 0°.</td></tr>
+<tr><td class="f">Bondlist <code>.csv</code></td><td class="c n">No</td><td class="c y">Yes</td><td class="c n">No</td><td class="c y">Yes</td><td>Different columns from each tool.</td></tr>
+<tr><td class="f"><code>.fiducials.csv</code> <code>.dxf</code></td><td class="c n">No</td><td class="c n">—</td><td class="c n">No</td><td class="c y">Yes</td><td>For the bonder.</td></tr>
+</tbody></table></div>
+
+<div class="callout gap"><p><b>The missing piece is keeping the two records together.</b> Both the exported board and the <code>.wb.svg</code> read back, but the board doesn't carry the <code>.wb.svg</code>, so they can drift apart. Section 6 proposes embedding the <code>.wb.svg</code> in the board as a snapshot.</p></div>
+
+<!-- 9 -->
+<h2 id="units"><span class="k">9</span>Units and coordinates</h2>
+<p>Every format measures from somewhere different. When numbers from two files don't agree, check this table first.</p>
+<div class="tw"><table>
+<thead><tr><th>File</th><th>Unit</th><th>Y axis</th><th>Origin</th></tr></thead>
+<tbody>
+<tr><td class="f">GDS</td><td>Database units, usually 1 nm</td><td>Up</td><td>Wherever the designer put the cell origin</td></tr>
+<tr><td class="f"><code>.kicad_pcb</code> <code>.kicad_mod</code></td><td>mm</td><td>Down</td><td>The sheet, or the footprint anchor</td></tr>
+<tr><td class="f"><code>.wb.svg</code>, board</td><td>µm, 1 SVG unit</td><td>Down</td><td>Cropped to the bond area, starting near 0</td></tr>
+<tr><td class="f"><code>.wb.svg</code>, inside a die</td><td>µm</td><td>Up, via <code>scale(1 -1)</code></td><td>The die outline's lower-left corner, so pads read as GDS numbers</td></tr>
+<tr><td class="f">Bondlists, fiducials, DXF</td><td>µm</td><td>Up</td><td>The die centre. With several die, the first die's centre, named in <code>origin</code></td></tr>
+<tr><td class="f">STEP <code>.step</code></td><td>mm, z up from the board's top</td><td>Up</td><td>The first die's footprint anchor, turned with it. In the die kit, the die footprint's anchor</td></tr>
+</tbody></table></div>
+
+<!-- 10 -->
+<h2 id="limits"><span class="k">10</span>Limits</h2>
+<ul class="lim">
+  <li><b>OASIS isn't read.</b> Export the die as GDS. Reading <code>.gz</code> needs a browser with <code>DecompressionStream</code>, which current Chrome, Edge, Firefox and Safari have.</li>
+  <li><b>The 3D has no die artwork.</b> The STEP shows the die as a plain block with its pads. The footprint keeps the artwork as an image.</li>
+  <li><b>A turned die loses its artwork in the board too,</b> because KiCad doesn't turn a footprint's image.</li>
+  <li><b>The STEP is stored uncompressed.</b> The board holds it as raw zstd blocks, about 2.5&nbsp;MB for the 74-wire example, and KiCad keeps it that way when it saves.</li>
+  <li><b>The STEP follows the die, not the wires.</b> Move the die footprint in KiCad and the whole assembly's 3D moves with it; move a wire footprint and its tube stays. Export again from the app to bring them back together.</li>
+  <li><b>Die thickness and attach height are assumed.</b> They're written into the board and the STEP, so set them under Placement before exporting.</li>
+  <li><b>Pad finding is checked only on the wafer.space template die</b>, in the 1x1 and 1x0p5 slots. Check the pad count and numbering on other dies.</li>
+  <li><b><code>wbx.py</code> reads one die at 0°.</b> The app writes turned and stacked die correctly, but <code>wbx.py</code> can't check them yet.</li>
+  <li><b>Nothing here has been bonded.</b> The formats and checks haven't been through a real bonder or a bonding house's software.</li>
+</ul>
+
+<footer>Written from the code in <code>app/js</code> and <code>wbx.py</code> as of November 2026. Where this page and the code disagree, the code is right. <a href="../../SPEC.md">SPEC.md</a> has the detail.</footer>
+
+</main>
+
+<script>
+(function(){
+"use strict";
+/* ---------- the map ---------- */
+var FAM={si:"var(--amber)",kicad:"var(--green)",exch:"var(--magenta)",rules:"var(--blue)"};
+var FAMNAME={si:"Silicon",kicad:"KiCad",exch:"Exchange",rules:"Rules"};
+var PILL={si:"p-si",kicad:"p-kicad",exch:"p-exch",rules:"p-rules"};
+var IN_X=16,OUT_X=724,NW=220,NH=44,TX=330,TW=270;
+var nodes=[
+  {id:"gds",col:"in",y:40,fam:"si",t:"GDS",x:".gds  .gds.gz",
+   carries:"Die size, pad openings, pad numbers and net names from labels, and the artwork.",
+   rd:"Wire Bond Bench",wr:"Your layout tool",sec:"in-gds"},
+  {id:"mod",col:"in",y:100,fam:"kicad",t:"KiCad footprint",x:".kicad_mod",
+   carries:"A padring as the substrate, with its lands, nets and paddle. Or a die, with its pads and outline.",
+   rd:"Wire Bond Bench",wr:"KiCad, or this app",sec:"in-mod-sub"},
+  {id:"pcb",col:"in",y:160,fam:"kicad",t:"KiCad board",x:".kicad_pcb",
+   carries:"The substrate footprint, and any die, wires and wire types already in it from an earlier export.",
+   rd:"Wire Bond Bench",wr:"KiCad, or this app",sec:"in-pcb"},
+  {id:"pro",col:"in",y:220,fam:"kicad",t:"Project files",x:".kicad_pro  .kicad_sch",
+   carries:"Design rules and the schematic. Not read for data, only carried into the exported board.",
+   rd:"Wire Bond Bench (carried through)",wr:"KiCad",sec:"in-pro"},
+  {id:"rin",col:"in",y:280,fam:"rules",t:"DRC rules",x:".json",
+   carries:"The limits the checks measure against, with each rule's value and whether it's on.",
+   rd:"Wire Bond Bench, DRC rules panel",wr:"Wire Bond Bench",sec:"in-rules"},
+
+  {id:"zip",col:"out",y:10,fam:"kicad",t:"Assembled board",x:".zip",back:"yes",
+   carries:"Your board with a die footprint, one footprint per wire, the WBLIB type library, one STEP of the die and wires embedded in it, and the project files if loaded.",
+   rd:"KiCad. The app reads the board back in.",wr:"Put it in KiCad → Assembled board",sec:"out"},
+  {id:"fp",col:"out",y:64,fam:"kicad",t:"Die footprint",x:".kicad_mod",back:"yes",
+   carries:"Outline, Fab pad rectangles with number and net, and the artwork image. No copper.",
+   rd:"KiCad. The app reads it back as a die.",wr:"Put it in KiCad → Die footprint",sec:"out"},
+  {id:"kit",col:"out",y:118,fam:"kicad",t:"Die kit",x:".zip",
+   carries:"Footprint with its STEP embedded, schematic symbol, the STEP loose, and a JSON record of every pad.",
+   rd:"KiCad",wr:"Put it in KiCad → Die kit",sec:"out"},
+  {id:"csv",col:"out",y:172,fam:"exch",t:"Bondlist",x:".csv",
+   carries:"One row per wire: both ends and heights in µm from the die centre, the type, length and loop peak.",
+   rd:"A bonding house, a spreadsheet, your scripts",wr:"Put it in KiCad → Bondlist",sec:"out"},
+  {id:"svg",col:"out",y:226,fam:"exch",t:"Bond diagram",x:".wb.svg",back:"yes",
+   carries:"A true-scale drawing that is also the data: die, pads, lands, wires, loop profiles and the layer stack.",
+   rd:"Any browser, wbx.py, and the app, which opens it as a session.",wr:"Put it in KiCad → Bond diagram, or the Diagram view",sec:"in-wbsvg"},
+  {id:"rout",col:"out",y:280,fam:"rules",t:"DRC rules",x:".json",back:"yes",
+   carries:"Your rule values, to share or reuse.",
+   rd:"Wire Bond Bench",wr:"DRC rules → Export JSON",sec:"in-rules"},
+
+  {id:"wcsv",col:"out",y:384,fam:"exch",t:"Bondlist",x:".bondlist.csv",
+   carries:"One row per wire with tier and profile, both ends in µm from the die centre.",
+   rd:"A bonding house",wr:"wbx.py export",sec:"out"},
+  {id:"fid",col:"out",y:438,fam:"exch",t:"Fiducials",x:".fiducials.csv",
+   carries:"The eye points on the die and board, so the bonder can be taught where to look.",
+   rd:"A bonding house",wr:"wbx.py export, when the .wb.svg has fiducials",sec:"out"},
+  {id:"dxf",col:"out",y:492,fam:"exch",t:"3D wires",x:".dxf",
+   carries:"One 3D polyline per wire, following its loop, on a layer per tier.",
+   rd:"CAD tools, a bonder's offline programming",wr:"wbx.py export",sec:"out"}
+];
+var tools=[
+  {id:"bench",y:30,h:304,t:"Wire Bond Bench",x:"browser app · app/index.html",
+   s:["Read the substrate and die","Find pads, place the die","Pair pads with lands","Check against the rules","Write KiCad and .wb.svg"]},
+  {id:"wbx",y:396,h:140,t:"wbx.py",x:"Python · command line",
+   s:["check  validate a .wb.svg","place  how far the die can move","export  CSV and 3D DXF"]}
+];
+var edges=[];
+nodes.forEach(function(n){
+  if(n.col==="in") edges.push({a:n.id,b:"bench"});
+  else if(n.y<380) edges.push({a:"bench",b:n.id});
+  else edges.push({a:"wbx",b:n.id});
+});
+edges.push({a:"svg",b:"wbx",cls:"wb"});
+var byId={}; nodes.forEach(function(n){byId[n.id]=n;}); tools.forEach(function(t){byId[t.id]=t;});
+
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;");}
+function mid(t,y){return t.y+t.h/2+(y-(t.y+t.h/2))*0.62;}
+function path(e){
+  var A=byId[e.a],B=byId[e.b],x1,y1,x2,y2;
+  if(e.cls==="wb"){x1=OUT_X;y1=A.y+NH/2;x2=TX+TW;y2=B.y+38;
+    return "M"+x1+","+y1+" C"+(x1-70)+","+y1+" "+(x2+70)+","+y2+" "+x2+","+y2;}
+  if(A.col==="in"){x1=IN_X+NW;y1=A.y+NH/2;x2=TX;y2=mid(B,y1);}
+  else{x2=OUT_X;y2=B.y+NH/2;x1=TX+TW;y1=mid(A,y2);}
+  var dx=(x2-x1)*0.5;
+  return "M"+x1+","+y1+" C"+(x1+dx)+","+y1+" "+(x2-dx)+","+y2+" "+x2+","+y2;
+}
+function draw(){
+  var o='<defs><marker id="ah" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L8,4 L0,8 z" class="head"/></marker></defs>';
+  o+='<text class="colh" x="'+IN_X+'" y="24">Reads</text>';
+  o+='<text class="colh" x="'+TX+'" y="20">Tools</text>';
+  o+='<text class="colh" x="'+(OUT_X+NW)+'" y="2" text-anchor="end">Writes, from the app</text>';
+  o+='<text class="colh" x="'+(OUT_X+NW)+'" y="372" text-anchor="end">Writes, from wbx.py</text>';
+  edges.forEach(function(e,i){
+    o+='<path class="ed'+(e.cls?" "+e.cls:"")+'" data-a="'+e.a+'" data-b="'+e.b+'" d="'+path(e)+'" marker-end="url(#ah)"/>';
+  });
+  tools.forEach(function(t){
+    o+='<g class="tool" data-id="'+t.id+'"><rect class="box" x="'+TX+'" y="'+t.y+'" width="'+TW+'" height="'+t.h+'" rx="12"/>';
+    o+='<text class="t" x="'+(TX+18)+'" y="'+(t.y+30)+'">'+esc(t.t)+'</text>';
+    o+='<text class="x" x="'+(TX+18)+'" y="'+(t.y+48)+'">'+esc(t.x)+'</text>';
+    var big=t.s.length>3, step=big?44:24, y0=t.y+(big?84:72);
+    t.s.forEach(function(s,i){
+      var y=y0+i*step;
+      if(big){
+        o+='<circle cx="'+(TX+30)+'" cy="'+(y-4)+'" r="10" fill="none" stroke="var(--accent)" stroke-width="1.2"/>';
+        o+='<text class="n" x="'+(TX+30)+'" y="'+y+'" text-anchor="middle">'+(i+1)+'</text>';
+        o+='<text class="s" x="'+(TX+50)+'" y="'+y+'">'+esc(s)+'</text>';
+      } else {
+        var k=s.split("  ");
+        o+='<text class="s" x="'+(TX+18)+'" y="'+y+'"><tspan font-family="var(--f-mono)" font-weight="700" fill="var(--accent)">'+esc(k[0])+'</tspan><tspan dx="8">'+esc(k[1])+'</tspan></text>';
+      }
+    });
+    o+='</g>';
+  });
+  nodes.forEach(function(n){
+    var x=n.col==="in"?IN_X:OUT_X;
+    o+='<g class="nd" data-id="'+n.id+'" tabindex="0" role="button" aria-label="'+esc(n.t+" "+n.x)+'">';
+    o+='<rect class="box" x="'+x+'" y="'+n.y+'" width="'+NW+'" height="'+NH+'" rx="8"/>';
+    o+='<rect class="stripe" x="'+x+'" y="'+n.y+'" width="5" height="'+NH+'" rx="2" fill="'+FAM[n.fam]+'"/>';
+    o+='<text class="t" x="'+(x+16)+'" y="'+(n.y+19)+'">'+esc(n.t)+'</text>';
+    o+='<text class="x" x="'+(x+16)+'" y="'+(n.y+36)+'" xml:space="preserve">'+esc(n.x)+'</text>';
+    if(n.back){
+      o+='<g class="badge '+n.back+'"><title>'+(n.back==="yes"?"The app reads this back":"Reading this back into the app is planned")+'</title><circle cx="'+(x+NW-16)+'" cy="'+(n.y+NH/2)+'" r="9"/><text x="'+(x+NW-16)+'" y="'+(n.y+NH/2+4)+'">↺</text></g>';
+    }
+    o+='</g>';
+  });
+  return o;
+}
+var svg=document.getElementById("mapSvg"), fig=document.getElementById("map-fig"), det=document.getElementById("detail");
+svg.innerHTML=draw();
+
+var sel=null;
+function light(id){
+  if(!id){fig.classList.remove("focus");svg.querySelectorAll(".lit").forEach(function(e){e.classList.remove("lit");});return;}
+  fig.classList.add("focus");
+  svg.querySelectorAll(".lit").forEach(function(e){e.classList.remove("lit");});
+  var on={}; on[id]=1;
+  svg.querySelectorAll(".ed").forEach(function(p){
+    if(p.dataset.a===id||p.dataset.b===id){p.classList.add("lit");on[p.dataset.a]=1;on[p.dataset.b]=1;}
+  });
+  // a tool lights everything it touches; a file lights its tool and that tool's other links stay dim
+  svg.querySelectorAll(".nd,.tool").forEach(function(g){if(on[g.dataset.id])g.classList.add("lit");});
+}
+function show(id){
+  sel=id;
+  svg.querySelectorAll(".nd").forEach(function(g){g.classList.toggle("sel",g.dataset.id===id);});
+  light(id);
+  if(!id){det.innerHTML='<h4>Pick a file</h4><p class="muted">Click or tab to any file in the map to see what it carries, what reads it and what writes it. The arrows show which tool it goes into or comes out of.</p>';return;}
+  var n=byId[id];
+  if(!n.col){
+    det.innerHTML='<h4>'+esc(n.t)+' <code>'+esc(n.x)+'</code></h4><p>'+(id==="bench"?"Reads KiCad files and a GDS, pairs die pads with board lands by one of six regimes, checks the result against the DRC rules, and writes KiCad files and a .wb.svg. Everything runs in the page.":"Reads a .wb.svg, checks it against SPEC.md, finds how far the die can move, and writes files for a bonder. It needs Python with lxml and ezdxf.")+'</p>';
+    return;
+  }
+  var back=n.back==="yes"?' <span class="pill p-kicad">↺ reads back</span>':n.back==="plan"?' <span class="pill p-plan">↺ read back planned</span>':"";
+  det.innerHTML='<h4>'+esc(n.t)+' <code>'+esc(n.x.replace(/  /g," "))+'</code> <span class="pill '+PILL[n.fam]+'">'+FAMNAME[n.fam]+'</span>'+back+'</h4>'+
+    '<p>'+esc(n.carries)+'</p><dl><dt>Read by</dt><dd>'+esc(n.rd)+'</dd><dt>Written by</dt><dd>'+esc(n.wr)+'</dd></dl>'+
+    '<p class="small"><a href="#'+n.sec+'">More about this file ↓</a></p>';
+}
+svg.addEventListener("click",function(ev){
+  var g=ev.target.closest(".nd,.tool"); if(!g) {show(null);return;}
+  show(sel===g.dataset.id?null:g.dataset.id);
+});
+svg.addEventListener("keydown",function(ev){
+  var g=ev.target.closest(".nd"); if(!g) return;
+  if(ev.key==="Enter"||ev.key===" "){ev.preventDefault();show(g.dataset.id);}
+});
+svg.addEventListener("mouseover",function(ev){var g=ev.target.closest(".nd,.tool"); if(g) light(g.dataset.id);});
+svg.addEventListener("mouseleave",function(){light(sel);});
+svg.addEventListener("focusin",function(ev){var g=ev.target.closest(".nd"); if(g) light(g.dataset.id);});
+svg.addEventListener("focusout",function(){light(sel);});
+show("pcb");
+
+/* ---------- the level ladder ---------- */
+var LV=[
+ {h:"Padring only",
+  add:["One footprint with numbered SMD pads on F.Cu: the lands","Optionally one big pad under the die: the paddle"],
+  gets:["Lands, in number order","The die centred on the paddle"],
+  regs:[["Number rule",0],["Shortest ring",0],["By hand",0]],
+  note:"Enough to start. Number rule needs pin 1 and a direction, and pairs pad n with land n plus an offset. Shortest ring needs only geometry."},
+ {h:"Nets on the lands",
+  add:["A net on each land, matching the die's pad labels","Or a net named pad_k, meaning die pad k, counted from zero"],
+  gets:["Pad to land pairing by name","A check that each wire's pad and land nets agree"],
+  regs:[["Number rule",0],["Shortest ring",0],["Net names",1],["By hand",0]],
+  note:"Usually the best level. Your schematic already gives the lands their nets, and the GDS labels give the pads theirs."},
+ {h:"Sketched wires",
+  add:["Lines on Cmts.User inside the padring footprint, from near a pad to near a land"],
+  gets:["Your own pairing, drawn where you can see it","Each end snapped to a pad and a land within 0.15 mm"],
+  regs:[["Number rule",0],["Shortest ring",0],["Net names",0],["Drawn lines",1],["By hand",0]],
+  note:"Some COB padrings already carry placeholder wires like this. It's a quick way to say which pad goes where without a convention."},
+ {h:"Full convention",
+  add:["A die footprint with wb_kind = die","One footprint per wire with wb_kind = wire, wb_from, wb_to, wb_type","A WBLIB footprint with a wb_type_<name> field per wire type"],
+  gets:["Die position, rotation, thickness and attach","Every wire and its type, as it was exported","Exporting again replaces them cleanly"],
+  regs:[["Number rule",0],["Shortest ring",0],["Net names",0],["Drawn lines",0],["From the board",1],["By hand",0]],
+  note:"You get this by exporting from the app, not by writing it. After that the board is the record, and it reads back in."}
+];
+var NETC=["#e3b23c","#36d9bb","#5bbbe6","#e660bd"];
+function lvSvg(L){
+  var o='<rect class="board" x="6" y="6" width="248" height="208" rx="10"/>';
+  var cx=130,cy=110,dh=34,ring=74, k=3, pads=[], lands=[];
+  o+='<rect class="paddle" x="'+(cx-46)+'" y="'+(cy-46)+'" width="92" height="92" rx="4"/>';
+  // 3 lands and 3 pads per side
+  [[0,-1],[1,0],[0,1],[-1,0]].forEach(function(s,si){
+    for(var i=0;i<k;i++){
+      var t=(i-1)*28, tp=(i-1)*18;
+      var lx=cx+s[0]*ring+(s[0]?0:t), ly=cy+s[1]*ring+(s[1]?0:t);
+      var px=cx+s[0]*(dh-6)+(s[0]?0:tp), py=cy+s[1]*(dh-6)+(s[1]?0:tp);
+      var c=NETC[(si*k+i)%4];
+      lands.push({x:lx,y:ly,v:!!s[1],c:c}); pads.push({x:px,y:py,c:c});
+    }
+  });
+  lands.forEach(function(l){
+    var w=l.v?14:26,h=l.v?26:14;
+    o+='<rect class="land" x="'+(l.x-w/2)+'" y="'+(l.y-h/2)+'" width="'+w+'" height="'+h+'" rx="2"'+(L>=1?' style="fill:'+l.c+'"':'')+'/>';
+  });
+  if(L>=3) o+='<rect class="die" x="'+(cx-dh)+'" y="'+(cy-dh)+'" width="'+(2*dh)+'" height="'+(2*dh)+'" rx="2"/>';
+  else o+='<rect class="ghost" x="'+(cx-dh)+'" y="'+(cy-dh)+'" width="'+(2*dh)+'" height="'+(2*dh)+'" rx="2"/>';
+  pads.forEach(function(p){o+='<rect class="pad" x="'+(p.x-4)+'" y="'+(p.y-4)+'" width="8" height="8"'+(L>=1?' style="fill:'+p.c+'"':'')+'/>';});
+  if(L===2) pads.forEach(function(p,i){var l=lands[i];o+='<line class="cm" x1="'+p.x+'" y1="'+p.y+'" x2="'+l.x+'" y2="'+l.y+'"/>';});
+  if(L===3) pads.forEach(function(p,i){var l=lands[i];var mx=(p.x+l.x)/2+(cx-(p.x+l.x)/2)*-0.08,my=(p.y+l.y)/2+(cy-(p.y+l.y)/2)*-0.08;o+='<path class="wr" d="M'+p.x+','+p.y+' Q'+mx+','+my+' '+l.x+','+l.y+'"/>';});
+  o+='<text x="'+cx+'" y="'+(cy+dh+13)+'" text-anchor="middle">'+(L>=3?"die in board":"die from GDS")+'</text>';
+  return o;
+}
+function lv(L){
+  var d=LV[L];
+  document.querySelectorAll("#lvSeg button").forEach(function(b){b.setAttribute("aria-pressed",String(+b.dataset.l===L));});
+  document.getElementById("lvSvg").innerHTML=lvSvg(L);
+  document.getElementById("lvText").innerHTML='<h4>Level '+L+': '+esc(d.h)+'</h4><p>'+esc(d.note)+'</p>'+
+    '<div class="cols"><div class="col"><b>Add in KiCad</b><ul>'+d.add.map(function(s){return "<li>"+esc(s)+"</li>";}).join("")+'</ul></div>'+
+    '<div class="col"><b>The app gets</b><ul>'+d.gets.map(function(s){return "<li>"+esc(s)+"</li>";}).join("")+'</ul></div></div>'+
+    '<p class="small" style="margin-top:10px"><span class="muted">Regimes that work: </span>'+d.regs.map(function(r){return '<span class="reg'+(r[1]?" new":"")+'">'+esc(r[0])+(r[1]?" · new":"")+'</span>';}).join("")+'</p>';
+}
+document.getElementById("lvSeg").addEventListener("click",function(ev){var b=ev.target.closest("button");if(b)lv(+b.dataset.l);});
+lv(1);
+})();
+</script>
+</body>
+</html>

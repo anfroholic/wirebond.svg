@@ -1,0 +1,12 @@
+# Where these files came from
+
+Written by `make_waferspace.py`. Every source is Apache-2.0.
+
+| File | From |
+|---|---|
+| `waferspace_1x1_die.gds` | [wafer-space/gf180mcu-project-template](https://github.com/wafer-space/gf180mcu-project-template) at `87881f4c03d804567d0f8d7eab568143bffeed83`, built for the 1x1 slot with `make librelane-padring SLOT=1x1` (pad ring and seal ring only), using the gf180mcuD PDK at `d658698` from the gf180mcu-precheck 1.7.1 image. Only the outline, Pad layer, pad labels and the gf180mcu_ws_ip__id, gf180mcu_ws_ip__logo, big_logo cells are kept, with Metal1 to Metal5 throughout, out of 61 MB. 74 pads. The template's SRAMs and ID cells are swapped for the logo die's cells from [89Mods/ws-logo-die](https://github.com/89Mods/ws-logo-die) at `02d2ff4e376898efc23d423d72823f29d5b09357`, placed as its `librelane/config.yaml` places them, with big_logo's pixel squares merged |
+| `waferspace_default_padring_v0.2.kicad_mod` | Lifted out of `cob/1x1-mezzanine.kicad_pcb`, below, and turned the 180 deg the board places it at, so land 1 is bottom left like die pad 1. Nets and uuids are left out |
+| `waferspace_1x1_die.kicad_mod` | Written from the pads in `waferspace_1x1_die.gds`, numbered from clk counterclockwise, named by their labels |
+| `cob/1x1-mezzanine.*` | [wafer-space/chip-on-board-wire-bonded-pcbs](https://github.com/wafer-space/chip-on-board-wire-bonded-pcbs) at `3458335598f89128d8aa2ac5f68c313877825d1f`, `run-2/1x1-cob/`. Its 3D models and footprint libraries aren't copied, so KiCad will report them missing |
+| `eurosynth_1x0p5_die.gds` | [anfroholic/eurosynth](https://github.com/anfroholic/eurosynth) `final_chip/gds/chip_top.gds.gz`, last changed in `dd3c940af8447af7739d9457b3e7c959c8c9bcb2`: the gf180mcu project template built in full for the 1x0p5 slot, with five synth engines and its own art. Only the outline, Pad layer and pad labels, the IO ring, seal ring and gf180mcu_ws_ip__logo, gf180mcu_ws_ip__marker, gf180mcu_ws_ip__project_id, gf180mcu_ws_ip__qrcode_id, gf180mcu_ws_ip__shuttle_id cells in Metal1 to Metal5, the eurosynth_art, eurosynth_logo, eurosynth_notes art on Metal5, and the core's Metal4 and Metal5, in the top cell and the bytebeat, chaos_engine, ks_engine, neural_osc, sid_engine engines, are kept, out of 136 MB. 72 pads |
+| `waferspace_1x0p5_padring_v0.1.kicad_mod` | [wafer-space/chip-on-board-wire-bonded-pcbs](https://github.com/wafer-space/chip-on-board-wire-bonded-pcbs) at `3458335598f89128d8aa2ac5f68c313877825d1f`, `scratch/footprints/` |
