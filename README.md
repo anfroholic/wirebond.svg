@@ -25,7 +25,6 @@
 
 wirebond.svg is a restricted SVG profile for describing a wire bonded assembly. A `.wb.svg` file opens in any browser as a true-scale bonding diagram, and tools read the same file as data.
 
-> **Status: prototype, v0.1 draft.** Nothing here has been run through a real bonder or offline programming tool.
 
 <table>
   <tr>
@@ -37,6 +36,16 @@ wirebond.svg is a restricted SVG profile for describing a wire bonded assembly. 
     <td><img src="docs/renders/04_top.jpg" alt="The two-die demo board from above, with its parts populated"></td>
   </tr>
 </table>
+
+## Why a picture
+
+Wire bonding already runs on pictures. A bonding diagram is the accepted exchange format today, and everything around it is built for people reading drawings. With AI reading more of our files, I think formats should become more human-centric anyway, not less.
+
+So keep the picture. Save it as an SVG, which is just XML under the hood, and put the wire bond data right into that XML as key/value pairs on the drawn elements.
+
+> Humans get what they want.
+>
+> Machines can read what they want.
 
 ## Wire Bond Bench
 
@@ -170,6 +179,10 @@ Do not run `.wb.svg` files through SVGO or other minifiers. They convert shapes 
 ## Related work
 
 [open.cob.json](https://github.com/MaxClerkwell/open.cob.json) is a JSON exchange format for chip-on-board wire bonding.
+
+## Feedback
+
+Feedback, ideas and issues are all welcome. [Open an issue](https://github.com/anfroholic/wirebonding.svg/issues).
 
 ## License
 
