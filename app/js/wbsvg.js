@@ -3,10 +3,11 @@
    form the bench already round-trips: the lands as a footprint, each die as a footprint with wb_kind die, each wire as a
    wb_kind wire footprint, fiducials and parts as footprints, and the board picture as graphics on its own layers. From
    there the bench opens it as it opens any board it wrote, so a reopened file can be edited and exported again.
-   Coordinates carry straight over: 1 µm in the file is 0.001 mm on the board, from the same corner. */
+   Coordinates carry straight over: 1 µm in the file is 0.001 mm on the board, from the same corner.
+   Part of Wire Bond Bench, from wirebond.svg: https://github.com/anfroholic/wirebond.svg. (c) Andrew Wingate, MIT licence. */
 (function (W) {
   'use strict';
-  const NS = 'urn:wbx:0.1';
+  const NS = 'urn:wbsvg:0.2';
   const q = s => '"' + String(s).replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, '\\n') + '"';
   const n = v => { const s = (+v).toFixed(6).replace(/0+$/, '').replace(/\.$/, ''); return s === '-0' || s === '' ? '0' : s; };
   const mm = v => n(v / 1000);
@@ -70,6 +71,10 @@
     const kinds = k => all.filter(e => wb(e, 'kind') === k);
     if (!kinds('die').length) throw new Error('This SVG has no wirebond.svg die in it (no wb:kind="die"), so there\'s nothing to open.');
     const out = { design: wb(root, 'design') || '', notes: [], rules: {} };
+    // The seal (seal.js): was the file changed after it was written? Writing it again from here seals it afresh, so say so now.
+    out.seal = W.WBSVG.seal ? W.WBSVG.seal.check(root) : 'none';
+    if (out.seal === 'data changed') out.notes.push('Its seal doesn\'t match: the data was changed after the file was written, by hand or in another program. Check it before you trust it.');
+    if (out.seal === 'drawing changed') out.notes.push('Its seal shows the drawing was changed after the file was written, but not its data: its labels, hover text or colours may not match.');
     for (const [k, key] of [['rule-wire-gap', 'gap'], ['rule-edge-clear', 'edge']]) if (wb(root, k)) out.rules[key] = +wb(root, k);
 
     // The board: its outline and, if there is one, the board view the app writes, with the picture in it.
@@ -181,7 +186,7 @@
   const rot = (x, y, a) => { const r = a * Math.PI / 180, c = Math.cos(r), s = Math.sin(r); return [x * c + y * s, -x * s + y * c]; };
 
   function toKicad(m) {
-    const o = [`(kicad_pcb`, `\t(version 20260206)`, `\t(generator "wbx_explorer")`, `\t(generator_version "10.0")`,
+    const o = [`(kicad_pcb`, `\t(version 20260206)`, `\t(generator ${q(W.WBSVG.brand.generator)})`, `\t(generator_version "10.0")`,
       `\t(general\n${m.boardThick ? `\t\t(thickness ${n(m.boardThick / 1000)})\n` : ''}\t\t(legacy_teardrops no)\n\t)`, `\t(paper "A4")`,
       `\t(layers\n${LAYERS.map(r => `\t\t(${r[0]} ${q(r[1])} ${r[2]}${r[3] ? ' ' + q(r[3]) : ''})`).join('\n')}\n\t)`, `\t(setup\n\t\t(pad_to_mask_clearance 0)\n\t)`,
       `\t(property "wb_source" "opened from a .wb.svg: a picture of the board, its copper has no nets")`];
@@ -196,7 +201,7 @@
     for (const k of m.marks || []) { if (!marks.has(k.ref)) marks.set(k.ref, []); marks.get(k.ref).push(k); if (!refs.has(k.ref)) refs.set(k.ref, []); }
     const biggest = [...refs.keys()].sort((a, b) => refs.get(b).length - refs.get(a).length)[0];
     for (const [ref, ls] of refs) {
-      o.push(`\t(footprint ${q('wbx_substrate:' + ref)}\n\t\t(layer "F.Cu")\n\t\t(at 0 0)\n\t\t(property "Reference" ${q(ref)} (at 0 0 0) (layer "F.Fab") (hide yes) (effects (font (size 0.5 0.5) (thickness 0.08))))`);
+      o.push(`\t(footprint ${q('wbsvg_substrate:' + ref)}\n\t\t(layer "F.Cu")\n\t\t(at 0 0)\n\t\t(property "Reference" ${q(ref)} (at 0 0 0) (layer "F.Fab") (hide yes) (effects (font (size 0.5 0.5) (thickness 0.08))))`);
       // Its copper marks: the role of each as a field, and the mark itself as filled copper, in the order the file has them.
       const ms = marks.get(ref) || [];
       for (const k of ms) o.push(hidden('wb_fiducial_' + k.name, k.role));
@@ -216,7 +221,7 @@
     for (const d of m.dies) {
       const W_ = d.w / 1000, H_ = d.h / 1000, x0 = -W_ / 2, y1 = H_ / 2;
       const [ax, ay] = rot(x0, y1, d.rot), px = d.tx / 1000 - ax, py = d.ty / 1000 - ay;
-      o.push(`\t(footprint ${q('wbx_die:' + d.name)}\n\t\t(layer "F.Cu")\n\t\t(at ${n(px)} ${n(py)}${d.rot ? ' ' + n(d.rot) : ''})`,
+      o.push(`\t(footprint ${q('wbsvg_die:' + d.name)}\n\t\t(layer "F.Cu")\n\t\t(at ${n(px)} ${n(py)}${d.rot ? ' ' + n(d.rot) : ''})`,
         `\t\t(property "Reference" ${q(d.id)} (at 0 ${n(-H_ / 2 - 0.3)} 0) (layer "F.Fab") (effects (font (size 0.3 0.3) (thickness 0.05))))`,
         `\t\t(property "Value" ${q(d.name)} (at 0 ${n(H_ / 2 + 0.3)} 0) (layer "F.Fab") (effects (font (size 0.3 0.3) (thickness 0.05))))`,
         hidden('wb_kind', 'die'));
@@ -235,7 +240,7 @@
 
     // Wires, as the board form: each says its ends and profile, and draws its run on the Wirebond layer.
     for (const w of m.wires) {
-      o.push(`\t(footprint "wbx_wire"\n\t\t(layer "F.Cu")\n\t\t(at ${mm(w.x1)} ${mm(w.y1)})`, hidden('Reference', w.name || 'W' + w.seq), hidden('wb_kind', 'wire'), hidden('wb_from', w.from), hidden('wb_to', w.to));
+      o.push(`\t(footprint "wbsvg_wire"\n\t\t(layer "F.Cu")\n\t\t(at ${mm(w.x1)} ${mm(w.y1)})`, hidden('Reference', w.name || 'W' + w.seq), hidden('wb_kind', 'wire'), hidden('wb_from', w.from), hidden('wb_to', w.to));
       if (w.toKind) o.push(hidden('wb_to_kind', w.toKind));
       if (w.profile) o.push(hidden('wb_type', w.profile));
       o.push(hidden('wb_seq', String(w.seq)));
@@ -247,14 +252,14 @@
     for (const f of m.fids) {
       const s = f.shape, cx = s.kind === 'circle' ? s.x : s.x + s.w / 2, cy = s.kind === 'circle' ? s.y : s.y + s.h / 2;
       const pad = s.kind === 'circle' ? `(pad "" smd circle (at 0 0) (size ${mm(2 * s.r)} ${mm(2 * s.r)})` : `(pad "" smd rect (at 0 0) (size ${mm(s.w)} ${mm(s.h)})`;
-      o.push(`\t(footprint "wbx:fiducial"\n\t\t(layer "F.Cu")\n\t\t(at ${mm(cx)} ${mm(cy)})`, `\t\t(property "Reference" ${q(f.name)} (at 0 -1 0) (layer "F.Fab") (hide yes) (effects (font (size 0.5 0.5) (thickness 0.08))))`,
+      o.push(`\t(footprint "wbsvg:fiducial"\n\t\t(layer "F.Cu")\n\t\t(at ${mm(cx)} ${mm(cy)})`, `\t\t(property "Reference" ${q(f.name)} (at 0 -1 0) (layer "F.Fab") (hide yes) (effects (font (size 0.5 0.5) (thickness 0.08))))`,
         hidden('wb_kind', 'fiducial'), hidden('wb_role', f.role));
       if (f.datum) o.push(hidden('wb_datum', f.datum));
       o.push(`\t\t${BARE}`, `\t\t${pad} (layers "F.Cu" "F.Mask")${f.role === 'align' ? ' (property pad_prop_fiducial_glob)' : ''})`, '\t)');
     }
     for (const p of m.parts) {
       const b = p.box, cx = b.x + b.w / 2, cy = b.y + b.h / 2;
-      o.push(`\t(footprint "wbx:part"\n\t\t(layer "F.Cu")\n\t\t(at ${mm(cx)} ${mm(cy)})`, `\t\t(property "Reference" ${q(p.name)} (at 0 0 0) (layer "F.Fab") (effects (font (size 0.3 0.3) (thickness 0.05))))`,
+      o.push(`\t(footprint "wbsvg:part"\n\t\t(layer "F.Cu")\n\t\t(at ${mm(cx)} ${mm(cy)})`, `\t\t(property "Reference" ${q(p.name)} (at 0 0 0) (layer "F.Fab") (effects (font (size 0.3 0.3) (thickness 0.05))))`,
         `\t\t(property "Value" ${q(p.value || p.name)} (at 0 0 0) (layer "F.Fab") (hide yes) (effects (font (size 0.3 0.3) (thickness 0.05))))`, hidden('wb_kind', 'part'));
       if (p.height) o.push(hidden('wb_height_um', n(p.height)));
       o.push(`\t\t(attr smd)`, `\t\t(fp_rect (start ${mm(-b.w / 2)} ${mm(-b.h / 2)}) (end ${mm(b.w / 2)} ${mm(b.h / 2)}) (stroke (width 0.05) (type solid)) (fill no) (layer "F.CrtYd"))`, '\t)');
@@ -281,8 +286,8 @@
   function chunk(pts) { const o = []; for (let i = 0; i < pts.length; i += 2) o.push(xy(pts[i], pts[i + 1])); return o.join(' '); }
 
   // Does this text look like a wirebond.svg, before anything is changed?
-  const looks = text => /xmlns:wb\s*=\s*["']urn:wbx:/.test(String(text).slice(0, 4000));
+  const looks = text => /xmlns:wb\s*=\s*["']urn:wbsvg:/.test(String(text).slice(0, 4000));
 
-  W.WBX = W.WBX || {};
-  W.WBX.wbsvg = { parse, toKicad, looks };
+  W.WBSVG = W.WBSVG || {};
+  W.WBSVG.wbsvg = { parse, toKicad, looks };
 })(window);

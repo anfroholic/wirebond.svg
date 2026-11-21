@@ -1,0 +1,835 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fields, Not Files</title>
+<link rel="icon" type="image/svg+xml" href="../../app/brand/wirebond-icon.svg">
+<meta name="author" content="Andrew Wingate">
+<meta name="generator" content="wirebond.svg">
+<style>
+/* Same house style as the other primer pages: one reading column, Evezor palette, dark first. */
+:root{
+  color-scheme:dark;
+  --bg:#262c2a; --panel:#12302b; --panel2:#0c1311; --line:#1b5c50;
+  --txt:#e8eceb; --muted:#8fb5ac; --accent:#5bbbe6; --head:#0b6f5d; --head-txt:#ffffff; --head-sub:#d8f3ec;
+  --green:#36d9bb; --green-bg:#0b3a31; --blue:#5bbbe6; --blue-bg:#10303f;
+  --magenta:#e660bd; --magenta-bg:#3a1832; --amber:#e9c46a; --amber-bg:#3b3115;
+  --si:#6d7a86; --si-edge:#9aa7b2; --board:#1d5a3a; --board-edge:#2f7d55; --gold:#e3b23c; --copper:#e07a4b;
+  --code-bg:#04130a; --code-txt:#aff5b4;
+  /* chart series, checked for colour-blind separation against --panel */
+  --s-rest:#3987e5; --s-pic:#d95926; --grid:#1f4a42;
+  --f-body:Arial,Helvetica,sans-serif; --f-mono:ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: light){ :root:not([data-theme="dark"]){
+  color-scheme:light;
+  --bg:#f7f9f9; --panel:#ffffff; --panel2:#eef3f2; --line:#c9d3d1;
+  --txt:#14201d; --muted:#4d5c58; --accent:#1f78a6; --head:#0b6f5d; --head-txt:#ffffff; --head-sub:#d8f3ec;
+  --green:#068770; --green-bg:#e3f4ef; --blue:#1f78a6; --blue-bg:#e4f2f9;
+  --magenta:#b5288a; --magenta-bg:#fbe9f5; --amber:#8a6a10; --amber-bg:#fbf3dc;
+  --si:#9aa5ae; --si-edge:#6d7a86; --board:#cfe3dd; --board-edge:#7fb0a2; --gold:#c8961e; --copper:#c8602f;
+  --code-bg:#e9efed; --code-txt:#0b5a4b;
+  --s-rest:#1f78a6; --s-pic:#c8602f; --grid:#e3e9e8;
+}}
+:root[data-theme="light"]{
+  color-scheme:light;
+  --bg:#f7f9f9; --panel:#ffffff; --panel2:#eef3f2; --line:#c9d3d1;
+  --txt:#14201d; --muted:#4d5c58; --accent:#1f78a6; --head:#0b6f5d; --head-txt:#ffffff; --head-sub:#d8f3ec;
+  --green:#068770; --green-bg:#e3f4ef; --blue:#1f78a6; --blue-bg:#e4f2f9;
+  --magenta:#b5288a; --magenta-bg:#fbe9f5; --amber:#8a6a10; --amber-bg:#fbf3dc;
+  --si:#9aa5ae; --si-edge:#6d7a86; --board:#cfe3dd; --board-edge:#7fb0a2; --gold:#c8961e; --copper:#c8602f;
+  --code-bg:#e9efed; --code-txt:#0b5a4b;
+  --s-rest:#1f78a6; --s-pic:#c8602f; --grid:#e3e9e8;
+}
+*{box-sizing:border-box}
+img{max-width:100%;height:auto}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--txt);font:16px/1.6 var(--f-body)}
+a{color:var(--accent);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:2px}
+a:focus-visible,button:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--magenta);outline-offset:2px}
+code,.mono{font-family:var(--f-mono);font-size:.84em}
+code{background:var(--code-bg);color:var(--code-txt);border-radius:4px;padding:1px 5px}
+
+.mast{background:var(--head);color:var(--head-txt);border-bottom:4px solid #d93aa7}
+.wrap{max-width:960px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.mast .wrap{padding-block:26px 22px}
+.eyebrow{font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:var(--head-sub)}
+h1{font-size:clamp(28px,5vw,40px);line-height:1.15;margin:6px 0 8px;text-wrap:balance}
+.mast p{margin:0;color:var(--head-sub);max-width:700px;font-size:16.5px}
+.sitenav{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13.5px;margin-bottom:14px}
+.sitenav a{color:var(--head-sub);text-decoration:none}
+.sitenav a:hover{color:#fff;text-decoration:underline}
+.brandmark{display:inline-block;margin:0 0 12px}.brandmark img{display:block;height:40px;width:auto}
+
+main.wrap{padding-block:8px 96px}
+h2{font-size:24px;line-height:1.25;margin:60px 0 4px;padding-top:16px;border-top:1px solid var(--line);text-wrap:balance}
+h2 .k{color:var(--muted);font-weight:400;margin-right:8px;font-size:18px}
+h3{font-size:17px;margin:26px 0 6px}
+p{margin:10px 0;max-width:74ch}
+.lede{font-size:17px}
+.muted{color:var(--muted)} .small{font-size:13.5px}
+
+.tldr{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:10px;padding:14px 18px;margin:22px 0 18px}
+.tldr ul{margin:6px 0 0;padding-left:20px} .tldr li{margin:6px 0}
+.callout{border:1px solid var(--line);border-left:4px solid var(--amber);background:var(--amber-bg);border-radius:8px;padding:11px 15px;margin:14px 0;font-size:15px}
+.callout.info{border-left-color:var(--blue);background:var(--blue-bg)}
+.callout.good{border-left-color:var(--green);background:var(--green-bg)}
+.callout p{margin:4px 0;max-width:none}
+
+nav.toc{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:4px 20px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 18px;margin:18px 0;font-size:14.5px}
+nav.toc a{color:var(--txt);text-decoration:none} nav.toc a:hover{color:var(--accent)}
+nav.toc span{color:var(--muted);display:inline-block;width:22px}
+
+.fig{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;margin:16px 0;position:relative}
+.scroll{overflow-x:auto}
+figcaption,.cap{font-size:13px;color:var(--muted);margin-top:7px;max-width:80ch}
+
+/* pills */
+.pill{display:inline-block;font-size:11.5px;font-weight:700;border-radius:999px;padding:0 9px;border:1px solid;white-space:nowrap;vertical-align:1px;line-height:1.6}
+.p-yes{color:var(--green);border-color:var(--green);background:var(--green-bg)}
+.p-maybe{color:var(--amber);border-color:var(--amber);background:var(--amber-bg)}
+.p-no{color:var(--magenta);border-color:var(--magenta);background:var(--magenta-bg)}
+.p-untested{color:var(--muted);border-color:var(--line);background:var(--panel2)}
+
+/* the footprint diagram */
+.pockets svg{display:block;width:100%;min-width:720px;height:auto}
+.pockets text{font-family:var(--f-body);fill:var(--txt)}
+.pockets .outer{fill:none;stroke:var(--muted);stroke-width:1.5;stroke-dasharray:7 5}
+.pockets .ttl{font-size:15px;font-weight:700}
+.pockets .sub{font-size:12.5px;fill:var(--muted)}
+.pockets .mono{font-family:var(--f-mono);font-size:12px}
+.pockets .pan{fill:var(--panel2);stroke:var(--line);stroke-width:1.2}
+.pockets .pan.g{stroke:var(--green);stroke-width:2}
+.pockets .pan.a{stroke:var(--amber);stroke-width:2;stroke-dasharray:6 4}
+.pockets .die{fill:var(--si);stroke:var(--si-edge)}
+.pockets .pad{fill:var(--gold)}
+.pockets .tag{fill:var(--panel);stroke:var(--line)}
+.pockets .tag.new{fill:none;stroke:var(--green);stroke-dasharray:4 3}
+.pockets .k{font-family:var(--f-mono);font-size:12px;fill:var(--green);font-weight:700}
+.pockets .kk{font-family:var(--f-mono);font-size:12px;fill:var(--muted);font-weight:700}
+.pockets .v{font-family:var(--f-mono);font-size:12px}
+.pockets .file{fill:var(--panel);stroke:var(--line);stroke-width:1.2}
+.pockets .fold{fill:var(--line)}
+.pockets .ok{fill:var(--green)} .pockets .q{fill:var(--amber)}
+.pockets .okt{fill:var(--green);font-weight:700;font-size:12.5px}
+.pockets .qt{fill:var(--amber);font-weight:700;font-size:12.5px}
+.pockets .cap2{font-size:13px;fill:var(--muted)}
+
+/* KiCad dialog sketch */
+.anno{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:start}
+@media (max-width:780px){.anno{grid-template-columns:minmax(0,1fr)}}
+.dlg{border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--panel2);font-size:13px}
+.dlg .bar{background:var(--line);color:var(--txt);padding:5px 10px;font-weight:700;font-size:12.5px;display:flex;justify-content:space-between}
+.dlg .bar span{opacity:.7;font-weight:400}
+.dlg .tabs{display:flex;gap:2px;padding:6px 8px 0;font-size:12px;color:var(--muted)}
+.dlg .tabs b{background:var(--panel);color:var(--txt);border:1px solid var(--line);border-bottom:0;border-radius:5px 5px 0 0;padding:2px 8px;font-weight:600}
+.dlg .tabs i{padding:2px 8px;font-style:normal}
+.dlg .tw{margin:0 8px 8px;border:1px solid var(--line);background:var(--panel)}
+.dlg table{font-size:12.5px}
+.dlg th{font-size:11.5px}
+.dlg td,.dlg th{padding:4px 8px}
+.dlg tr.mine td{background:var(--green-bg)}
+.dlg .chk{display:inline-block;width:12px;height:12px;border:1px solid var(--muted);border-radius:2px;vertical-align:-1px}
+.dlg .chk.on{background:var(--accent);border-color:var(--accent)}
+.dlg .btns{display:flex;gap:6px;padding:0 8px 8px;font-size:12px}
+.dlg .btns span{border:1px solid var(--line);border-radius:4px;padding:1px 8px;color:var(--muted)}
+pre.code{font-family:var(--f-mono);font-size:12.5px;line-height:1.6;background:var(--code-bg);color:var(--code-txt);border-radius:10px;padding:12px 14px;margin:0;overflow-x:auto}
+pre.code .d{color:var(--muted)}
+pre.code .k{color:var(--magenta);font-weight:700}
+
+/* cards */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr));gap:12px;margin:16px 0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:6px;min-width:0;border-top:4px solid var(--line)}
+.card.rec{border-color:var(--green);border-top-color:var(--green)}
+.card h3{margin:0;font-size:16px}
+.card p{margin:0;font-size:14px}
+.card svg{display:block;width:100%;height:auto;background:var(--panel2);border-radius:8px}
+.card svg text{font-family:var(--f-mono);font-size:10px;fill:var(--muted)}
+.card .lab{font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700}
+
+/* journey */
+ol.journey{list-style:none;padding:0;margin:16px 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,170px),1fr));gap:10px;counter-reset:j}
+ol.journey li{counter-increment:j;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:6px;position:relative}
+ol.journey li::before{content:counter(j);width:24px;height:24px;border-radius:50%;background:var(--head);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12.5px}
+ol.journey b{font-size:14.5px}
+ol.journey .row{display:flex;justify-content:space-between;gap:6px;font-size:12.5px;align-items:center;border-top:1px solid var(--line);padding-top:5px}
+ol.journey .row span:first-child{color:var(--muted);flex:none}
+ol.journey .row .pill{white-space:normal;text-align:right}
+ol.journey .ill{display:block;width:100%;height:auto}
+ol.journey .ill text{font-family:var(--f-body);font-size:9px;fill:var(--muted)}
+
+/* tables */
+.tw{overflow-x:auto;margin:10px 0}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{border-bottom:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+th{color:var(--muted);font-weight:600;font-size:12.5px;background:var(--panel2);white-space:nowrap}
+td.f{white-space:nowrap;font-weight:700}
+td.c,th.c{text-align:center}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+tr.rec td{background:var(--green-bg)}
+.y{color:var(--green);font-weight:700} .n{color:var(--magenta);font-weight:700} .m{color:var(--amber);font-weight:700}
+
+/* charts */
+.chart svg{display:block;width:100%;min-width:640px;height:auto}
+.chart text{font-family:var(--f-body);fill:var(--txt);font-size:13px}
+.chart .ax{fill:var(--muted);font-size:12px}
+.chart .gl{stroke:var(--grid);stroke-width:1}
+.chart .base{stroke:var(--muted);stroke-width:1}
+.chart .lbl{font-size:13px}
+.chart .lbl2{font-size:11.5px;fill:var(--muted)}
+.chart .val{font-size:12px;fill:var(--muted);font-variant-numeric:tabular-nums}
+.chart .hit{fill:transparent;cursor:default}
+.chart .band{fill:var(--green-bg)}
+.chart .bandt{font-size:11.5px;fill:var(--green);font-weight:700}
+.legend{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:13px;color:var(--muted);margin:2px 2px 10px;align-items:center}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.tip{position:absolute;pointer-events:none;background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:7px 10px;font-size:13px;box-shadow:0 4px 14px rgba(0,0,0,.25);max-width:280px;z-index:5}
+.tip b{display:block;margin-bottom:2px}
+.tip .r{display:flex;justify-content:space-between;gap:14px;font-variant-numeric:tabular-nums}
+.tip .r span:first-child{color:var(--muted)}
+details.tbl{margin-top:8px;font-size:14px}
+details.tbl summary{cursor:pointer;color:var(--accent)}
+
+/* steps */
+ol.steps{list-style:none;padding:0;margin:12px 0;display:grid;gap:8px;counter-reset:s}
+ol.steps li{counter-increment:s;display:grid;grid-template-columns:32px minmax(0,1fr);gap:12px;align-items:start;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 14px}
+ol.steps li::before{content:counter(s);width:28px;height:28px;border-radius:50%;background:var(--head);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13.5px}
+ol.steps li>b,ol.steps li>span{grid-column:2}
+ol.steps b{display:block}
+ol.steps span{font-size:14.5px;color:var(--muted)}
+
+footer{border-top:1px solid var(--line);margin-top:56px;padding-top:14px;font-size:13px;color:var(--muted)}
+.madewith{display:flex;align-items:center;gap:10px;max-width:960px;margin:40px auto 28px;padding:16px 20px 0;border-top:1px solid rgba(127,127,127,.3);font-size:13px;color:#7ba69c}.madewith img{width:24px;height:24px;flex:none}.madewith a{color:inherit}
+</style>
+</head>
+<body>
+
+<header class="mast">
+  <div class="wrap">
+    <a class="brandmark" href="https://github.com/anfroholic/wirebond.svg" title="wirebond.svg on GitHub"><img src="../../app/brand/wirebond-logo.svg" alt="wirebond.svg" width="160" height="40"></a>
+    <nav class="sitenav" aria-label="Project pages">
+      <a href="../../app/index.html">← Wire Bond Bench</a>
+      <a href="wire-bonding-primer.html">Wire bonding primer</a>
+      <a href="files-in-and-out.html">Files in and out</a>
+      <a href="fiducials.html">Fiducials</a>
+      <a href="../../SPEC.md">wirebond.svg spec</a>
+    </nav>
+    <div class="eyebrow">Wire Bond Bench · explainer · November 2026</div>
+    <h1>Fields, not files</h1>
+    <p>We asked the KiCad developers where our bonding design should live inside a footprint. They said "footprint fields". This page shows what that means and what it changes for us.</p>
+  </div>
+</header>
+
+<main class="wrap">
+
+<div class="tldr">
+  <b>In short</b>
+  <ul>
+    <li>A footprint can carry two kinds of extra data: <b>fields</b>, which are short labelled lines of text, and <b>embedded files</b>, which are whole files tucked inside.</li>
+    <li>We put our whole design file, the <code>.wb.svg</code>, in as an embedded file of type "other". It works in KiCad 10.0.3, but nobody has promised it will keep working.</li>
+    <li>The developers pointed us at <b>fields</b>. Fields are documented, any name is allowed apart from ones starting with <code>ki_</code>, and KiCad carries them from the library onto the board.</li>
+    <li>We already use fields for a lot: wires, wire types, fiducials and die heights all travel as <code>wb_…</code> fields.</li>
+    <li><b>Decision:</b> one hidden field, <code>wb_svg</code>, holding the whole <code>.wb.svg</code> exactly as written. The exchange format is the SVG, so the field is simply the SVG.</li>
+    <li><b>Tested in KiCad 10.0.3:</b> designs of 378 to 653 KB came back byte for byte after KiCad re-saved the library and the board. The field stays hidden, and nothing got slower.</li>
+    <li>The design is smaller than the STEP model already in the same footprint: 386 KB against 1,059 KB.</li>
+  </ul>
+</div>
+
+<nav class="toc" aria-label="On this page">
+  <a href="#box"><span>1</span>A footprint is a box with pockets</a>
+  <a href="#field"><span>2</span>What a field looks like</a>
+  <a href="#ours"><span>3</span>Fields we already write</a>
+  <a href="#journey"><span>4</span>What survives the trip</a>
+  <a href="#size"><span>5</span>Is it too big?</a>
+  <a href="#options"><span>6</span>Four ways to carry the design</a>
+  <a href="#look"><span>7</span>How one field will look</a>
+  <a href="#next"><span>8</span>What to do next</a>
+  <a href="#words"><span>9</span>Words on this page</a>
+</nav>
+
+<!-- ============================================================ -->
+<h2 id="box"><span class="k">1</span>A footprint is a box with pockets</h2>
+<p class="lede">Think of a footprint as a box KiCad keeps for each part. It has three pockets, and KiCad treats each one differently.</p>
+
+<figure class="fig pockets">
+<div class="scroll">
+<svg viewBox="0 0 960 470" role="img" aria-label="Diagram: a footprint holds a drawing, a list of fields, and embedded files. Fields are marked as yours and documented. The STEP model is a file KiCad uses. The .wb.svg embedded as type other is marked as working today but not promised.">
+  <rect class="outer" x="8" y="8" width="944" height="454" rx="16"/>
+  <text class="ttl" x="28" y="38">One footprint: wafer_space_1x1.kicad_mod</text>
+  <text class="sub" x="28" y="58">Everything below is saved together in one file, and copied onto the board when you place the part.</text>
+
+  <!-- pocket 1: drawing -->
+  <rect class="pan" x="28" y="78" width="290" height="320" rx="10"/>
+  <text class="ttl" x="44" y="104">The drawing</text>
+  <text class="sub" x="44" y="122">Shapes, pads and pictures. KiCad's own.</text>
+  <rect class="die" x="93" y="150" width="160" height="160" rx="3"/>
+  <g class="pad">
+    <rect x="103" y="156" width="14" height="8"/><rect x="125" y="156" width="14" height="8"/><rect x="147" y="156" width="14" height="8"/><rect x="169" y="156" width="14" height="8"/><rect x="191" y="156" width="14" height="8"/><rect x="213" y="156" width="14" height="8"/>
+    <rect x="103" y="296" width="14" height="8"/><rect x="125" y="296" width="14" height="8"/><rect x="147" y="296" width="14" height="8"/><rect x="169" y="296" width="14" height="8"/><rect x="191" y="296" width="14" height="8"/><rect x="213" y="296" width="14" height="8"/>
+    <rect x="99" y="172" width="8" height="14"/><rect x="99" y="196" width="8" height="14"/><rect x="99" y="220" width="8" height="14"/><rect x="99" y="244" width="8" height="14"/><rect x="99" y="268" width="8" height="14"/>
+    <rect x="239" y="172" width="8" height="14"/><rect x="239" y="196" width="8" height="14"/><rect x="239" y="220" width="8" height="14"/><rect x="239" y="244" width="8" height="14"/><rect x="239" y="268" width="8" height="14"/>
+  </g>
+  <text class="sub" x="173" y="235" text-anchor="middle" style="fill:var(--txt)">die picture</text>
+  <text class="sub" x="44" y="364">Outline, pad rectangles, pad numbers,</text>
+  <text class="sub" x="44" y="380">the die picture (all on F.Fab).</text>
+
+  <!-- pocket 2: fields -->
+  <rect class="pan g" x="335" y="78" width="290" height="320" rx="10"/>
+  <text class="ttl" x="351" y="104">Fields</text>
+  <text class="sub" x="351" y="122">Labelled lines of text. "Name = value".</text>
+  <g>
+    <rect class="tag" x="351" y="138" width="258" height="30" rx="6"/><text class="kk" x="361" y="158">Reference</text><text class="v" x="470" y="158">D</text>
+    <rect class="tag" x="351" y="174" width="258" height="30" rx="6"/><text class="kk" x="361" y="194">Value</text><text class="v" x="470" y="194">wafer_space_1x1</text>
+    <rect class="tag" x="351" y="210" width="258" height="30" rx="6"/><text class="kk" x="361" y="230">Datasheet</text><text class="v" x="470" y="230">…</text>
+    <rect class="tag" x="351" y="246" width="258" height="30" rx="6"/><text class="kk" x="361" y="266">Description</text><text class="v" x="470" y="266">…</text>
+    <rect class="tag" x="351" y="282" width="258" height="30" rx="6"/><text class="k" x="361" y="302">wb_kind</text><text class="v" x="470" y="302">die</text>
+    <rect class="tag" x="351" y="318" width="258" height="30" rx="6"/><text class="k" x="361" y="338">wb_made_with</text><text class="v" x="470" y="338">Made with wire…</text>
+    <rect class="tag new" x="351" y="354" width="258" height="30" rx="6"/><text class="k" x="361" y="374">wb_…</text><text class="v" x="470" y="374" style="fill:var(--muted)">any name you like</text>
+  </g>
+
+  <!-- pocket 3: embedded files -->
+  <rect class="pan a" x="642" y="78" width="290" height="320" rx="10"/>
+  <text class="ttl" x="658" y="104">Embedded files</text>
+  <text class="sub" x="658" y="122">Whole files, packed inside. Each has a type.</text>
+  <g>
+    <path class="file" d="M668 146 h62 l14 14 v70 h-76 z"/><path class="fold" d="M730 146 v14 h14 z"/>
+    <text class="mono" x="756" y="170">die.step</text>
+    <text class="sub" x="756" y="188">type: model</text>
+    <circle class="ok" cx="764" cy="208" r="7"/><text class="okt" x="777" y="213">KiCad uses it for 3D</text>
+  </g>
+  <g>
+    <path class="file" d="M668 262 h62 l14 14 v70 h-76 z"/><path class="fold" d="M730 262 v14 h14 z"/>
+    <text class="mono" x="756" y="286">design.wb.svg</text>
+    <text class="sub" x="756" y="304">type: other</text>
+    <circle class="q" cx="764" cy="324" r="7"/><text class="qt" x="777" y="329">Kept today.</text>
+    <text class="qt" x="777" y="346">Not promised.</text>
+  </g>
+
+  <!-- verdicts -->
+  <text class="cap2" x="44" y="428">KiCad's own drawing.</text>
+  <text class="cap2" x="351" y="428" style="fill:var(--green);font-weight:700">The developers' pick: yours, documented,</text>
+  <text class="cap2" x="351" y="446" style="fill:var(--green);font-weight:700">copied to the board.</text>
+  <text class="cap2" x="658" y="428" style="fill:var(--amber);font-weight:700">Where we put the .wb.svg today.</text>
+  <text class="cap2" x="658" y="446">Made-up types stop the library loading.</text>
+</svg>
+</div>
+<figcaption>The green pocket is the one KiCad documents for extra data. The amber one is where the design file sits now. A few things you found in testing: KiCad 10.0.3 keeps the "other" file through saving, library upgrade and placement on a board. A made-up type name stops the library from loading, and a font file we add gets dropped.</figcaption>
+</figure>
+
+<div class="callout info"><p><b>An analogy.</b> A field is a line on the shipping label: "Contents: die", "Made by: Wire Bond Bench". Anyone can read it without opening the box, and the carrier promises to keep the label on. An embedded "other" file is a letter taped inside the box. It arrives today, but the carrier never said it would keep letters, and it already throws some kinds away (fonts).</p></div>
+
+<!-- ============================================================ -->
+<h2 id="field"><span class="k">2</span>What a field looks like</h2>
+<p>Fields have been part of KiCad footprints since version 8. Every footprint has four built-in fields (Reference, Value, Datasheet, Description), and you can add as many more as you like. KiCad keeps names starting with <code>ki_</code> for itself; any other name is ours. A field can be hidden so it never shows on the board.</p>
+
+<div class="anno">
+  <figure class="fig" style="margin:0">
+    <div class="dlg" role="img" aria-label="Sketch of KiCad's Footprint Properties dialog with a table of fields; the wb_ rows are ours">
+      <div class="bar">Footprint Properties <span>sketch, not a screenshot</span></div>
+      <div class="tabs"><b>General</b><i>Clearance Overrides</i><i>Pad Connections</i><i>3D Models</i></div>
+      <div class="tw"><table>
+        <thead><tr><th>Name</th><th>Value</th><th class="c">Show</th><th>Layer</th></tr></thead>
+        <tbody>
+          <tr><td>Reference</td><td>D</td><td class="c"><span class="chk on"></span></td><td>F.Fab</td></tr>
+          <tr><td>Value</td><td>wafer_space_1x1</td><td class="c"><span class="chk on"></span></td><td>F.Fab</td></tr>
+          <tr><td>Datasheet</td><td></td><td class="c"><span class="chk"></span></td><td>F.Fab</td></tr>
+          <tr><td>Description</td><td></td><td class="c"><span class="chk"></span></td><td>F.Fab</td></tr>
+          <tr class="mine"><td><b>wb_kind</b></td><td>die</td><td class="c"><span class="chk"></span></td><td>F.Fab</td></tr>
+          <tr class="mine"><td><b>wb_made_with</b></td><td>Made with wirebond.svg https://…</td><td class="c"><span class="chk"></span></td><td>F.Fab</td></tr>
+        </tbody>
+      </table></div>
+      <div class="btns"><span>+</span><span>−</span></div>
+    </div>
+    <figcaption>Where a person sees fields: the table at the top of Footprint Properties. The green rows are ours.</figcaption>
+  </figure>
+  <figure class="fig" style="margin:0">
+<pre class="code"><span class="d">; inside wafer_space_1x1.kicad_mod</span>
+(<span class="k">property</span> "Reference" "D" …)
+(<span class="k">property</span> "Value" "wafer_space_1x1" …)
+(<span class="k">property</span> "wb_kind" "die"
+  (layer "F.Fab") (hide yes) …)
+(<span class="k">property</span> "wb_made_with"
+  "Made with wirebond.svg …"
+  (layer "F.Fab") (hide yes) …)</pre>
+    <figcaption>Where a program sees them: one <code>(property "name" "value" …)</code> line each in the footprint file. <code>(hide yes)</code> keeps ours off the drawing. Our exporter writes these lines with one helper, <code>hiddenProp</code> in <code>app/js/export.js</code>.</figcaption>
+  </figure>
+</div>
+
+<p>Because fields are KiCad's documented way to add data, other parts of KiCad can use them too: text on the board can show them, rule areas and design rules can test them, and scripts and plugins can read them. None of that works on an embedded file.</p>
+
+<!-- ============================================================ -->
+<h2 id="ours"><span class="k">3</span>Fields we already write</h2>
+<p>This isn't new ground. When the bench writes a board, the dies, every wire and the wire types already travel as hidden fields. The developers' advice is to do the same for the design that rides on a library footprint.</p>
+
+<div class="tw"><table>
+  <thead><tr><th>On which footprint</th><th>Field</th><th>Example value</th><th>What it says</th></tr></thead>
+  <tbody>
+    <tr><td rowspan="2">Die, in the library</td><td class="f"><code>wb_kind</code></td><td><code>die</code></td><td>This footprint is a die from the bench.</td></tr>
+    <tr><td class="f"><code>wb_made_with</code></td><td><code>Made with wirebond.svg …</code></td><td>Where it came from.</td></tr>
+    <tr><td rowspan="5">Die, on a board</td><td class="f"><code>wb_thickness_um</code></td><td><code>200</code></td><td>How thick the die is.</td></tr>
+    <tr><td class="f"><code>wb_attach_um</code></td><td><code>25</code></td><td>Glue layer under it.</td></tr>
+    <tr><td class="f"><code>wb_sits_on</code></td><td><code>U1</code></td><td>Stacked on another die.</td></tr>
+    <tr><td class="f"><code>wb_bottom_um</code></td><td><code>225</code></td><td>Height of its bottom face.</td></tr>
+    <tr><td class="f"><code>wb_position_tol_um</code></td><td><code>50</code></td><td>How far it may be placed off.</td></tr>
+    <tr><td rowspan="6">Each wire<br><span class="muted small">(W01, W02, …)</span></td><td class="f"><code>wb_from</code></td><td><code>U1.12</code></td><td>Die pad it starts at.</td></tr>
+    <tr><td class="f"><code>wb_to</code></td><td><code>L.12</code></td><td>Land (or other die pad) it ends at.</td></tr>
+    <tr><td class="f"><code>wb_type</code></td><td><code>Au25_std</code></td><td>Which wire type.</td></tr>
+    <tr><td class="f"><code>wb_net</code></td><td><code>VDD</code></td><td>The net it carries.</td></tr>
+    <tr><td class="f"><code>wb_seq</code></td><td><code>12</code></td><td>Bonding order.</td></tr>
+    <tr><td class="f"><code>wb_to_kind</code></td><td><code>die</code></td><td>Only for die-to-die wires.</td></tr>
+    <tr><td rowspan="3">Wire types<br><span class="muted small">(WBLIB)</span></td><td class="f"><code>wb_type_&lt;name&gt;</code></td><td><code>ball gold 25 fwd …</code></td><td>One line per wire type used.</td></tr>
+    <tr><td class="f"><code>wb_fiducial_&lt;mark&gt;</code></td><td><code>align</code></td><td>How each copper mark is used.</td></tr>
+    <tr><td class="f"><code>wb_datum_&lt;mark&gt;</code></td><td><code>B</code></td><td>Which marks are datums B and C.</td></tr>
+  </tbody>
+</table></div>
+<p class="small muted">Example values are made up to show the form. The field names are the ones in <code>app/js/export.js</code> today.</p>
+
+<div class="callout good"><p><b>Many fields aren't a problem.</b> The example board in <code>examples/kicad/example.kicad_pcb</code> (written by an older version of the exporter) carries <b>729</b> <code>wb_</code> fields, and it opens in KiCad. The longest of them is 48 characters with its name. Lots of short fields is exactly how KiCad expects fields to be used.</p></div>
+
+<!-- ============================================================ -->
+<h2 id="journey"><span class="k">4</span>What survives the trip</h2>
+<p>A footprint goes on a journey: saved in a library, opened by a newer KiCad, placed on a board, then updated from the schematic or the library. Here is what we know about each pocket at each stop.</p>
+
+<ol class="journey">
+  <li>
+    <svg class="ill" viewBox="0 0 160 60" aria-hidden="true"><rect x="40" y="8" width="80" height="44" rx="4" fill="var(--panel2)" stroke="var(--line)"/><rect x="66" y="18" width="28" height="24" fill="var(--si)"/><text x="80" y="58" text-anchor="middle">.kicad_mod</text></svg>
+    <b>Saved in a library</b>
+    <div class="row"><span>Fields</span><span class="pill p-yes">kept</span></div>
+    <div class="row"><span>"other" file</span><span class="pill p-yes">kept in 10.0.3</span></div>
+  </li>
+  <li>
+    <svg class="ill" viewBox="0 0 160 60" aria-hidden="true"><text x="30" y="36" text-anchor="middle" style="font-size:14px;fill:var(--txt)">10</text><path d="M50 32 h50" stroke="var(--accent)" stroke-width="2" marker-end="url(#ah)"/><defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="var(--accent)"/></marker></defs><text x="128" y="36" text-anchor="middle" style="font-size:14px;fill:var(--txt)">11?</text></svg>
+    <b>Upgraded by a newer KiCad</b>
+    <div class="row"><span>Fields</span><span class="pill p-yes">part of the format</span></div>
+    <div class="row"><span>"other" file</span><span class="pill p-maybe">no promise</span></div>
+  </li>
+  <li>
+    <svg class="ill" viewBox="0 0 160 60" aria-hidden="true"><rect x="10" y="10" width="140" height="44" rx="4" fill="var(--board)" stroke="var(--board-edge)"/><rect x="66" y="20" width="28" height="24" fill="var(--si)"/><g fill="var(--gold)"><rect x="54" y="22" width="6" height="4"/><rect x="54" y="30" width="6" height="4"/><rect x="54" y="38" width="6" height="4"/><rect x="100" y="22" width="6" height="4"/><rect x="100" y="30" width="6" height="4"/><rect x="100" y="38" width="6" height="4"/></g></svg>
+    <b>Placed on a board</b>
+    <div class="row"><span>Fields</span><span class="pill p-yes">copied over</span></div>
+    <div class="row"><span>"other" file</span><span class="pill p-yes">kept in 10.0.3</span></div>
+  </li>
+  <li>
+    <svg class="ill" viewBox="0 0 160 60" aria-hidden="true"><rect x="8" y="14" width="50" height="34" rx="3" fill="var(--panel2)" stroke="var(--line)"/><path d="M20 31 h26 M33 22 v18" stroke="var(--muted)"/><path d="M64 31 h30" stroke="var(--accent)" stroke-width="2" marker-end="url(#ah)"/><rect x="100" y="14" width="52" height="34" rx="3" fill="var(--board)" stroke="var(--board-edge)"/><text x="33" y="58" text-anchor="middle">schematic</text><text x="126" y="58" text-anchor="middle">board</text></svg>
+    <b>Update PCB from Schematic</b>
+    <div class="row"><span>Fields</span><span class="pill p-maybe">kept, unless a box is ticked</span></div>
+    <div class="row"><span>"other" file</span><span class="pill p-untested">not tested</span></div>
+  </li>
+  <li>
+    <svg class="ill" viewBox="0 0 160 60" aria-hidden="true"><rect x="8" y="14" width="50" height="34" rx="3" fill="var(--panel2)" stroke="var(--line)"/><rect x="24" y="22" width="18" height="18" fill="var(--si)"/><path d="M64 31 h30" stroke="var(--accent)" stroke-width="2" marker-end="url(#ah)"/><rect x="100" y="14" width="52" height="34" rx="3" fill="var(--board)" stroke="var(--board-edge)"/><text x="33" y="58" text-anchor="middle">library</text><text x="126" y="58" text-anchor="middle">board</text></svg>
+    <b>Update Footprints from Library</b>
+    <div class="row"><span>Fields</span><span class="pill p-yes">you choose per field</span></div>
+    <div class="row"><span>"other" file</span><span class="pill p-untested">not tested</span></div>
+  </li>
+</ol>
+
+<div class="tw"><table>
+  <thead><tr><th>Stop</th><th>What happens to fields</th><th>What could go wrong</th></tr></thead>
+  <tbody>
+    <tr><td class="f">Saved, upgraded</td><td>Fields are part of the file format since KiCad 8, so a newer KiCad reads them like any other part of the footprint.</td><td class="muted">Nothing known.</td></tr>
+    <tr><td class="f">Placed on a board</td><td>The KiCad manual says every field in a library footprint is copied onto the board, and can then be edited there.</td><td class="muted">Nothing known.</td></tr>
+    <tr><td class="f">Update PCB from Schematic</td><td>Every field on the schematic symbol is copied onto the footprint. In KiCad 10, a field that's on the footprint but not on the symbol stays, unless "Remove footprint fields not found in symbols" is ticked.</td><td>Someone ticks that box and our fields are deleted. Or the symbol has a field with the same name as ours and overwrites it. Starting every name with <code>wb_</code> makes that unlikely.</td></tr>
+    <tr><td class="f">Update Footprints from Library</td><td>The dialog lets you pick which fields to update and what to do with fields missing from the library footprint.</td><td>Updating could put back the library's version of a field someone edited on the board. That is normal KiCad behaviour.</td></tr>
+  </tbody>
+</table></div>
+
+<!-- ============================================================ -->
+<h2 id="size"><span class="k">5</span>Is it too big?</h2>
+<p>So fields are the right pocket. Can we just put the whole <code>.wb.svg</code> into one field and be done? The worry was size. Most of a design file is the die picture, and the whole file is far bigger than anything fields normally hold. Section 7 has the answer from testing: KiCad copes fine.</p>
+
+<figure class="fig chart" id="c1">
+  <h3 style="margin:0 0 4px">How big our design files are, and what's in them</h3>
+  <div class="legend"><span><i style="background:var(--s-rest)"></i>Everything else (dies, lands, wires, types, notes)</span><span><i style="background:var(--s-pic)"></i>Die pictures</span></div>
+  <div class="scroll"><svg id="c1svg" viewBox="0 0 960 230" role="img" aria-label="Stacked bars of design file size in kilobytes. example: 38 KB pictures plus 74 KB rest. two_die: 519 plus 131. stacked_die: 519 plus 133."></svg></div>
+  <figcaption>Sizes of the three example designs in <code>examples/</code>, in kilobytes (1 KB = 1000 bytes). Point at a bar for the numbers.</figcaption>
+  <details class="tbl"><summary>Show as a table</summary>
+    <div class="tw"><table>
+      <thead><tr><th>Design</th><th class="num">Die pictures</th><th class="num">Everything else</th><th class="num">Whole file</th><th class="num">Everything else, compressed</th></tr></thead>
+      <tbody>
+        <tr><td>example.wb.svg</td><td class="num">38.1 KB</td><td class="num">74.1 KB</td><td class="num">112.1 KB</td><td class="num">10.0 KB</td></tr>
+        <tr><td>two_die.wb.svg</td><td class="num">519.3 KB</td><td class="num">131.3 KB</td><td class="num">650.6 KB</td><td class="num">20.1 KB</td></tr>
+        <tr><td>stacked_die.wb.svg</td><td class="num">519.3 KB</td><td class="num">133.4 KB</td><td class="num">652.7 KB</td><td class="num">23.8 KB</td></tr>
+      </tbody>
+    </table></div>
+  </details>
+</figure>
+
+<p>The next chart sets those sizes beside the fields we write today. The scale jumps by ten times at each step; otherwise the field values would be too small to see.</p>
+
+<figure class="fig chart" id="c2">
+  <h3 style="margin:0 0 4px">Field values today, against the design file</h3>
+  <div class="scroll"><svg id="c2svg" viewBox="0 0 960 300" role="img" aria-label="Log-scale chart of sizes in bytes. wb_kind value: 3 bytes. wb_made_with value: 86 bytes. Design without pictures, compressed and turned into text: 13 to 32 KB. Design without pictures: 74 to 133 KB. Whole design file: 112 to 653 KB."></svg></div>
+  <figcaption>Each step on the scale is ten times the last. A bar spans the smallest to the largest of our three example designs. The shaded strip is roughly what fields usually hold: a name, a number, a part code, a link.</figcaption>
+  <details class="tbl"><summary>Show as a table</summary>
+    <div class="tw"><table>
+      <thead><tr><th>What</th><th class="num">Size</th><th>As a field</th></tr></thead>
+      <tbody>
+        <tr><td>Value of <code>wb_kind</code></td><td class="num">3 bytes</td><td class="y">normal</td></tr>
+        <tr><td>Value of <code>wb_made_with</code></td><td class="num">86 bytes</td><td class="y">normal</td></tr>
+        <tr><td>Design without pictures, compressed (gzip + base64)</td><td class="num">13–32 KB</td><td class="m">not needed</td></tr>
+        <tr><td>Design without pictures</td><td class="num">74–133 KB</td><td class="m">not needed</td></tr>
+        <tr><td>Whole <code>.wb.svg</code></td><td class="num">112–653 KB</td><td class="y">kept byte for byte (tested)</td></tr>
+      </tbody>
+    </table></div>
+  </details>
+</figure>
+
+<div class="callout"><p><b>What size could still affect.</b> KiCad's file handling is fine with it (section 7). What hasn't been tried is KiCad's windows: the Footprint Properties table, the Properties panel, and Find all show or search field values. A 386,000-character value will at least be a wall of text there, and might be slow to open. That's the one thing left to check by hand.</p></div>
+
+<!-- ============================================================ -->
+<h2 id="options"><span class="k">6</span>Four ways to carry the design</h2>
+
+<div class="cards">
+  <div class="card">
+    <span class="lab">A · today</span>
+    <h3>One "other" file</h3>
+    <svg viewBox="0 0 200 80" aria-hidden="true"><path d="M80 12 h30 l10 10 v46 h-40 z" fill="var(--panel)" stroke="var(--amber)" stroke-width="1.5"/><text x="100" y="48" text-anchor="middle">.wb.svg</text></svg>
+    <p>The whole design file, embedded with type "other".</p>
+  </div>
+  <div class="card rec">
+    <span class="lab">B · chosen</span>
+    <h3>One big field</h3>
+    <svg viewBox="0 0 200 80" aria-hidden="true"><rect x="10" y="30" width="180" height="20" rx="4" fill="var(--panel)" stroke="var(--green)"/><text x="16" y="44">wb_svg = &lt;?xml … 386 KB … &lt;/svg&gt;</text></svg>
+    <p>The whole <code>.wb.svg</code> as the value of a single field. The exchange format, copied in unchanged.</p>
+  </div>
+  <div class="card">
+    <span class="lab">C</span>
+    <h3>Many small fields</h3>
+    <svg viewBox="0 0 200 80" aria-hidden="true"><g fill="var(--panel)" stroke="var(--green)"><rect x="10" y="6" width="180" height="14" rx="3"/><rect x="10" y="24" width="180" height="14" rx="3"/><rect x="10" y="42" width="180" height="14" rx="3"/><rect x="10" y="60" width="180" height="14" rx="3"/></g><text x="16" y="16">wb_wire_01 = U1.1 L.1 Au25 VDD</text><text x="16" y="34">wb_wire_02 = U1.2 L.2 Au25 GND</text><text x="16" y="52">wb_type_Au25 = ball gold 25 …</text><text x="16" y="70">wb_format = 0.1</text></svg>
+    <p>The design as short labelled facts, like the board export already does.</p>
+  </div>
+  <div class="card">
+    <span class="lab">D · fallback</span>
+    <h3>One packed field</h3>
+    <svg viewBox="0 0 200 80" aria-hidden="true"><rect x="10" y="30" width="180" height="20" rx="4" fill="var(--panel)" stroke="var(--amber)"/><text x="16" y="44">wb_design = H4sIAAAAAAAA…</text></svg>
+    <p>The design without pictures, compressed into unreadable text, 13–32 KB.</p>
+  </div>
+</div>
+<p class="small muted">The field names in card C are examples to show the idea, not a decided format.</p>
+
+<div class="tw"><table>
+  <thead><tr><th></th><th class="c">A · "other" file</th><th class="c">B · one big field</th><th class="c">C · many small fields</th><th class="c">D · one packed field</th></tr></thead>
+  <tbody>
+    <tr><td class="f">KiCad says it will keep it</td><td class="c n">no promise</td><td class="c y">yes</td><td class="c y">yes</td><td class="c y">yes</td></tr>
+    <tr><td class="f">It is the exchange file itself</td><td class="c y">yes</td><td class="c y">yes, unchanged</td><td class="c n">no, rebuilt from pieces</td><td class="c m">once unpacked</td></tr>
+    <tr><td class="f">No new tools or format needed</td><td class="c m">must unpack</td><td class="c y">yes</td><td class="c n">needs a new field format</td><td class="c m">must unpack</td></tr>
+    <tr><td class="f">A person can read it in KiCad</td><td class="c n">no</td><td class="c m">wall of text</td><td class="c y">yes</td><td class="c n">gibberish</td></tr>
+    <tr><td class="f">KiCad copes with the size</td><td class="c y">yes</td><td class="c y">yes, tested to 653 KB</td><td class="c y">yes</td><td class="c y">yes</td></tr>
+    <tr><td class="f">Keeps the die picture</td><td class="c y">yes</td><td class="c y">yes</td><td class="c m">already in the drawing</td><td class="c m">already in the drawing</td></tr>
+  </tbody>
+</table></div>
+
+<p><b>Why B.</b> The <code>.wb.svg</code> is meant to be the exchange format, so the simplest thing is to carry it unchanged. Anything that reads a <code>.wb.svg</code> can read the field, with no second format to design or keep in step. It sits in the pocket KiCad promises to keep. Section 7 shows that its size isn't a problem for KiCad: the STEP model next to it is bigger.</p>
+
+<!-- ============================================================ -->
+<h2 id="look"><span class="k">7</span>How one field will look</h2>
+<p class="lede">Everything in this section comes from a real test. The example die was exported from the bench with its 3D model, the design was added as one field, and KiCad 10.0.3 (<code>kicad-cli</code>) re-saved, checked and plotted the result.</p>
+
+<h3>Its name: <code>wb_svg</code></h3>
+<p>Not <code>wb_design</code>. Boards written by the bench already carry a board-level property called <code>wb_design</code> that holds the design's <em>name</em> (written in <code>app/js/wbsvg.js</code>). A reader that looks for the first <code>wb_design</code> would find the wrong one, and the first version of the test did exactly that. <code>wb_svg</code> says what's inside.</p>
+
+<h3>Where it goes</h3>
+<div class="tw"><table>
+  <thead><tr><th>File</th><th>On which footprint</th><th>What happens</th></tr></thead>
+  <tbody>
+    <tr><td class="f">Die footprint, <code>.kicad_mod</code></td><td>The die</td><td>Saved in the library, then copied onto every board the die is placed on.</td></tr>
+    <tr><td class="f">Board from the bench, <code>.kicad_pcb</code></td><td>The first die, the one that already carries the STEP</td><td>One copy per board. Exporting again replaces it, as it already does for the STEP.</td></tr>
+    <tr><td class="f">Several dies</td><td>The first die</td><td>One design covers all of them, so it goes on once, like the STEP.</td></tr>
+  </tbody>
+</table></div>
+
+<h3>In the footprint file</h3>
+<p>This is how KiCad saved it. The whole design is the value of one <code>property</code>, on one very long line (385,973 characters for the example). The field's other settings follow on lines of their own, as for any field.</p>
+<pre class="code"><span class="d">; chip_top.kicad_mod, as re-saved by KiCad 10.0.3, shortened where it says …</span>
+(footprint "chip_top"
+	(version 20260206)
+	(generator "pcbnew")
+	…
+	(property "wb_kind" "die" … (hide yes) …)
+	(property "wb_made_with" "Made with wirebond.svg …" … (hide yes) …)
+	(<span class="k">property "wb_svg"</span> "&lt;?xml version='1.0' encoding='utf-8'?&gt;\n&lt;!-- Made with wirebond.svg … --&gt;\n&lt;svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:wb=\"urn:wbsvg:0.2\" … wb:design=\"wafer.space 1x1 logo die\" wb:data-sha256=\"26bf0abb…\" …&gt;\n … \n&lt;line x1=\"5060\" y1=\"9003\" x2=\"3300\" y2=\"10900\" … wb:kind=\"wire\" wb:name=\"W01\" wb:from=\"D1.1\" wb:to=\"L1.1\" wb:profile=\"STD20\" wb:seq=\"1\" wb:net=\"clk_PAD\"&gt;…&lt;/line&gt;\n … \n&lt;/svg&gt;\n"
+		(at 0 0 0)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "…")
+		(effects
+			(font
+				(size 0.1 0.1)
+				(thickness 0.01)
+			)
+		)
+	)
+	(attr board_only exclude_from_pos_files exclude_from_bom)
+	…   <span class="d">; the drawing: outline, pads, pad numbers, the die picture</span>
+	(embedded_files
+		(file (name "chip_top.step") (type model) (data |KLUv/W…|) …)   <span class="d">; the STEP, as before</span>
+	)
+	(model "kicad-embed://chip_top.step" …)
+)</pre>
+
+<p>Only three things in the SVG are written differently inside the field. These are KiCad's rules for every quoted string, and KiCad undoes them when it reads the file:</p>
+<div class="tw"><table style="max-width:560px">
+  <thead><tr><th>In the .wb.svg</th><th>In the field</th></tr></thead>
+  <tbody>
+    <tr><td><code>"</code> (double quote)</td><td><code>\"</code></td></tr>
+    <tr><td><code>\</code> (backslash)</td><td><code>\\</code></td></tr>
+    <tr><td>a line break</td><td><code>\n</code></td></tr>
+  </tbody>
+</table></div>
+<p>Everything else is the SVG character for character, the die picture and seal included. Our exporter already escapes every field this way, with <code>q()</code> in <code>app/js/export.js</code>, and that's the function the test used.</p>
+
+<h3>In KiCad's window</h3>
+<div class="anno">
+  <figure class="fig" style="margin:0">
+    <div class="dlg" role="img" aria-label="Sketch of KiCad's Footprint Properties dialog with a wb_svg row whose value starts with the XML declaration">
+      <div class="bar">Footprint Properties <span>sketch, not a screenshot</span></div>
+      <div class="tabs"><b>General</b><i>Clearance Overrides</i><i>Pad Connections</i><i>3D Models</i></div>
+      <div class="tw"><table>
+        <thead><tr><th>Name</th><th>Value</th><th class="c">Show</th><th>Layer</th></tr></thead>
+        <tbody>
+          <tr><td>Reference</td><td>D</td><td class="c"><span class="chk on"></span></td><td>F.Fab</td></tr>
+          <tr><td>Value</td><td>chip_top</td><td class="c"><span class="chk on"></span></td><td>F.Fab</td></tr>
+          <tr class="mine"><td><b>wb_kind</b></td><td>die</td><td class="c"><span class="chk"></span></td><td>F.Fab</td></tr>
+          <tr class="mine"><td><b>wb_made_with</b></td><td>Made with wirebond.svg …</td><td class="c"><span class="chk"></span></td><td>F.Fab</td></tr>
+          <tr class="mine"><td><b>wb_svg</b></td><td>&lt;?xml version='1.0' encoding='utf-8'?&gt; &lt;!-- Made with wirebond.svg …</td><td class="c"><span class="chk"></span></td><td>F.Fab</td></tr>
+        </tbody>
+      </table></div>
+      <div class="btns"><span>+</span><span>−</span></div>
+    </div>
+    <figcaption>What we expect: one more row, its value running far off the right edge. Not opened in KiCad's window yet.</figcaption>
+  </figure>
+  <div>
+    <p style="margin-top:0">On the board, the field is invisible: it's hidden, so it doesn't draw on F.Fab, and plots of the board came out no bigger with it than without.</p>
+    <p>In KiCad's windows it's one more row in the field table. Its value is the start of the SVG, cut off at the edge of the column. We haven't seen how KiCad's Footprint Properties, its Properties panel or its Find dialog behave with a value this long. That's the first thing to try by hand (section 8).</p>
+  </div>
+</div>
+
+<h3>How it sits beside the STEP</h3>
+<figure class="fig chart" id="c3">
+  <div class="scroll"><svg id="c3svg" viewBox="0 0 960 220" role="img" aria-label="Bar chart of the parts of the example die footprint file with the field. STEP model 1,059 KB, the wb_svg field 386 KB, the die picture 206 KB, everything else 31 KB, of 1,682 KB in all."></svg></div>
+  <figcaption>The parts of the example die footprint with <code>wb_svg</code> added, as KiCad saved it: 1,682 KB in all. Sizes are what each part takes up in the file. Point at a bar for its share.</figcaption>
+  <details class="tbl"><summary>Show as a table</summary>
+    <div class="tw"><table>
+      <thead><tr><th>Part of the footprint file</th><th class="num">Size in the file</th><th class="num">Share</th></tr></thead>
+      <tbody>
+        <tr><td>STEP model (embedded file)</td><td class="num">1,058.7 KB</td><td class="num">63%</td></tr>
+        <tr><td><code>wb_svg</code> field (the whole design)</td><td class="num">386.1 KB</td><td class="num">23%</td></tr>
+        <tr><td>Die picture (image on F.Fab)</td><td class="num">206.4 KB</td><td class="num">12%</td></tr>
+        <tr><td>Everything else (outline, pads, text, other fields)</td><td class="num">30.9 KB</td><td class="num">2%</td></tr>
+      </tbody>
+    </table></div>
+  </details>
+</figure>
+<p>You were right about the STEP: it already makes up most of the file, and the design is about a third of its size. This example design is 378 KB rather than the 112 KB of <code>examples/example.wb.svg</code> because the bench exports the die picture at a higher resolution.</p>
+
+<h3>What the test showed</h3>
+<div class="tw"><table class="opts">
+  <thead><tr><th>Test, with the field in place</th><th>Result</th></tr></thead>
+  <tbody>
+    <tr><td class="f">Library re-saved by KiCad, three designs of 378, 651 and 653 KB</td><td><span class="pill p-yes">identical</span> Each design came back byte for byte, still hidden, with the STEP still embedded. Re-saving took under a second.</td></tr>
+    <tr><td class="f">Footprint plotted by KiCad</td><td><span class="pill p-yes">worked</span> About 5 seconds for each design.</td></tr>
+    <tr><td class="f">Board re-saved by KiCad, field on the die</td><td><span class="pill p-yes">identical</span> Byte for byte after the re-save.</td></tr>
+    <tr><td class="f">Board design rule check</td><td><span class="pill p-yes">worked</span> The same 72 findings as without the field (they come from the example board).</td></tr>
+    <tr><td class="f">Board STEP export</td><td><span class="pill p-yes">worked</span> 4.0 s with the field, 3.9 s without.</td></tr>
+    <tr><td class="f">Board Fab plot</td><td><span class="pill p-yes">not drawn</span> The plot is no bigger with the field, so the hidden text isn't plotted.</td></tr>
+    <tr><td class="f">KiCad's windows, Update PCB from Schematic, Update Footprints from Library, copying out by hand</td><td><span class="pill p-untested">not tried</span> These need KiCad's graphical program, not the command-line tool.</td></tr>
+  </tbody>
+</table></div>
+
+<h3>Getting the design back out</h3>
+<ol class="steps">
+  <li><b>Open the footprint or board in the bench.</b><span>The bench would find <code>wb_svg</code> and load the design directly. This is to build: today it reads our other <code>wb_</code> fields, not this one.</span></li>
+  <li><b>Copy it out of KiCad by hand.</b><span>Footprint Properties, click the <code>wb_svg</code> value, select all, copy, and paste into a file named <code>something.wb.svg</code>. KiCad undoes the escapes when it reads the file, so the value should come out as plain SVG. Not tried yet.</span></li>
+  <li><b>Take it straight from the file.</b><span>Any language can do it: take the quoted text after <code>(property "wb_svg"</code> and undo the three escapes. In Python:</span></li>
+</ol>
+<pre class="code">import re
+text = open("chip_top.kicad_mod", encoding="utf-8").read()
+value = re.search(r'\(property "wb_svg" "((?:[^"\\]|\\.)*)"', text)[1]
+svg = re.sub(r'\\(.)', lambda m: "\n" if m[1] == "n" else m[1], value)
+open("chip_top.wb.svg", "w", encoding="utf-8").write(svg)</pre>
+<p>Whichever way it comes out, the design carries its own seal (<code>wb:data-sha256</code> and <code>wb:drawing-sha256</code>), so a reader can check that it is exactly what the bench wrote.</p>
+
+<!-- ============================================================ -->
+<h2 id="next"><span class="k">8</span>What to do next</h2>
+<ol class="steps">
+  <li><b>Open a footprint with the field in KiCad.</b><span>Look at Footprint Properties, the Properties panel and Find. Check that they open quickly, and that copying the value out gives back the <code>.wb.svg</code>.</span></li>
+  <li><b>Write <code>wb_svg</code> in the exports.</b><span>On the library die footprint and on the first die of a board from the bench: hidden, on F.Fab, with the same tiny font and the same escaping as our other fields. One per footprint, replaced on each export.</span></li>
+  <li><b>Read it back.</b><span>When the bench opens a <code>.kicad_mod</code> or <code>.kicad_pcb</code> that carries <code>wb_svg</code>, load the design from it and check its seal.</span></li>
+  <li><b>Drop the embedded "other" file.</b><span>The field does its job in the pocket KiCad promises to keep. The STEP stays an embedded file of type "model", as KiCad intends.</span></li>
+  <li><b>Test the two stops we haven't tried.</b><span>Run Update PCB from Schematic (with and without the "Remove footprint fields not found in symbols" box) and Update Footprints from Library on a board with our die, and check that <code>wb_svg</code> is still there afterwards.</span></li>
+</ol>
+
+<!-- ============================================================ -->
+<h2 id="words"><span class="k">9</span>Words on this page</h2>
+<div class="tw"><table>
+  <thead><tr><th>Word</th><th>What it means here</th></tr></thead>
+  <tbody>
+    <tr><td class="f">Footprint</td><td>KiCad's drawing of a part, with everything attached to it. Ours is the die.</td></tr>
+    <tr><td class="f">Field</td><td>A named line of text on a footprint, like <code>wb_kind = die</code>. KiCad also calls it a property, and writes it in the file as <code>(property …)</code>.</td></tr>
+    <tr><td class="f">Hidden field</td><td>A field that isn't drawn on the board but is still in the file and the Properties dialog.</td></tr>
+    <tr><td class="f">Embedded file</td><td>A whole file stored inside the footprint or board. Each one has a type: model, font, worksheet, datasheet or other.</td></tr>
+    <tr><td class="f">Symbol</td><td>The schematic version of a part. Its fields get copied onto its footprint.</td></tr>
+    <tr><td class="f">Update PCB from Schematic</td><td>The KiCad command (F8) that pushes schematic changes onto the board.</td></tr>
+    <tr><td class="f">Update Footprints from Library</td><td>The KiCad command that refreshes placed footprints from their library copy.</td></tr>
+    <tr><td class="f">Escape</td><td>Writing a character that would confuse the file another way, such as <code>\"</code> for a quote inside a quoted string. KiCad undoes it when reading.</td></tr>
+    <tr><td class="f">gzip, base64</td><td>Compressing data, then turning the result into plain letters so it fits in a text field.</td></tr>
+    <tr><td class="f">Seal</td><td>Two fingerprints (SHA-256 digests) of a design that show if it was changed after it was written.</td></tr>
+  </tbody>
+</table></div>
+
+<footer>
+  Sources: <a href="https://docs.kicad.org/10.0/en/pcbnew/pcbnew.html">KiCad 10.0 PCB Editor manual</a> (footprint fields, Update Footprints from Library),
+  <a href="https://docs.kicad.org/10.0/en/eeschema/eeschema.html">KiCad 10.0 Schematic Editor manual</a> (Update PCB from Schematic options),
+  <a href="https://docs.kicad.org/8.0/en/pcbnew/pcbnew.html">KiCad 8.0 PCB Editor manual</a> (fields copied from library to board).
+  File sizes measured from <code>examples/*.wb.svg</code>, and field names read from <code>app/js/export.js</code>, November 2026.
+  The KiCad 10.0.3 behaviour of embedded "other" files comes from your own tests.
+  The <code>wb_svg</code> tests in section 7 were run with <code>kicad-cli</code> 10.0.3 on 19 November 2026, on the bench's wafer.space example die and the two designs in <code>examples/</code>.
+</footer>
+
+</main>
+
+<p class="madewith"><img src="../../app/brand/wirebond-icon.svg" alt=""><span>Part of <a href="https://github.com/anfroholic/wirebond.svg">wirebond.svg</a>, a viewable wire bond exchange format, and its browser app <a href="../../app/index.html">Wire Bond Bench</a>. (c) Andrew Wingate, MIT licence.</span></p>
+
+<script>
+(function(){
+"use strict";
+const NS = 'http://www.w3.org/2000/svg';
+const el = (tag, attrs, parent, text) => {
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (text != null) e.textContent = text;
+  if (parent) parent.appendChild(e);
+  return e;
+};
+// A bar with 4px rounded ends on the right only, anchored square to the baseline on the left.
+const barPath = (x, y, w, h, r) => {
+  r = Math.min(r, w, h / 2);
+  return `M${x} ${y}h${w - r}a${r} ${r} 0 0 1 ${r} ${r}v${h - 2 * r}a${r} ${r} 0 0 1 ${-r} ${r}h${-(w - r)}z`;
+};
+
+// One tooltip per figure, placed beside the pointer, kept inside the figure.
+function tooltip(fig){
+  const t = document.createElement('div'); t.className = 'tip'; t.hidden = true; fig.appendChild(t);
+  return {
+    show(ev, html){
+      t.innerHTML = html; t.hidden = false;
+      const r = fig.getBoundingClientRect();
+      let x = ev.clientX - r.left + 14, y = ev.clientY - r.top + 14;
+      if (x + t.offsetWidth > r.width - 8) x = ev.clientX - r.left - t.offsetWidth - 14;
+      t.style.left = Math.max(8, x) + 'px'; t.style.top = y + 'px';
+    },
+    hide(){ t.hidden = true; }
+  };
+}
+const fmtKB = v => v.toFixed(1) + ' KB';
+
+/* ---- chart 1: stacked bars, KB ---- */
+(function(){
+  const svg = document.getElementById('c1svg'), fig = document.getElementById('c1'), tip = tooltip(fig);
+  const data = [
+    // measured sizes; the total is measured too, so rounding the parts never changes it
+    { name: 'example.wb.svg', sub: 'one die', pic: 38.1, rest: 74.1, total: 112.1 },
+    { name: 'two_die.wb.svg', sub: 'two dies side by side', pic: 519.3, rest: 131.3, total: 650.6 },
+    { name: 'stacked_die.wb.svg', sub: 'one die on another', pic: 519.3, rest: 133.4, total: 652.7 },
+  ];
+  const L = 200, R = 900, top = 20, rowH = 56, barH = 24, max = 700;
+  const sx = v => L + (R - L) * v / max;
+  for (let v = 0; v <= max; v += 100) {
+    el('line', { x1: sx(v), x2: sx(v), y1: top - 6, y2: top + rowH * data.length, class: 'gl' }, svg);
+    el('text', { x: sx(v), y: top + rowH * data.length + 18, class: 'ax', 'text-anchor': 'middle' }, svg, v + (v === max ? ' KB' : ''));
+  }
+  el('line', { x1: L, x2: L, y1: top - 6, y2: top + rowH * data.length, class: 'base' }, svg);
+  data.forEach((d, i) => {
+    const y = top + i * rowH + (rowH - barH) / 2;
+    el('text', { x: L - 12, y: y + 10, 'text-anchor': 'end', class: 'lbl' }, svg, d.name);
+    el('text', { x: L - 12, y: y + 25, 'text-anchor': 'end', class: 'lbl2' }, svg, d.sub);
+    const total = d.total, gap = 2;
+    const wRest = sx(d.rest) - L, wPic = sx(d.pic) - L;
+    el('rect', { x: L, y, width: wRest - gap, height: barH, fill: 'var(--s-rest)' }, svg);
+    el('path', { d: barPath(L + wRest, y, wPic, barH, 4), fill: 'var(--s-pic)' }, svg);
+    el('text', { x: L + wRest + wPic + 8, y: y + 17, class: 'val' }, svg, fmtKB(total));
+    const hit = el('rect', { x: 0, y: top + i * rowH, width: 960, height: rowH, class: 'hit' }, svg);
+    const html = `<b>${d.name}</b><div class="r"><span>Everything else</span><span>${fmtKB(d.rest)}</span></div><div class="r"><span>Die pictures</span><span>${fmtKB(d.pic)}</span></div><div class="r"><span>Whole file</span><span>${fmtKB(total)}</span></div><div class="r"><span>Pictures share</span><span>${Math.round(100 * d.pic / total)}%</span></div>`;
+    hit.addEventListener('pointermove', ev => tip.show(ev, html));
+    hit.addEventListener('pointerleave', () => tip.hide());
+  });
+  // direct labels inside the widest bar
+  const y0 = top + rowH + (rowH - barH) / 2;
+  el('text', { x: L + 8, y: y0 + 16, style: 'fill:#fff;font-size:12px;font-weight:700' }, svg, 'everything else');
+  el('text', { x: sx(131.3) + 8, y: y0 + 16, style: 'fill:#fff;font-size:12px;font-weight:700' }, svg, 'die pictures');
+})();
+
+/* ---- chart 2: log scale, ranges ---- */
+(function(){
+  const svg = document.getElementById('c2svg'), fig = document.getElementById('c2'), tip = tooltip(fig);
+  const rows = [
+    { name: 'wb_kind value', note: '"die"', lo: 3, hi: 3, verdict: 'normal for a field' },
+    { name: 'wb_made_with value', note: 'the credit line', lo: 86, hi: 86, verdict: 'normal for a field' },
+    { name: 'Design, no pictures, packed', note: 'gzip + base64', lo: 13392, hi: 31704, verdict: 'not needed' },
+    { name: 'Design, no pictures', note: 'as plain text', lo: 74080, hi: 133435, verdict: 'not needed' },
+    { name: 'Whole .wb.svg', note: 'with die pictures', lo: 112134, hi: 652747, verdict: 'kept byte for byte (tested)' },
+  ];
+  const L = 250, R = 920, top = 26, rowH = 46, lmin = 0, lmax = 6;
+  const sx = v => L + (R - L) * (Math.log10(Math.max(v, 1)) - lmin) / (lmax - lmin);
+  const ticks = ['1 B', '10 B', '100 B', '1 KB', '10 KB', '100 KB', '1 MB'];
+  const H = top + rowH * rows.length;
+  el('rect', { x: sx(1), y: top - 18, width: sx(100) - sx(1), height: H - top + 18, class: 'band' }, svg);
+  el('text', { x: sx(1) + 6, y: top - 6, class: 'bandt' }, svg, 'what fields usually hold');
+  ticks.forEach((t, i) => {
+    const x = L + (R - L) * i / (lmax - lmin);
+    el('line', { x1: x, x2: x, y1: top - 18, y2: H, class: 'gl' }, svg);
+    el('text', { x, y: H + 18, class: 'ax', 'text-anchor': 'middle' }, svg, t);
+  });
+  const fmt = b => b < 1000 ? b + ' bytes' : (b / 1000).toFixed(1) + ' KB';
+  rows.forEach((d, i) => {
+    const cy = top + i * rowH + rowH / 2;
+    el('text', { x: L - 12, y: cy - 2, 'text-anchor': 'end', class: 'lbl' }, svg, d.name);
+    el('text', { x: L - 12, y: cy + 14, 'text-anchor': 'end', class: 'lbl2' }, svg, d.note);
+    const x0 = sx(d.lo), x1 = sx(d.hi);
+    if (d.hi > d.lo) el('rect', { x: x0, y: cy - 5, width: x1 - x0, height: 10, rx: 5, fill: 'var(--s-rest)', opacity: .45 }, svg);
+    el('circle', { cx: x0, cy, r: 6, fill: 'var(--s-rest)', stroke: 'var(--panel)', 'stroke-width': 2 }, svg);
+    if (d.hi > d.lo) el('circle', { cx: x1, cy, r: 6, fill: 'var(--s-rest)', stroke: 'var(--panel)', 'stroke-width': 2 }, svg);
+    // The value goes right of the mark, or left of it when the right side has no room.
+    const room = x1 + 150 < 960;
+    el('text', { x: room ? x1 + 12 : x0 - 12, y: cy + 4, class: 'val', 'text-anchor': room ? 'start' : 'end' }, svg, d.hi > d.lo ? `${fmt(d.lo)} – ${fmt(d.hi)}` : fmt(d.lo));
+    const hit = el('rect', { x: 0, y: top + i * rowH, width: 960, height: rowH, class: 'hit' }, svg);
+    const html = `<b>${d.name}</b><div class="r"><span>Size</span><span>${d.hi > d.lo ? fmt(d.lo) + ' to ' + fmt(d.hi) : fmt(d.lo)}</span></div><div class="r"><span>As one field</span><span>${d.verdict}</span></div>`;
+    hit.addEventListener('pointermove', ev => tip.show(ev, html));
+    hit.addEventListener('pointerleave', () => tip.hide());
+  });
+})();
+
+/* ---- chart 3: what the footprint file is made of, KB ---- */
+(function(){
+  const svg = document.getElementById('c3svg'), fig = document.getElementById('c3'), tip = tooltip(fig);
+  const total = 1681.967;
+  const rows = [
+    { name: 'STEP model', note: 'embedded file, type model', kb: 1058.670, hl: false },
+    { name: 'wb_svg field', note: 'the whole design', kb: 386.062, hl: true },
+    { name: 'Die picture', note: 'image on F.Fab', kb: 206.378, hl: false },
+    { name: 'Everything else', note: 'outline, pads, text, fields', kb: 30.857, hl: false },
+  ];
+  const L = 220, R = 860, top = 14, rowH = 44, barH = 22, max = 1200;
+  const sx = v => L + (R - L) * v / max;
+  for (let v = 0; v <= max; v += 200) {
+    el('line', { x1: sx(v), x2: sx(v), y1: top - 4, y2: top + rowH * rows.length, class: 'gl' }, svg);
+    el('text', { x: sx(v), y: top + rowH * rows.length + 18, class: 'ax', 'text-anchor': 'middle' }, svg, v.toLocaleString('en') + (v === max ? ' KB' : ''));
+  }
+  el('line', { x1: L, x2: L, y1: top - 4, y2: top + rowH * rows.length, class: 'base' }, svg);
+  rows.forEach((d, i) => {
+    const y = top + i * rowH + (rowH - barH) / 2, w = Math.max(2, sx(d.kb) - L);
+    el('text', { x: L - 12, y: y + 9, 'text-anchor': 'end', class: 'lbl', style: d.hl ? 'font-weight:700' : '' }, svg, d.name);
+    el('text', { x: L - 12, y: y + 24, 'text-anchor': 'end', class: 'lbl2' }, svg, d.note);
+    el('path', { d: barPath(L, y, w, barH, 4), fill: 'var(--s-rest)', opacity: d.hl ? 1 : .55 }, svg);
+    const pct = Math.round(100 * d.kb / total);
+    el('text', { x: L + w + 8, y: y + 16, class: 'val' }, svg, `${d.kb.toLocaleString('en', { maximumFractionDigits: 1, minimumFractionDigits: 1 })} KB · ${pct}%`);
+    const hit = el('rect', { x: 0, y: top + i * rowH, width: 960, height: rowH, class: 'hit' }, svg);
+    const html = `<b>${d.name}</b><div class="r"><span>In the file</span><span>${d.kb.toFixed(1)} KB</span></div><div class="r"><span>Share of 1,682 KB</span><span>${pct}%</span></div>`;
+    hit.addEventListener('pointermove', ev => tip.show(ev, html));
+    hit.addEventListener('pointerleave', () => tip.hide());
+  });
+})();
+})();
+</script>
+</body>
+</html>

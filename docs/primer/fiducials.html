@@ -4,6 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Fiducials Primer</title>
+<link rel="icon" type="image/svg+xml" href="../../app/brand/wirebond-icon.svg">
+<meta name="author" content="Andrew Wingate">
+<meta name="generator" content="wirebond.svg">
 <style>
 /* Same house style as wire-bonding-primer.html: one reading column, Evezor palette, dark first. */
 :root{
@@ -146,12 +149,14 @@ svg .err0{stroke:var(--muted);stroke-width:2;fill:none;opacity:.7}
 svg .err1{stroke:var(--magenta);stroke-width:3;fill:none}
 svg .cam{fill:none;stroke:var(--accent);stroke-width:1.6}
 svg .frame{fill:none;stroke-width:1.6}
+.brandmark{display:inline-block;margin:0 0 12px}.brandmark img{display:block;height:40px;width:auto}.madewith{display:flex;align-items:center;gap:10px;max-width:960px;margin:40px auto 28px;padding:16px 20px 0;border-top:1px solid rgba(127,127,127,.3);font-size:13px;color:#7ba69c}.madewith img{width:24px;height:24px;flex:none}.madewith a{color:inherit}
 </style>
 </head>
 <body>
 
 <header class="mast">
   <div class="wrap">
+    <a class="brandmark" href="https://github.com/anfroholic/wirebond.svg" title="wirebond.svg on GitHub"><img src="../../app/brand/wirebond-logo.svg" alt="wirebond.svg" width="160" height="40"></a>
     <nav class="sitenav" aria-label="Project pages">
       <a href="../../app/index.html">← Wire Bond Bench</a>
       <a href="wire-bonding-primer.html">Wire bonding primer</a>
@@ -403,7 +408,7 @@ svg .frame{fill:none;stroke-width:1.6}
 
 <!-- 7 -->
 <h2 id="format"><span class="k">7</span>Fiducials in wirebond.svg</h2>
-<div class="callout good"><p><b>Now in the spec, as a draft.</b> This section was a proposal and has gone into <a href="../../SPEC.md">SPEC.md</a> under "Fiducials (draft)". <code>wbx.py</code> reads, writes and checks it, and the example in <code>examples/</code> carries board fiducials and two die eye points. Before this, the spec had only round board fiducials, used as GD&amp;T datums.</p></div>
+<div class="callout good"><p><b>Now in the spec, as a draft.</b> This section was a proposal and has gone into <a href="../../SPEC.md">SPEC.md</a> under "Fiducials (draft)". <code>drc.py</code> reads, writes and checks it, and the example in <code>examples/</code> carries board fiducials and two die eye points. Before this, the spec had only round board fiducials, used as GD&amp;T datums.</p></div>
 
 <h3>What the spec says</h3>
 <div class="tw"><table>
@@ -439,7 +444,7 @@ svg .frame{fill:none;stroke-width:1.6}
 &lt;/g&gt;</code></pre>
 
 <h3>What the checker does</h3>
-<p><code>wbx.py check</code> runs these. Only F2 and F3 make a file invalid; the rest print as <code>WARN</code> or <code>NOTE</code> lines, or appear in the JSON summary. F3's clear distance is <code>wb:rule-fid-clear</code> on the root, a placeholder of ours.</p>
+<p><code>drc.py check</code> runs these. Only F2 and F3 make a file invalid; the rest print as <code>WARN</code> or <code>NOTE</code> lines, or appear in the JSON summary. F3's clear distance is <code>wb:rule-fid-clear</code> on the root, a placeholder of ours.</p>
 <div class="tw"><table>
   <thead><tr><th>Key</th><th>Check</th><th>Level</th></tr></thead>
   <tbody>
@@ -456,7 +461,7 @@ svg .frame{fill:none;stroke-width:1.6}
 <ul>
   <li><b>KiCad:</b> the example board now has F1, F2 and P1 as fiducial footprints. F1 and F2 carry KiCad's <code>pad_prop_fiducial_glob</code>, which KiCad keeps on re-save and writes into the Gerbers. The app skips fiducial pads when it looks for lands. No importer reads them into a <code>.wb.svg</code> yet. Graphics like run 2's crosses don't carry the property, so either the padring footprint makes them pads, or the app lets someone pick them.</li>
   <li><b>GDS:</b> there's no fiducial layer. The example takes its die's eye points from the logo die's <code>gf180mcu_ws_ip__id</code> and <code>gf180mcu_ws_ip__logo</code> cells, by name, because they're unlabelled artwork. The QR cell isn't named the same on every shuttle (the template calls it <code>__qrcode_id</code>), so the app could find them the same way with that in mind, or let someone draw a box round them.</li>
-  <li><b>Out:</b> <code>wbx.py export</code> writes <code>&lt;base&gt;.fiducials.csv</code>: frame, name, role, datum and the reference point in the bond list's coordinates, so the bonding house sees what we'd suggest teaching. The drawn file shows the same thing to a person. The app's own <code>.wb.svg</code> export doesn't write fiducials yet.</li>
+  <li><b>Out:</b> <code>drc.py export</code> writes <code>&lt;base&gt;.fiducials.csv</code>: frame, name, role, datum and the reference point in the bond list's coordinates, so the bonding house sees what we'd suggest teaching. The drawn file shows the same thing to a person. The app's own <code>.wb.svg</code> export doesn't write fiducials yet.</li>
 </ul>
 
 <!-- 8 -->
@@ -592,5 +597,6 @@ seg("laySeg","data-l",function(v){LAY=v;});
 draw();
 })();
 </script>
+<p class="madewith"><img src="../../app/brand/wirebond-icon.svg" alt=""><span>Part of <a href="https://github.com/anfroholic/wirebond.svg">wirebond.svg</a>, a viewable wire bond exchange format, and its browser app <a href="../../app/index.html">Wire Bond Bench</a>. (c) Andrew Wingate, MIT licence.</span></p>
 </body>
 </html>

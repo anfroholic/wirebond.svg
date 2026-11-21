@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:wb="urn:wbx:0.1" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" viewBox="0 0 7700 4220" width="1848" height="1013" wb:version="0.1" wb:units="um" wb:design="WBX profile study" wb:rev="A" wb:rule-wire-gap="60" wb:rule-edge-clear="40">
-  <title>WBX profile study rev A: wire bond profiles as SVG</title>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:wb="urn:wbsvg:0.2" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" viewBox="0 0 7700 4220" width="1848" height="1013" wb:version="0.2" wb:units="um" wb:design="wirebond.svg profile study" wb:rev="A" wb:rule-wire-gap="60" wb:rule-edge-clear="40">
+  <title>wirebond.svg profile study rev A: wire bond profiles as SVG</title>
   <style>text{font-family:Helvetica,Arial,sans-serif;fill:#222;pointer-events:none}
 .title{font-size:150px;font-weight:bold}.sub{font-size:72px;fill:#555}
 .h{font-size:96px;font-weight:bold}.t{font-size:66px}.tb{font-size:66px;font-weight:bold}.s{font-size:56px;fill:#555}
@@ -36,7 +36,7 @@ svg:has(g.pf-WEDGE25:hover) line.pf-WEDGE25,svg:has(g.pf-WEDGE25:hover) polyline
 svg:has(g.pf-REV25:hover) line.pf-REV25,svg:has(g.pf-REV25:hover) polyline.pf-REV25{stroke:#ff2fa0}</style>
   <rect x="0" y="0" width="7700" height="4220" class="bg"/>
   <text x="150" y="190" class="title">Wire bond profiles as SVG</text>
-  <text x="150" y="300" class="sub">WBX v0.1, illustrative data. True scale: 1 SVG unit = 1 µm, x and z alike. Colour = profile. Hover any wire, loop, pad or profile.</text>
+  <text x="150" y="300" class="sub">wirebond.svg v0.2, illustrative data. True scale: 1 SVG unit = 1 µm, x and z alike. Colour = profile. Hover any wire, loop, pad or profile.</text>
   <line x1="7050" y1="170" x2="7550" y2="170" class="dim" stroke-width="10"/>
   <line x1="7050" y1="140" x2="7050" y2="200" class="dim"/>
   <line x1="7550" y1="140" x2="7550" y2="200" class="dim"/>
@@ -309,7 +309,7 @@ svg:has(g.pf-REV25:hover) line.pf-REV25,svg:has(g.pf-REV25:hover) polyline.pf-RE
   <text x="5640" y="3080" class="tb f-REV25">REV25</text>
   <text x="6060" y="3080" class="t">Au 25 µm · ball-wedge · reverse</text>
   <text x="5640" y="3158" class="s">moves 470/0 -30/78% · spline · ref-span 1000</text>
-  <text x="5640" y="3230" class="warn">used by no wire. In v0.1 it can't be: wb:from must be a pad,</text>
+  <text x="5640" y="3230" class="warn">used by no wire. In v0.2 it can't be: wb:from must be a pad,</text>
   <text x="5640" y="3300" class="warn">and from is always the first bond, which here is on the land.</text>
   <text x="4350" y="3530" class="h">5 · How a wire gets its shape</text>
   <text x="4350" y="3630" class="t">1  wb:profile on the wire picks the moves.</text>

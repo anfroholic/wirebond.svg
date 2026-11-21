@@ -1,7 +1,8 @@
 /* STEP (ISO 10303-21, AP214) written from scratch, and KiCad's embedded-file wrapping for it.
    Solids only: boxes and other flat-faced blocks for the die, its attach layer and its pads, and each wire as a chain of
    exact cylinders. Every solid is named and coloured. A die with artwork has its top face split into two colours, each
-   face coloured on its own: STEP has no pictures, but it does have faces. Units are millimetres, z up, as KiCad places a
+   face coloured on its own: STEP has no pictures, but it does have faces. The header says the file was made by Wire Bond
+   Bench, part of wirebond.svg (https://github.com/anfroholic/wirebond.svg), as every file the bench writes does. Units are millimetres, z up, as KiCad places a
    footprint's model. */
 (function (W) {
   'use strict';
@@ -167,7 +168,8 @@
       const rep = put(`ADVANCED_BREP_SHAPE_REPRESENTATION(${str(name)},(${[origin, ...solids].join(',')}),${ctx})`);
       put(`SHAPE_DEFINITION_REPRESENTATION(${pds},${rep})`);
       put(`MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION('',(${styled.join(',')}),${ctx})`);
-      return `ISO-10303-21;\nHEADER;\nFILE_DESCRIPTION(('Wire bond assembly'),'2;1');\nFILE_NAME(${str(name + '.step')},'2026-01-01T00:00:00',(''),(''),'Wire Bond Bench','Wire Bond Bench','');\nFILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));\nENDSEC;\nDATA;\n${lines.join('\n')}\nENDSEC;\nEND-ISO-10303-21;\n`;
+      const BR = W.WBSVG.brand;
+      return `ISO-10303-21;\nHEADER;\nFILE_DESCRIPTION(('Wire bond assembly',${str(BR.credit)}),'2;1');\nFILE_NAME(${str(name + '.step')},'2026-01-01T00:00:00',(''),(''),${str(BR.app + ' (' + BR.name + ')')},${str(BR.app)},${str(BR.url)});\nFILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));\nENDSEC;\nDATA;\n${lines.join('\n')}\nENDSEC;\nEND-ISO-10303-21;\n`;
     }
 
     return { block, hexa, cylinder, tube, painted, text, get solids() { return solids.length; } };
@@ -341,6 +343,6 @@
   // A footprint's reference to a file the board holds.
   const fileRef = (e, type, tab) => `${tab}(embedded_files\n${tab}\t(file\n${tab}\t\t(name "${e.name}")\n${tab}\t\t(type ${type})\n${tab}\t\t(checksum "${e.checksum}")\n${tab}\t)\n${tab})`;
 
-  W.WBX = W.WBX || {};
-  W.WBX.step = { writer, thin, outlines, zstdRaw, sha256, embed, fileEntry, fileRef };
+  W.WBSVG = W.WBSVG || {};
+  W.WBSVG.step = { writer, thin, outlines, zstdRaw, sha256, embed, fileEntry, fileRef };
 })(typeof window !== 'undefined' ? window : globalThis);

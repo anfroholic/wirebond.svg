@@ -1,9 +1,11 @@
 /* Writers for KiCad: die footprint, die kit, assembled board with 3D wires, bondlist.
    Follows the decided model: the die is mechanical with no copper, nets stay on the lands, one footprint per wire,
-   and the type library lives in the board as fields on a footprint. */
+   and the type library lives in the board as fields on a footprint.
+   Every file written here says where it came from: Wire Bond Bench, part of wirebond.svg,
+   https://github.com/anfroholic/wirebond.svg. (c) Andrew Wingate, MIT licence. */
 (function (W) {
   'use strict';
-  const M = W.WBX.model;
+  const M = W.WBSVG.model, BR = W.WBSVG.brand;
 
   const q = s => '"' + String(s).replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, '\\n') + '"';
   const n = v => { const s = (+v).toFixed(6).replace(/0+$/, '').replace(/\.$/, ''); return s === '-0' || s === '' ? '0' : s; };
@@ -15,6 +17,10 @@
   }
   const safe = s => String(s).replace(/[^\w.+-]+/g, '_') || 'die';
   const uu = k => `(uuid ${q(uuid(k))})`;
+  /* Provenance, carried by every footprint written here: a hidden field KiCad lists in the footprint's properties and a line
+     in its description. Nothing visible is drawn on the board. */
+  const madeWith = (owner, layer) => hiddenProp(owner, 'wb_made_with', BR.credit, layer);
+  const descrOf = s => `(descr ${q((s ? s + ' ' : '') + BR.credit + '.')})`;
   const hiddenProp = (owner, key, val, layer) => `\t\t(property ${q(key)} ${q(val)} (at 0 0 0) (layer ${q(layer)}) (hide yes) ${uu(owner + '/p/' + key)} (effects (font (size 0.1 0.1) (thickness 0.01))))`;
 
   /* KiCad sizes a reference image at 300 pixels per inch times its scale. */
@@ -60,15 +66,16 @@
     const name = safe(opts.name || die.name), art = opts.art === false ? null : artForKicad(die.artCanvas, opts.artPx || 1024);
     const h = die.y1 - die.y0;
     const descr = die.source === 'gds' ? `Die stand-in from ${die.fileName || 'a GDS'}. Mechanical only, no copper: bond lands live on the board.` : `Die footprint, rewritten as mechanical only.`;
-    const out = [`(footprint ${q(name)}`, `\t(version 20260206)`, `\t(generator "wbx_explorer")`, `\t(generator_version "10.0")`, `\t(layer "F.Cu")`, `\t(descr ${q(descr)})`,
+    const out = [`(footprint ${q(name)}`, `\t(version 20260206)`, `\t(generator ${q(BR.generator)})`, `\t(generator_version "10.0")`, `\t(layer "F.Cu")`, `\t${descrOf(descr)}`, `\t(tags ${q('bare_die wire_bond ' + BR.name)})`,
       `\t(property "Reference" "D" (at 0 ${n(die.y0 - 0.3)} 0) (layer "F.Fab") ${uu(name + '/r')} (effects (font (size 0.3 0.3) (thickness 0.05))))`,
       `\t(property "Value" ${q(name)} (at 0 ${n(die.y1 + 0.3)} 0) (layer "F.Fab") ${uu(name + '/v')} (effects (font (size 0.3 0.3) (thickness 0.05))))`,
       hiddenProp(name, 'wb_kind', 'die', 'F.Fab'),
+      madeWith(name, 'F.Fab'),
       `\t(attr board_only exclude_from_pos_files exclude_from_bom)`,
       ...dieItems(die, name, 0, art)];
     // A library footprint carries its own model: the file is embedded in it, data and all.
     if (opts.step) {
-      const S3 = W.WBX.step, e = S3.embed(name + '.step', opts.step);
+      const S3 = W.WBSVG.step, e = S3.embed(name + '.step', opts.step);
       out.push(`\t(embedded_files\n${S3.fileEntry(e, 'model', '\t\t')}\n\t)`, `\t(model "kicad-embed://${e.name}" (offset (xyz 0 0 0)) (scale (xyz 1 1 1)) (rotate (xyz 0 0 0)))`);
     }
     out.push(')');
@@ -79,7 +86,7 @@
      The die, its attach layer, its pads and every wire go in one STEP, as named, coloured solids, in millimetres with z up
      from the board's top. KiCad shows it, its own STEP export passes it on, and mechanical CAD opens it. Change anything
      and the export writes it again. */
-  const BOND_STEP = 'wbx_bond.step';   // its name inside a board, so a later export finds and replaces it
+  const BOND_STEP = 'wbsvg_bond.step';   // its name inside a board, so a later export finds and replaces it
   const ATTACH_RGB = [0.35, 0.35, 0.37], DIE_RGB = [0.20, 0.22, 0.27], PAD_RGB = [0.86, 0.86, 0.80];
   const hexToRgb = hex => { const m = String(hex).match(/^#(..)(..)(..)$/); return m ? [m[1], m[2], m[3]].map(v => parseInt(v, 16) / 255) : [0.9, 0.72, 0.25]; };
   // A block standing on a four-cornered outline in the model's plane, from z0 to z1 in mm.
@@ -157,7 +164,7 @@
           for (let y = r * k; y < Math.min(ch, r * k + k); y++) for (let x = c * k; x < Math.min(cw, c * k + k); x++) { a += hits[y * cw + x]; t += total[y * cw + x]; }
           mask[r * w + c] = 2 * a >= t && t > 0 ? 1 : 0;
         }
-        const out = W.WBX.step.outlines(mask, w, h);
+        const out = W.WBSVG.step.outlines(mask, w, h);
         if (out.verts <= ART_POINTS) res = { cols, out, f: f0 * k };
       }
       if (!res) res = { cols, tooDetailed: true };
@@ -201,7 +208,7 @@
   }
   // A die on its own, for the die kit: its footprint's origin, sitting on the board. art3d is the die's 3D settings.
   function dieStep(die, thick, attach, name, art3d) {
-    const w = W.WBX.step.writer();
+    const w = W.WBSVG.step.writer();
     const art = dieArt(die, art3d);
     dieSolids(w, name, die, thick, attach, 0, (x, y) => [x, -y], art && art.out ? art : null);
     return w.text(name);
@@ -228,12 +235,14 @@
     }
     return `(kicad_symbol_lib
 \t(version 20241209)
-\t(generator "wbx_explorer")
+\t(generator ${q(BR.generator)})
 \t(symbol ${q(name)} (pin_names (offset 0.5)) (exclude_from_sim no) (in_bom yes) (on_board yes)
 \t\t(property "Reference" "U" (at ${n(-hw)} ${n(hh + 1.5)} 0) (effects (font (size 1.27 1.27)) (justify left)))
 \t\t(property "Value" ${q(name)} (at ${n(hw)} ${n(hh + 1.5)} 0) (effects (font (size 1.27 1.27)) (justify right)))
 \t\t(property "Footprint" "" (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
 \t\t(property "Datasheet" "" (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
+\t\t(property "Description" ${q(`Bare die ${name}, ${die.pads.length} pads, for wire bonding. ${BR.credit}.`)} (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
+\t\t(property "ki_keywords" ${q('bare die wire bond ' + BR.name)} (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
 \t\t(symbol ${q(name + '_0_1')} (rectangle (start ${n(-hw)} ${n(hh)}) (end ${n(hw)} ${n(-hh)}) (stroke (width 0.254) (type default)) (fill (type background))))
 \t\t(symbol ${q(name + '_1_1')}
 ${pins.join('\n')}
@@ -276,7 +285,7 @@ ${pins.join('\n')}
     for (const d of M.placedDies(S)) for (const [x, y] of M.dieCorners(d)) { X.push(x); Y.push(y); }
     const x0 = Math.min(...X) - 1, x1 = Math.max(...X) + 1, y0 = Math.min(...Y) - 1, y1 = Math.max(...Y) + 1;
     const rows = BLANK_LAYERS.map(r => `\t\t(${r[0]} ${q(r[1])} ${r[2]}${r[3] ? ' ' + q(r[3]) : ''})`);
-    const text = `(kicad_pcb\n\t(version 20260206)\n\t(generator "wbx_explorer")\n\t(generator_version "10.0")\n\t(general\n\t\t(thickness 0.8)\n\t\t(legacy_teardrops no)\n\t)\n\t(paper "A4")\n\t(layers\n${rows.join('\n')}\n\t)\n\t(setup\n\t\t(pad_to_mask_clearance 0)\n\t)\n${withAt})\n\t(gr_rect (start ${n(x0 + ox)} ${n(y0 + oy)}) (end ${n(x1 + ox)} ${n(y1 + oy)}) (stroke (width 0.05) (type solid)) (fill no) (layer "Edge.Cuts") ${uu('edge')})\n\t(embedded_fonts no)\n)\n`;
+    const text = `(kicad_pcb\n\t(version 20260206)\n\t(generator ${q(BR.generator)})\n\t(generator_version "10.0")\n\t(general\n\t\t(thickness 0.8)\n\t\t(legacy_teardrops no)\n\t)\n\t(paper "A4")\n\t(layers\n${rows.join('\n')}\n\t)\n\t(setup\n\t\t(pad_to_mask_clearance 0)\n\t)\n${withAt})\n\t(gr_rect (start ${n(x0 + ox)} ${n(y0 + oy)}) (end ${n(x1 + ox)} ${n(y1 + oy)}) (stroke (width 0.05) (type solid)) (fill no) (layer "Edge.Cuts") ${uu('edge')})\n\t(embedded_fonts no)\n)\n`;
     return text;
   }
 
@@ -311,7 +320,7 @@ ${pins.join('\n')}
     const dies = M.placedDies(S), first = dies[0];
     /* The one STEP holds everything and hangs on the first die's footprint, so it is drawn in that footprint's frame:
        x along the footprint, y up (the footprint's y negated), turned with it. */
-    const w3 = W.WBX.step.writer();
+    const w3 = W.WBSVG.step.writer();
     const toModel = (bx, by) => { const [x, y] = M.boardToDie(first.place, bx, by); return [x, -y]; };
     const STEP_HERE = '\u0000step\u0000';
     for (const d of dies) {
@@ -323,11 +332,13 @@ ${pins.join('\n')}
       const stack = (on === 'board' ? '' : `${hiddenProp(key, 'wb_sits_on', on, 'F.Fab')}\n${hiddenProp(key, 'wb_bottom_um', +M.dieBottom(S, d).toFixed(3), 'F.Fab')}\n`)
         + (M.tolOf(d) ? `${hiddenProp(key, 'wb_position_tol_um', M.tolOf(d), 'F.Fab')}\n` : '');
       fps.push(`\t(footprint ${q(name)}\n\t\t(layer "F.Cu") ${uu(key)} (at ${n(P.x + ox)} ${n(P.y + oy)} ${n(P.rot)})
+\t\t${descrOf(`Die ${d.id}, placed and bonded.`)}
 \t\t(property "Reference" ${q(d.id)} (at 0 ${n(y)} ${n(P.rot)}) (layer "F.Fab") ${uu(key + '/r')} (effects (font (size 0.3 0.3) (thickness 0.05))))
 \t\t(property "Value" ${q(name)} (at 0 ${n(die.y1 + 0.3)} ${n(P.rot)}) (layer "F.Fab") ${uu(key + '/v')} (effects (font (size 0.3 0.3) (thickness 0.05))))
 ${hiddenProp(key, 'wb_kind', 'die', 'F.Fab')}
 ${hiddenProp(key, 'wb_thickness_um', P.thick, 'F.Fab')}
 ${hiddenProp(key, 'wb_attach_um', P.attach, 'F.Fab')}
+${madeWith(key, 'F.Fab')}
 ${stack}\t\t${sup ? bare : attr}
 ${dieItems(die, key, P.rot, rotArt ? null : art, [P.x + ox, P.y + oy], !sup).join('\n')}${d === first ? '\n' + STEP_HERE : ''}
 \t)`);
@@ -354,7 +365,8 @@ ${dieItems(die, key, P.rot, rotArt ? null : art, [P.x + ox, P.y + oy], !sup).joi
       const to = !e.land ? e.toDie.id + '.' + e.toPad.num : String(e.land.id).includes('.') ? e.land.id : `${e.land.ref || ring}.${e.land.id}`;
       const toKind = e.land ? '' : `\n${hiddenProp(wn, 'wb_to_kind', 'die', layer.name)}`;
       const owner = wn;
-      fps.push(`\t(footprint "wbx_wire"\n\t\t(layer "F.Cu") ${uu(owner)} (at ${n(e.a[0] + ox)} ${n(e.a[1] + oy)})
+      fps.push(`\t(footprint "wbsvg_wire"\n\t\t(layer "F.Cu") ${uu(owner)} (at ${n(e.a[0] + ox)} ${n(e.a[1] + oy)})
+\t\t${descrOf('Bond wire.')}
 \t\t(property "Reference" ${q(wn)} (at 0 -0.1 0) (layer ${q(layer.name)}) (hide yes) ${uu(owner + '/r')} (effects (font (size 0.1 0.1) (thickness 0.01))))
 \t\t(property "Value" ${q(T.name)} (at 0 0.1 0) (layer ${q(layer.name)}) (hide yes) ${uu(owner + '/v')} (effects (font (size 0.1 0.1) (thickness 0.01))))
 ${hiddenProp(owner, 'wb_kind', 'wire', layer.name)}
@@ -374,10 +386,12 @@ ${hiddenProp(owner, 'wb_seq', i + 1, layer.name)}
     const choiceFields = [];
     if (rows.some(r => r.prof.generic)) choiceFields.push(hiddenProp('wblib', 'wb_type_' + M.GENERIC, `generic: bonder's choice, chosen on purpose; the wire and loop are picked at the machine; ${stand}`, layer.name));
     if (rows.some(r => r.prof.dashed)) choiceFields.push(hiddenProp('wblib', 'wb_type_' + M.UNDEFINED, `not specified: no wire or loop given; ${stand}`, layer.name));
-    fps.push(`\t(footprint "wbx_wire_types"\n\t\t(layer "F.Cu") ${uu('wblib')} (at ${n(first.place.x + ox)} ${n(first.place.y + oy)})
+    fps.push(`\t(footprint "wbsvg_wire_types"\n\t\t(layer "F.Cu") ${uu('wblib')} (at ${n(first.place.x + ox)} ${n(first.place.y + oy)})
+\t\t${descrOf('The wire types the bond wires on this board use.')}
 \t\t(property "Reference" "WBLIB" (at 0 -0.1 0) (layer ${q(layer.name)}) (hide yes) ${uu('wblib/r')} (effects (font (size 0.1 0.1) (thickness 0.01))))
 \t\t(property "Value" "wire types" (at 0 0.1 0) (layer ${q(layer.name)}) (hide yes) ${uu('wblib/v')} (effects (font (size 0.1 0.1) (thickness 0.01))))
 ${hiddenProp('wblib', 'wb_kind', 'type_library', layer.name)}
+${madeWith('wblib', layer.name)}
 ${usedTypes.map(t => hiddenProp('wblib', 'wb_type_' + t.name, `${t.style} ${t.material} ${t.d} ${t.dir} ${t.moves}`, layer.name)).concat(choiceFields)
   // Which of the substrate's copper marks are fiducials. The marks stay where they are, in its footprint; this only says how each is used.
   .concat((S.marks || []).map(m => hiddenProp('wblib', 'wb_fiducial_' + m.id, m.role, layer.name)))
@@ -386,7 +400,7 @@ ${usedTypes.map(t => hiddenProp('wblib', 'wb_type_' + t.name, `${t.style} ${t.ma
 \t\t${bare}
 \t)`);
     // The STEP goes in the board. Whatever else the board embeds is kept; an earlier export's STEP is replaced.
-    const step = w3.text(safe(sub.fileName.replace(/(\.wb)?\.[^.]+$/i, '')) + '_bond'), S3 = W.WBX.step, emb = S3.embed(BOND_STEP, step);
+    const step = w3.text(safe(sub.fileName.replace(/(\.wb)?\.[^.]+$/i, '')) + '_bond'), S3 = W.WBSVG.step, emb = S3.embed(BOND_STEP, step);
     const kept = [];
     for (const [s, e] of topLevel(text).filter(([s]) => /^\(embedded_files\b/.test(text.slice(s, s + 16))).reverse()) {
       const block = text.slice(s, e);
@@ -431,12 +445,23 @@ ${usedTypes.map(t => hiddenProp('wblib', 'wb_type_' + t.name, `${t.style} ${t.ma
      The drawing SPEC.md describes: one SVG unit is 1 um, y down, and every wb:kind element is drawn. The board is cropped to
      the bond area and shifted so it starts near 0. Each die group flips y, so its pads read as GDS numbers measured from
      the die's lower-left corner. Shapes with no wb:kind (artwork, balls, labels, the side view's loops) are decoration. */
-  const SVGNS = 'http://www.w3.org/2000/svg', WBNS = 'urn:wbx:0.1', INKNS = 'http://www.inkscape.org/namespaces/inkscape';
+  const SVGNS = 'http://www.w3.org/2000/svg', WBNS = 'urn:wbsvg:0.2', INKNS = 'http://www.inkscape.org/namespaces/inkscape';
   const um = v => n(Math.round(v * 1000) / 1000);
   const xe = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   // Type colours are picked for the app's dark canvas, so the drawing darkens them to read on white.
   const deep = hex => { const m = String(hex).match(/^#(..)(..)(..)$/); return m ? '#' + [m[1], m[2], m[3]].map(v => Math.round(parseInt(v, 16) * 0.72).toString(16).padStart(2, '0')).join('') : '#8a6a1c'; };
   const CHOICE_INK = '#7d8a87';
+  /* The wirebond.svg logo, for light backgrounds, ready to nest in a drawing: its view box, size and inner markup. */
+  const BRAND_MARK = (() => {
+    const src = BR.logoLight, vb = src.match(/viewBox="([^"]+)"/)[1].split(/\s+/).map(Number);
+    const body = src.replace(/^[\s\S]*?<svg[^>]*>/, '').replace(/<\/svg>\s*$/, '').replace(/<title>[\s\S]*?<\/title>/, '').replace(/\s*\n\s*/g, '');
+    return { viewBox: vb.join(' '), w: vb[2], h: vb[3], body };
+  })();
+  // Dublin Core, as Inkscape writes it and shows under Document Properties, Metadata: what the file is and where it came from.
+  const svgMetadata = design => `<metadata><rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/"><rdf:Description rdf:about="">`
+    + `<dc:title>${xe('Wire bond diagram: ' + design)}</dc:title><dc:format>image/svg+xml</dc:format><dc:type>wire bond diagram, ${xe(BR.name)} v0.2</dc:type>`
+    + `<dc:description>${xe(BR.credit)}</dc:description><dc:source>${xe(BR.url)}</dc:source><dc:relation>${xe(BR.url + '/blob/main/SPEC.md')}</dc:relation>`
+    + `<dc:contributor>${xe(BR.app)}</dc:contributor></rdf:Description></rdf:RDF></metadata>`;
 
   /* ---- the board around the bond diagram ----
      A board substrate is written twice over. Its facts, the outline, fiducials and front-side parts, go in as data a
@@ -451,7 +476,7 @@ ${usedTypes.map(t => hiddenProp('wblib', 'wb_type_' + t.name, `${t.style} ${t.ma
   // A footprint's pads as outlines in board mm: circles stay circles, anything else is its turned rectangle.
   function padShape(p) {
     if (p.shape === 'circle' || (p.shape === 'oval' && Math.abs(p.w - p.h) < 1e-9)) return { circle: true, x: p.x, y: p.y, r: p.w / 2 };
-    const hw = p.w / 2, hh = p.h / 2, rot = W.WBX.kicad.rot;
+    const hw = p.w / 2, hh = p.h / 2, rot = W.WBSVG.kicad.rot;
     return { pts: [[-hw, -hh], [hw, -hh], [hw, hh], [-hw, hh]].flatMap(([a, b]) => { const [x, y] = rot(a, b, p.rot); return [p.x + x, p.y + y]; }) };
   }
   const boxOf = pts => { const X = pts.filter((_, i) => i % 2 === 0), Y = pts.filter((_, i) => i % 2 === 1); return [Math.min(...X), Math.min(...Y), Math.max(...X), Math.max(...Y)]; };
@@ -464,7 +489,7 @@ ${usedTypes.map(t => hiddenProp('wblib', 'wb_type_' + t.name, `${t.style} ${t.ma
     const marked = new Set((S.marks || []).map(m => m.fp));
     for (const m of S.marks || []) names.add(m.id);
     const fidFps = new Set();
-    for (const f of W.WBX.kicad.fiducialFootprints(B.board, fp => fp === ring || fp.layer !== 'F.Cu')) {
+    for (const f of W.WBSVG.kicad.fiducialFootprints(B.board, fp => fp === ring || fp.layer !== 'F.Cu')) {
       fidFps.add(f.fp);
       if (!marked.has(f.fp)) fids.push({ name: unique(f.fp.ref, 'FID'), role: f.role, datum: f.datum, shape: padShape(f.pad) });
     }
@@ -531,7 +556,7 @@ ${usedTypes.map(t => hiddenProp('wblib', 'wb_type_' + t.name, `${t.style} ${t.ma
 
   function wbSvg(S, opts) {
     opts = opts || {};
-    const R = W.WBX.rules, rot = W.WBX.kicad.rot;
+    const R = W.WBSVG.rules, rot = W.WBSVG.kicad.rot;
     const dies = M.stackOrder(S), first = M.placedDies(S)[0], ring = (S.substrate && S.substrate.selectedRef) || 'L';
     const design = opts.design || (S.substrate ? S.substrate.board.props.wb_design || S.substrate.fileName.replace(/(\.wb)?\.[^.]+$/i, '') : first.die.name);
     const landName = l => String(l.id).includes('.') ? String(l.id) : `${l.ref || ring}.${l.id}`;
@@ -833,6 +858,15 @@ ${usedTypes.map(t => hiddenProp('wblib', 'wb_type_' + t.name, `${t.style} ${t.ma
       o.push(text(CX, yy, 's', `${F.fids.length} fiducial${F.fids.length === 1 ? '' : 's'} and ${F.parts.length} front-side part${F.parts.length === 1 ? '' : 's'} on the board. Dashed: the diagram's area.`)); yy += 2.2 * U;
     }
 
+    // Where the file came from, last in the right-hand column: the wirebond.svg logo, linked to the project, and one line
+    // under it. Decoration, with no wb:kind, so readers pass over it.
+    yy += 2 * U;
+    const LH = 5 * U, LW = LH * BRAND_MARK.w / BRAND_MARK.h;
+    o.push(`<a href="${xe(BR.url)}" target="_blank" class="madewith">${title(BR.credit)}<svg x="${um(CX)}" y="${um(yy)}" width="${um(LW)}" height="${um(LH)}" viewBox="${BRAND_MARK.viewBox}">${BRAND_MARK.body}</svg></a>`);
+    right = Math.max(right, CX + LW);
+    yy += LH + 1.8 * U;
+    o.push(text(CX, yy, 's', `Made with ${BR.name}: ${BR.url.replace(/^https:\/\//, '')}`)); yy += 2.2 * U;
+
     const VX = KX - 2 * U, VY = KY - 5 * U, VW = right + 2 * U - VX, VH = Math.max(bottom0, yy) + 3 * U - VY;
     const style = `text{font-family:Helvetica,Arial,sans-serif;fill:#222}.h{font-size:${um(fs.h)}px;font-weight:bold}.t{font-size:${um(fs.t)}px}.s{font-size:${um(fs.s)}px;fill:#555}`
       + '.sub{fill:#eef3ea;stroke:#9aa;stroke-width:4}.cu{fill:#d9a441}.paddle{fill-opacity:.5}.die{fill:#c9ccd6;stroke:#667;stroke-width:4}.die.art{fill:none}.pad{fill:#f7f7fa;fill-opacity:.85;stroke:#445;stroke-width:2}'
@@ -843,17 +877,21 @@ ${usedTypes.map(t => hiddenProp('wblib', 'wb_type_' + t.name, `${t.style} ${t.ma
       + (B ? '.bv-board{fill:#e4ede5}.bv-cu .f{fill:#c99a3d;fill-opacity:.55}.bv-cu .s{fill:none;stroke:#c99a3d;stroke-opacity:.55;stroke-linecap:round;stroke-linejoin:round}'
         + '.bv-silk .f{fill:#3a4442}.bv-silk .s{fill:none;stroke:#3a4442;stroke-linecap:round;stroke-linejoin:round}.bv-silk text{fill:#3a4442}.bv-edge .s{fill:none;stroke:#2b3532}'
         + '.bv-part{fill:#7b5cb8;fill-opacity:.08;stroke:#7b5cb8}.bv-ref{fill:#5b3f96}.bv-die{fill:#c9ccd6;stroke:#667}.bv-die.art{fill:none}.bv-crop{fill:none;stroke:#b03a8c}.bv-outline{fill:none;stroke:#2b3532}.bv-fid{fill:#0b7a66}' : '');
-    const rootAttrs = [`wb:version="0.1"`, `wb:units="um"`, `wb:design="${xe(design)}"`];
+    const rootAttrs = [`wb:version="0.2"`, `wb:units="um"`, `wb:design="${xe(design)}"`];
     if (gap != null) rootAttrs.push(`wb:rule-wire-gap="${n(gap)}"`);
     if (edge != null) rootAttrs.push(`wb:rule-edge-clear="${n(edge)}"`);
     const pxW = 1400;
-    return `<?xml version='1.0' encoding='utf-8'?>
+    // Sealed last, over everything above: see seal.js. A reader that finds it no longer matches knows the file was edited.
+    return W.WBSVG.seal.stamp(`<?xml version='1.0' encoding='utf-8'?>
+<!-- ${xe(BR.credit)} -->
 <svg xmlns="${SVGNS}" xmlns:wb="${WBNS}" xmlns:inkscape="${INKNS}" viewBox="${um(VX)} ${um(VY)} ${um(VW)} ${um(VH)}" width="${pxW}" height="${Math.round(pxW * VH / VW)}" ${rootAttrs.join(' ')}>
 <title>Wire bond diagram: ${xe(design)}</title>
+<desc>A wire bond diagram in the ${xe(BR.name)} format, v0.2: a true-scale drawing that is also the data. ${xe(BR.credit)}</desc>
+${svgMetadata(design)}
 <style>${style}</style>
 ${o.join('\n')}
 </svg>
-`;
+`);
   }
 
   /* ---- zip, stored ---- */
@@ -879,5 +917,5 @@ ${o.join('\n')}
     return new Blob([...parts, ...central, new Uint8Array(e.buffer)], { type: 'application/zip' });
   }
 
-  W.WBX.export = { dieFootprintFile, dieStep, dieArt, artAutoColours, BOND_STEP, symbolFile, assemble, bondlist, wbSvg, zip, safe };
+  W.WBSVG.export = { dieFootprintFile, dieStep, dieArt, artAutoColours, BOND_STEP, symbolFile, assemble, bondlist, wbSvg, zip, safe };
 })(window);

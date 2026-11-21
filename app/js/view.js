@@ -1,7 +1,8 @@
-/* The three drawings: plan view, tilted 3D view and loop side view. All true scale. */
+/* The three drawings: plan view, tilted 3D view and loop side view. All true scale.
+   Part of Wire Bond Bench, from wirebond.svg: https://github.com/anfroholic/wirebond.svg. (c) Andrew Wingate, MIT licence. */
 (function (W) {
   'use strict';
-  const M = W.WBX.model, { rot } = W.WBX.kicad;
+  const M = W.WBSVG.model, { rot } = W.WBSVG.kicad;
 
   const C = { bg: '#0c1311', plate: '#12302b', plateEdge: '#4e7971', land: '#d9a441', landNet: '#e8c465', landDim: '#7c6a3c', paddle: '#3a3320', die: '#1a2826', dieEdge: '#7ba69c', pad: '#d4d4d4', padHi: '#ffffff', sel: '#d93aa7', hi: '#3ea9da', ok: '#36d9bb', warn: '#e8a33d', bad: '#ff6b6b', ghost: '#d93aa7', text: '#d4d4d4', mute: '#7ba69c' };
   const LAYER_STYLE = { 'F.Cu': ['#2c7f6e', 0.42], 'B.Cu': ['#3f52a6', 0.16], 'In1.Cu': ['#54606a', 0.14], 'In2.Cu': ['#54606a', 0.14], 'F.SilkS': ['#e2e8f0', 0.85], 'B.SilkS': ['#768ae5', 0.18], 'F.Mask': ['#b629d6', 0.0], 'Edge.Cuts': ['#bee36d', 1], 'F.Fab': ['#a0a0a0', 0.6], 'B.Fab': ['#606060', 0.2], 'F.CrtYd': ['#c5acfb', 0.4], 'B.CrtYd': ['#768ae5', 0.2], 'Cmts.User': ['#fa8fa2', 0.8], 'Dwgs.User': ['#fbbea2', 0.6], '*': ['#3e6f66', 0.5] };
@@ -36,6 +37,7 @@
         const pts = [c(-hw, -hh), c(hw, -hh), c(hw, hh), c(-hw, hh)];
         Q.moveTo(...pts[0]); Q.lineTo(...pts[1]); Q.lineTo(...pts[2]); Q.lineTo(...pts[3]); Q.closePath();
         L.fill.addPath(Q);
+        for (const g of p.gfx || []) add(Object.assign({}, g, { layer: L.name }));   // a custom pad's shapes
       }
     }
     sub.paths = layers;
@@ -684,7 +686,7 @@
   }
 
   /* ---- side view of one wire, true scale ---- */
-  const app_selected = w => W.WBX.app.selWire === w;
+  const app_selected = w => W.WBSVG.app.selWire === w;
   function drawLoop(canvas, S, w, e) {
     const r = canvas.parentElement.getBoundingClientRect(), d = W.devicePixelRatio || 1;
     if (!r.width || !r.height) return;
@@ -752,5 +754,5 @@
     ctx.fillText(ends.toWords, r.width - 10, H - 6);
   }
 
-  W.WBX.view = { PlanView, TiltView, drawLoop, buildBoardPaths, C };
+  W.WBSVG.view = { PlanView, TiltView, drawLoop, buildBoardPaths, C };
 })(window);

@@ -35,7 +35,7 @@ The example's fiducials are 500 µm and 300 µm dots, sized for a bonder's camer
 - `Wirebond` is a display name. The layer table says `(39 "User.1" user "Wirebond")`, and objects say `(layer "User.1")`. Look the name up in the table.
 - KiCad re-sorts footprints and board properties when it saves. Sort wires by `wb_seq`; `<i>` keeps the profile and stack order.
 - Apply the footprint's `(at x y angle)` to local coordinates. A rotated wire keeps its original local coordinates.
-- A die rotated in KiCad has no equivalent in `wbx.rd`, which accepts only a translate and flip.
+- A die rotated in KiCad has no equivalent in `drc.rd`, which accepts only a translate and flip.
 
 ## Keep the project file
 
@@ -55,5 +55,9 @@ To change a board value in the GUI, use Board Setup > Text Variables. The title 
 ## Expected behaviour
 
 - **DRC:** 0 violations and 90 unconnected items, with the project's 0.1 mm clearance, as on the wafer.space COB boards. The unconnected items are real from KiCad's point of view, because wires aren't copper. Each of the 56 signal nets has one pad and one land, which gives one line. VSS has 10 pads and 10 lands, which gives 19, and VDD 8 and 8, which gives 15.
-- **Moving items:** moving `U1` or a land leaves the wires behind, and nothing in KiCad flags it. `wbx check` will, once an importer has produced a `.wb.svg`.
+- **Moving items:** moving `U1` or a land leaves the wires behind, and nothing in KiCad flags it. `wbsvg check` will, once an importer has produced a `.wb.svg`.
 - **Gerbers:** die pads are on `F.Cu`, so they plot as substrate copper. Don't send this board's outputs to a fab as they are.
+
+---
+
+<sub><img src="../../app/brand/wirebond-icon.svg" alt="" width="16" height="16"> Part of [wirebond.svg](https://github.com/anfroholic/wirebond.svg), a viewable wire bond exchange format, and its browser app Wire Bond Bench. (c) Andrew Wingate, MIT licence.</sub>

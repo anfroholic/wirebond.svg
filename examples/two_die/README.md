@@ -58,7 +58,7 @@ To see it, open the Wire Bond Bench (`app/index.html`) and choose **wafer.space 
 
 - **Nets across two die.** Each die names its pads for itself, so the bench's net check warns on all twelve bus wires: `bidir_PAD[14]` at one end and `DQ0` at the other. The wire's `wb:net` takes the far pad's name, `DQ0`. Neither is the board's net name, such as `RAM_DQ0`, and there's no land to carry one. The format needs a way to give a die-to-die wire its own net and check both pads against it.
 - **The stud bumps.** Nothing in the file says the RAM's pads get a bump before their stitch. SPEC.md lists `security-bump` as proposed. This example is a case for it.
-- **`wbx.py` reads one die.** `wbx.py check` can't check this file. It takes the first die and treats every pad as that die's. The bench's own checks cover both die and both ends of every wire.
+- **`drc.py` reads one die.** `drc.py check` can't check this file. It takes the first die and treats every pad as that die's. The bench's own checks cover both die and both ends of every wire.
 - **Design rules don't travel in the .wb.svg.** The bench rebuilds a board from the file, but its copper has no nets, and KiCad's default 0.2 mm clearance applies unless you add `two_die.kicad_pro`. For a board to build, assemble from `two_die.kicad_pcb`, as `make_two_die.py` does.
 
 The bench's checks on it: nothing fails. Three things aren't a pass: the twelve net warnings above, D1's 44 long fan-out wires over the 100-diameter rule of thumb (the main example has the same), and the RAM's TEST pad, unbonded on purpose. KiCad's DRC of the assembled board finds nothing but the unrouted nets.
@@ -84,3 +84,7 @@ python app/make_samples.py
 `make_two_die.py` writes the RAM die and the board, then has the bench put them together in a headless Chrome, since the bench is the only writer that handles several die. It loads the board and both GDS files, puts each die where the plan says, makes every wire, and writes `two_die.wb.svg`. `--inputs` writes only the RAM die and the board. The output is the same byte for byte each time. `tests/test_app.py` runs the same assembly and checks that it still gives this file, and that KiCad passes the assembled board.
 
 The bench's **Put it in KiCad** writes the assembled board with a 3D model of every wire, about 5 MB, so it isn't kept here.
+
+---
+
+<sub><img src="../../app/brand/wirebond-icon.svg" alt="" width="16" height="16"> Part of [wirebond.svg](https://github.com/anfroholic/wirebond.svg), a viewable wire bond exchange format, and its browser app Wire Bond Bench. (c) Andrew Wingate, MIT licence.</sub>

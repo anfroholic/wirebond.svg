@@ -4,6 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Wire Bonding Primer</title>
+<link rel="icon" type="image/svg+xml" href="../../app/brand/wirebond-icon.svg">
+<meta name="author" content="Andrew Wingate">
+<meta name="generator" content="wirebond.svg">
 <style>
 /* Layout: one reading column (≈880px) with full-width figures; Evezor house palette, dark first. */
 :root{
@@ -173,12 +176,14 @@ svg .arc{stroke:var(--accent);stroke-width:1.4;fill:none}
 .sitenav a:hover{color:#fff;text-decoration:underline}
 
 @media (prefers-reduced-motion:no-preference){ .seg button,.filters button{transition:background .12s,color .12s} }
+.brandmark{display:inline-block;margin:0 0 12px}.brandmark img{display:block;height:40px;width:auto}.madewith{display:flex;align-items:center;gap:10px;max-width:960px;margin:40px auto 28px;padding:16px 20px 0;border-top:1px solid rgba(127,127,127,.3);font-size:13px;color:#7ba69c}.madewith img{width:24px;height:24px;flex:none}.madewith a{color:inherit}
 </style>
 </head>
 <body>
 
 <header class="mast">
   <div class="wrap">
+    <a class="brandmark" href="https://github.com/anfroholic/wirebond.svg" title="wirebond.svg on GitHub"><img src="../../app/brand/wirebond-logo.svg" alt="wirebond.svg" width="160" height="40"></a>
     <nav class="sitenav" aria-label="Project pages">
       <a href="../../app/index.html">← Wire Bond Bench</a>
       <a href="../wire_bond_design_rules.svg">Rules sheet</a>
@@ -669,5 +674,6 @@ lenIn.addEventListener("input",drawLen);
 drawPads(); drawLen();
 })();
 </script>
+<p class="madewith"><img src="../../app/brand/wirebond-icon.svg" alt=""><span>Part of <a href="https://github.com/anfroholic/wirebond.svg">wirebond.svg</a>, a viewable wire bond exchange format, and its browser app <a href="../../app/index.html">Wire Bond Bench</a>. (c) Andrew Wingate, MIT licence.</span></p>
 </body>
 </html>

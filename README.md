@@ -8,14 +8,14 @@
 <p align="center"><b>A viewable wire bond exchange format, and a browser app that lays out wire bonds for KiCad.</b></p>
 
 <h3 align="center">
-  <a href="https://anfroholic.github.io/wirebonding.svg/app/">▶&nbsp;Open Wire Bond Bench</a>
+  <a href="https://anfroholic.github.io/wirebond.svg/app/">▶&nbsp;Open Wire Bond Bench</a>
 </h3>
 
 <p align="center">Runs in your browser. Nothing to install, and your files stay on your computer.</p>
 
 <p align="center">
-  <a href="https://anfroholic.github.io/wirebonding.svg/examples/example.wb.svg">See an example .wb.svg</a> ·
-  <a href="https://anfroholic.github.io/wirebonding.svg/docs/primer/wire-bonding-primer.html">Wire bonding primer</a> ·
+  <a href="https://anfroholic.github.io/wirebond.svg/examples/example.wb.svg">See an example .wb.svg</a> ·
+  <a href="https://anfroholic.github.io/wirebond.svg/docs/primer/wire-bonding-primer.html">Wire bonding primer</a> ·
   <a href="SPEC.md">Spec</a> ·
   <a href="examples">Examples</a> ·
   <a href="tools">Tools</a>
@@ -25,6 +25,7 @@
 
 wirebond.svg is a restricted SVG profile for describing a wire bonded assembly. A `.wb.svg` file opens in any browser as a true-scale bonding diagram, and tools read the same file as data.
 
+> **Status: prototype, v0.2 draft.** Nothing here has been run through a real bonder or offline programming tool.
 
 <table>
   <tr>
@@ -37,21 +38,11 @@ wirebond.svg is a restricted SVG profile for describing a wire bonded assembly. 
   </tr>
 </table>
 
-## Why a picture
-
-Wire bonding already runs on pictures. A bonding diagram is the accepted exchange format today, and everything around it is built for people reading drawings. With AI reading more of our files, I think formats should become more human-centric anyway, not less.
-
-So keep the picture. Save it as an SVG, which is just XML under the hood, and put the wire bond data right into that XML as key/value pairs on the drawn elements.
-
-> Humans get what they want.
->
-> Machines can read what they want.
-
 ## Wire Bond Bench
 
 Wire Bond Bench is the browser app that goes with the format: wire bond layout for KiCad. Give it a die's GDS and the footprint or board it bonds to. It lays out the wires, checks them against bonding design rules, and writes the assembly back to KiCad with 3D wires, a bondlist and a `.wb.svg` bond diagram.
 
-**[Open it in your browser](https://anfroholic.github.io/wirebonding.svg/app/)**, in Chrome or Edge. There's nothing to install, and your files stay in the browser. To run it from a copy of this repo instead, open [app/index.html](app/index.html). A few features run the Python in [tools/](tools), such as checking the die at the edges of its placement tolerance. The browser downloads Python for those the first time one is used, so that needs a connection.
+**[Open it in your browser](https://anfroholic.github.io/wirebond.svg/app/)**, in Chrome or Edge. There's nothing to install, and your files stay in the browser. To run it from a copy of this repo instead, open [app/index.html](app/index.html). It is JavaScript only: it never downloads anything or runs Python, so it works offline.
 
 The app opens each of the boards below from its welcome screen. Each picture is the board as the app exports it to KiCad, with the die's artwork painted on from its GDS and every wire in 3D, rendered in Blender.
 
@@ -94,8 +85,8 @@ That picture is [examples/example.wb.svg](examples/example.wb.svg), opened in a 
 This is [examples/example.wb.svg](examples/example.wb.svg), cut down to one of each thing. The `<!-- -->` notes are added, and the hover titles, Inkscape layer names and most of the drawing are left out, but the values are the file's own.
 
 ```xml
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:wb="urn:wbx:0.1" viewBox="-300 -500 19000 15600"
-     wb:version="0.1" wb:units="um" wb:design="wafer.space 1x1 logo die" wb:rev="A"
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:wb="urn:wbsvg:0.2" viewBox="-300 -500 19000 15600"
+     wb:version="0.2" wb:units="um" wb:design="wafer.space 1x1 logo die" wb:rev="A"
      wb:rule-wire-gap="60" wb:rule-edge-clear="40">
 
   <!-- The board: an outline, and a land per bond finger. 1 unit = 1 µm, so this land is 250 × 1000 µm. -->
@@ -136,15 +127,13 @@ A reader looks only at elements with a `wb:kind`, and takes their position and s
 
 [SPEC.md](SPEC.md) is the format. [docs/report.md](docs/report.md) has the design reasoning and a survey of prior art.
 
-The code still uses the project's earlier name, WBX: `wbx.py` and the namespace `urn:wbx:0.1`.
-
 ## Examples
 
 Open any `.wb.svg` in [examples/](examples) in a browser and hover over a wire, pad or layer.
 
 | Example | What it is |
 |---|---|
-| [example.wb.svg](examples/example.wb.svg) | The wafer.space logo die, [89Mods/ws-logo-die](https://github.com/89Mods/ws-logo-die), bonded to the padring of wafer.space's run-2 1x1 [chip-on-board board](https://github.com/wafer-space/chip-on-board-wire-bonded-pcbs). Its pads, net names, eye points and artwork come from the die's GDS, and its lands from the padring footprint. The wire types, stack, board fiducials and tolerance are illustrative. Beside it are the bondlist, fiducials and 3D DXF that `wbx.py export` writes from it |
+| [example.wb.svg](examples/example.wb.svg) | The wafer.space logo die, [89Mods/ws-logo-die](https://github.com/89Mods/ws-logo-die), bonded to the padring of wafer.space's run-2 1x1 [chip-on-board board](https://github.com/wafer-space/chip-on-board-wire-bonded-pcbs). Its pads, net names, eye points and artwork come from the die's GDS, and its lands from the padring footprint. The wire types, stack, board fiducials and tolerance are illustrative. Beside it are the bondlist, fiducials and 3D DXF that `drc.py export` writes from it |
 | [waferspace/](examples/waferspace) | The sources: the logo die and EuroSynth as GDS, their padrings, and the run-2 1x1 COB mezzanine board as a KiCad project |
 | [two_die/](examples/two_die) | The logo die beside a made-up RAM die on one board, with wires straight across from die to die |
 | [stacked_die/](examples/stacked_die) | The RAM die, turned round, glued on top of the logo die |
@@ -152,25 +141,34 @@ Open any `.wb.svg` in [examples/](examples) in a browser and hover over a wire, 
 
 ## Tools
 
-[tools/](tools) holds Python scripts for `.wb.svg` files. Each is one file you can copy out and run on its own, or import from your own code. [tools/README.md](tools/README.md) says how.
+A `.wb.svg` is data, so you can read it from your own code. The `wbsvg` Python package reads one into objects you can query: the bond list, nets, loop profiles, wire lengths, and design rule checks. Its other name is `wirebond`: `pip install wirebond` and `import wirebond` give you the same package.
 
 ```sh
-pip install lxml ezdxf
-python tools/wbx.py check examples/example.wb.svg
-python tools/wbx.py place examples/example.wb.svg     # how far the die can move before a check fails
-python tools/wbx.py export examples/example.wb.svg out
+pip install wbsvg
+wbsvg info examples/example.wb.svg
+wbsvg bondlist examples/example.wb.svg -o bonds.csv      # one row per wire, for a bonder
+wbsvg query examples/example.wb.svg wire net=VSS         # wires whose wb:net is VSS
+wbsvg check examples/example.wb.svg
 ```
 
-`wbx.py` reads one die, not turned. The two-die and stacked examples are for the app until it reads more.
+```python
+import wbsvg
+a = wbsvg.load("examples/two_die/two_die.wb.svg")
+a.wire("W75").length              # um, along its loop
+a.query("wire", to_kind="die")    # the die-to-die wires
+a.net("VSS").pads                 # every pad on VSS
+```
+
+[tools/](tools) holds the same Python as single files, `wbsvg.py` and `drc.py`, that you can copy out and run without installing. [tools/README.md](tools/README.md) has the whole API. `drc.py` is the reference checker the app runs: `check`, `place` (how far the die can move before a check fails) and `export` (bondlist, fiducials and 3D DXF). It reads one die, not turned. `wbsvg` reads every example, and runs `drc.py`'s design rules where `drc.py` can read the file.
 
 ## Learning
 
 New to wire bonding? These are web pages:
 
-- [The wire bonding primer](https://anfroholic.github.io/wirebonding.svg/docs/primer/wire-bonding-primer.html): what bonding is, the words for it, and why each design rule is what it is. The rules are also drawn on [one sheet](https://anfroholic.github.io/wirebonding.svg/docs/wire_bond_design_rules.svg).
-- [Fiducials](https://anfroholic.github.io/wirebonding.svg/docs/primer/fiducials.html): how pick and place machines and wire bonders find the board and the die, and how wirebond.svg describes fiducials.
-- [Files in and out](https://anfroholic.github.io/wirebonding.svg/docs/primer/files-in-and-out.html): every file the app and `wbx.py` read and write, and what round-trips.
-- [GD&T](https://anfroholic.github.io/wirebonding.svg/docs/primer/gdt.html): the tolerance box beside the die, and the die placement tolerance.
+- [The wire bonding primer](https://anfroholic.github.io/wirebond.svg/docs/primer/wire-bonding-primer.html): what bonding is, the words for it, and why each design rule is what it is. The rules are also drawn on [one sheet](https://anfroholic.github.io/wirebond.svg/docs/wire_bond_design_rules.svg).
+- [Fiducials](https://anfroholic.github.io/wirebond.svg/docs/primer/fiducials.html): how pick and place machines and wire bonders find the board and the die, and how wirebond.svg describes fiducials.
+- [Files in and out](https://anfroholic.github.io/wirebond.svg/docs/primer/files-in-and-out.html): every file the app and `drc.py` read and write, and what round-trips.
+- [GD&T](https://anfroholic.github.io/wirebond.svg/docs/primer/gdt.html): the tolerance box beside the die, and the die placement tolerance.
 
 ## Handling files
 
@@ -179,10 +177,6 @@ Do not run `.wb.svg` files through SVGO or other minifiers. They convert shapes 
 ## Related work
 
 [open.cob.json](https://github.com/MaxClerkwell/open.cob.json) is a JSON exchange format for chip-on-board wire bonding.
-
-## Feedback
-
-Feedback, ideas and issues are all welcome. [Open an issue](https://github.com/anfroholic/wirebonding.svg/issues).
 
 ## License
 

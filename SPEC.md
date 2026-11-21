@@ -1,6 +1,15 @@
-# wirebond.svg specification, v0.1 draft
+<p align="center">
+  <a href="https://github.com/anfroholic/wirebond.svg">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="app/brand/wirebond-logo.svg">
+      <img src="app/brand/wirebond-logo-light.svg" alt="wirebond.svg" width="360">
+    </picture>
+  </a>
+</p>
 
-This describes what the prototype in `wbx.py` writes and reads. Fields marked *proposed* are not implemented.
+# wirebond.svg specification, v0.2 draft
+
+This describes what the prototype in `drc.py` writes and reads. Fields marked *proposed* are not implemented.
 
 ## File extension
 
@@ -10,7 +19,7 @@ A wirebond.svg file uses the extension `.wb.svg`, for example `example.wb.svg`. 
 
 1. If it isn't drawn, it isn't in the file. `<metadata>` may hold only non-essential provenance.
 2. One SVG user unit is 1 µm. Coordinates keep at most three decimals (1 nm). Parsers read the decimal text.
-3. Namespace: `xmlns:wb="urn:wbx:0.1"`.
+3. Namespace: `xmlns:wb="urn:wbsvg:0.2"`.
 4. Names go in `wb:name`, never in `id`.
 5. No scripts. Transforms are limited to translate, rotate and `scale(1 -1)`, and a uniform `scale(k)` on the board view (draft).
 6. Minifiers are forbidden.
@@ -33,7 +42,7 @@ The board view (draft) is a group with `wb:kind="board"`: the whole board again,
 
 ## Root attributes
 
-`wb:version`, `wb:units="um"`, `wb:design`, `wb:rev`, `wb:rule-wire-gap`, `wb:rule-edge-clear`; draft `wb:rule-fid-clear`.
+`wb:version`, `wb:units="um"`, `wb:design`, `wb:rev`, `wb:rule-wire-gap`, `wb:rule-edge-clear`; draft `wb:rule-fid-clear`, `wb:data-sha256`, `wb:drawing-sha256` (see Seal).
 
 ## Element kinds
 
@@ -79,18 +88,19 @@ A file is valid when:
 - no land is under the die or its attach fillet, which is half the attach layer's extra width
 - with a placement tolerance, the forms present agree, each datum is on an element, and every check above still passes with the die at the edges of its zone
 - draft: each fiducial is inside its frame, and no land or wire comes within `wb:rule-fid-clear` of a board fiducial (F2, F3 below)
+- draft: where the file is sealed, `wb:data-sha256` matches its data (see Seal)
 
 The checker also gives warnings and notes, which don't make a file invalid.
 
 ## Reading a file back
 
-The Wire Bond Bench opens a `.wb.svg` it wrote, or one `wbx.py` wrote, and makes it the session, ready to change and export again. It reads by `wb:kind` only:
+The Wire Bond Bench opens a `.wb.svg` it wrote, or one `drc.py` wrote, and makes it the session, ready to change and export again. It reads by `wb:kind` only:
 
 | From the file | Becomes |
 |---|---|
 | `land`s, by name `<ref>.<number>` | the substrate's lands, one footprint per reference |
 | each `die` group, its `outline` and `pad`s | a die at the same place and angle, with its pads and nets |
-| an image in a die group, as `wbx.py` writes it, or in a group titled `<name> artwork` just before it, as the app writes it | that die's artwork |
+| an image in a die group, as `drc.py` writes it, or in a group titled `<name> artwork` just before it, as the app writes it | that die's artwork |
 | `layer`s in the stack | each die's thickness and attach, which die it sits on, the board's thickness and the glob top |
 | `profile`s | wire types, alongside the bench's own, so a wire can be given another |
 | `wire`s | the wires, each bonding where the file put it |
@@ -98,7 +108,7 @@ The Wire Bond Bench opens a `.wb.svg` it wrote, or one `wbx.py` wrote, and makes
 | board `fiducial`s named `<ref>.F<n>` in the bond diagram, and copper drawn with class `mark` | the substrate's copper marks, as filled copper in footprint `<ref>` in the order written, each with its role |
 | the board view: `outline`, `fiducial`s, `part`s and the picture | the board, which the next export writes again |
 
-Writing the result straight back gives the same file, apart from the last nanometre of the side view's loop drawings. Not kept yet: eye points inside a die, because the bench has nowhere to put them. A file from `wbx.py` comes back with the bench's names, D1 for its die and `L.L1` for land L1, and its loop drawings at the bench's reference span. The board it rebuilds is a picture of the original, so its copper has no nets; for a board to fabricate, open the original `.kicad_pcb`.
+Writing the result straight back gives the same file, apart from the last nanometre of the side view's loop drawings. Not kept yet: eye points inside a die, because the bench has nowhere to put them. A file from `drc.py` comes back with the bench's names, D1 for its die and `L.L1` for land L1, and its loop drawings at the bench's reference span. The board it rebuilds is a picture of the original, so its copper has no nets; for a board to fabricate, open the original `.kicad_pcb`.
 
 ## Fiducials (draft)
 
@@ -150,7 +160,7 @@ F5 compares shape type and bounding box size, not the drawn geometry, so it can 
 - **Copper marks:** board fiducials should be on the copper layer, because that is the layer the lands are etched in, so a mark there is registered to the lands; bonder makers ask for this. The bench reads small filled shapes on F.Cu in the substrate footprint, and its KiCad fiducial pads and unnumbered copper pads, within 2 mm of the lands, as copper marks named `<ref>.F<n>` in file order. A plus starts as `align`; the rest start unused, and a mark can be set to `align`, `orient` or unused. A used mark is written in the bond diagram as a board `fiducial` with the drawn geometry (a `path`, or a `circle` for a round one), `class="cu fid"`, in board coordinates; an unused one is copper with `class="cu mark"` and no `wb:kind`. The substrate footprint is never changed: in a KiCad export the roles are fields `wb_fiducial_<ref>.F<n>` on `WBLIB`, each `align`, `orient` or `off`.
 - **KiCad:** a board fiducial is a footprint with `wb_kind` `fiducial`, `wb_role` and any `wb_datum`, holding one unnumbered pad at the reference point. An `align` fiducial's pad has KiCad's fabrication property, `(property pad_prop_fiducial_glob)`, so it's marked as a fiducial in the Gerbers. The mask opening is widened by `wb:rule-fid-clear`. Only circles and rectangles map to a pad so far. Die fiducials stay with the GDS.
 - **GDS:** there's no fiducial layer. The example puts its eye points in top metal (81/0), each named by a text label on 81/10. Real wafer.space dies have a QR code at bottom left and a different mark in the opposite corner, but no labels.
-- **Out:** `wbx.py export` writes `<base>.fiducials.csv` with frame, name, role, datum and the reference point in the bond list's die-centred, y-up coordinates. The bonding house can teach from it.
+- **Out:** `drc.py export` writes `<base>.fiducials.csv` with frame, name, role, datum and the reference point in the bond list's die-centred, y-up coordinates. The bonding house can teach from it.
 
 ## Placement tolerance (draft)
 
@@ -205,7 +215,7 @@ Decided, November 2026:
 
 ### What the checker does with it
 
-The checker assumes the bonder finds the die by vision, as automatic bonders do: first bonds follow the die, and second bonds follow the lands. It moves the die to ten places at the edge of its zone and runs every check again: eight shifts of half the diameter, 45° apart, and each way the turn about the die's centre that brings its farthest bonded pad's centre to the edge of its circle. `wbx.py place` finds how far the die can actually go.
+The checker assumes the bonder finds the die by vision, as automatic bonders do: first bonds follow the die, and second bonds follow the lands. It moves the die to ten places at the edge of its zone and runs every check again: eight shifts of half the diameter, 45° apart, and each way the turn about the die's centre that brings its farthest bonded pad's centre to the edge of its circle. `drc.py place` finds how far the die can actually go.
 
 For the example:
 
@@ -214,15 +224,48 @@ For the example:
 | Finds the die | 1,370 µm | 17.2° | W01 and W02, the first two wires, come within the 60 µm wire gap |
 | Doesn't, bonds where programmed | 4.0 µm | | W01's ball leaves its 60 µm pad |
 
-A bonder that finds the die has a lot of room here. The padring's lands are 1 mm long and more than 1.6 mm from the die, so moving the die only bends the fan-out, until two neighbouring wires come too close. The 50 µm zone leaves 187 µm of edge clearance in the worst case, against a 40 µm rule. A bonder that doesn't has almost none: the checker draws a 20 µm wire's ball 1.3 diameters each way from its centre, which leaves 4 µm on a 60 µm pad. These limits come only from the checks above. The app's other rules, such as wire angle and length, aren't in `wbx.py`, so they may be tighter. A bonder's vision capture range also isn't checked; nobody here has that number yet.
+A bonder that finds the die has a lot of room here. The padring's lands are 1 mm long and more than 1.6 mm from the die, so moving the die only bends the fan-out, until two neighbouring wires come too close. The 50 µm zone leaves 187 µm of edge clearance in the worst case, against a 40 µm rule. A bonder that doesn't has almost none: the checker draws a 20 µm wire's ball 1.3 diameters each way from its centre, which leaves 4 µm on a 60 µm pad. These limits come only from the checks above. The app's other rules, such as wire angle and length, aren't in `drc.py`, so they may be tighter. A bonder's vision capture range also isn't checked; nobody here has that number yet.
+
+## Seal (draft)
+
+A `.wb.svg` is meant to be opened in any SVG editor, so it can be changed by hand: a wire's `wb:from` edited, a pad moved, or a label retyped so the drawing no longer says what the data does. The seal shows whether that happened after the file was written. A writer puts two SHA-256 digests on the root, as the last thing it does:
+
+```xml
+<svg ... wb:data-sha256="aed7…4f5f" wb:drawing-sha256="9fc5…182d">
+```
+
+| Attribute | Covers | Changed means |
+|---|---|---|
+| `wb:data-sha256` | What a reader reads: the root's `wb:` attributes, and every element with a `wb:kind` and everything inside it, except `title` and `desc` and the `class` and `style` attributes | The data was changed. An error. |
+| `wb:drawing-sha256` | Everything drawn: every SVG element, its attributes and its text, `title`, `desc` and `style` included | Only the drawing was changed: labels, hover text or colours may not match the data. A warning. |
+
+Neither covers `<metadata>`, which holds only provenance (rule 1), anything outside the SVG namespace, `id` attributes or an empty `<defs>`. Those are what an editor such as Inkscape adds when it opens and saves a file unchanged, so a plain re-save keeps the seal. Whitespace, attribute order, quoting and line endings don't count either. A file with no seal is still valid; the checker notes that edits can't be found.
+
+**Canonical form.** Walk the elements in document order, from the root at depth 0. Skip, with everything inside it, an element outside the SVG namespace, a `metadata`, and a `defs` with no child elements. Each element left gives one line, the JSON array `[depth, name, attrs, text]`:
+
+- `name` is the element's local name.
+- `attrs` is a flat list `[name, value, name, value, …]` sorted by name. Attributes in no namespace keep their name, except `id`, which is left out. Attributes in `urn:wbsvg:0.2` are named `wb:<local>`, and on the root the two seal attributes are left out. `xlink:href` is named `href`. All others are left out.
+- `text` is the element's own text nodes, not its children's, joined.
+- In every value and in the text, each run of space, tab, CR and LF becomes one space, and a leading or trailing space is dropped.
+- JSON with no spaces between items, and characters outside ASCII written as they are, not as `\u` escapes.
+
+The drawing lines are every element's line. The data lines are the root's line with only its `wb:` attributes and empty text, then the line of each element that has a `wb:kind` or is inside one, except `title` and `desc`, with `class` and `style` left out of its attributes. Each digest is the lowercase hex SHA-256 of its lines joined by LF, in UTF-8.
+
+**Writing.** Work out both digests from the file as written, then add the two attributes at the end of the root's start tag, replacing any already there, and change nothing else. `drc.py` (`write` and `seal()`), the Wire Bond Bench (`app/js/seal.js`) and `wbsvg.py` do the same and give the same bytes.
+
+**Not a signature.** Anyone with these rules can work the digests out again, so the seal catches a file edited and passed on in good faith, not one changed on purpose by someone who then reseals it. Opening a file in the bench and writing it again also seals it afresh, and the bench says on opening when a seal doesn't match. To show who wrote a file, the digests would need signing: proposed below.
 
 ## Proposed
 
+- a signature over the seal, such as Ed25519 with the writer's key, so a reader can tell who wrote a file and that nobody resealed it since
 - fiducial `match`, linking an `orient` mark to the die fiducial that points at it, for example `wb:match="U1.QR"` on a pin 1 dot
 - wire `via` for stitch chains, and `security-bump`
 - profile `min`, `max`, `vendor-name`, `certified-by`, and angle units in moves
 - a check of `part` heights against the capillary and glob top
 - die `stack-layer` for multi-die stacks
-- a model hash on the root to detect editor changes
 - tolerances on other values, such as die thickness and bondline, which move loop heights, and a `none` versus `unspecified` distinction, following open.cob.json
 - mappings to the JEDEC 4-point and 5-point bond wire models
+
+---
+
+<sub><img src="app/brand/wirebond-icon.svg" alt="" width="16" height="16"> Part of [wirebond.svg](https://github.com/anfroholic/wirebond.svg), a viewable wire bond exchange format, and its browser app Wire Bond Bench. (c) Andrew Wingate, MIT licence.</sub>

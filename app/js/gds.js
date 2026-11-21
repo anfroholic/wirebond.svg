@@ -1,5 +1,6 @@
 /* GDSII reader for the browser: parse, flatten by layer, find bond pads, read labels, render artwork.
-   Geometry stays in the file's ArrayBuffer; cells keep offsets into it, so a 100 MB chip stays cheap. */
+   Geometry stays in the file's ArrayBuffer; cells keep offsets into it, so a 100 MB chip stays cheap.
+   Part of Wire Bond Bench, from wirebond.svg: https://github.com/anfroholic/wirebond.svg. (c) Andrew Wingate, MIT licence. */
 (function (W) {
   'use strict';
 
@@ -559,6 +560,6 @@
     return out;
   }
 
-  W.WBX = W.WBX || {};
-  W.WBX.gds = { parse, buildDie, padCandidates, defaultLayers, render, ringOrder, findMark };
+  W.WBSVG = W.WBSVG || {};
+  W.WBSVG.gds = { parse, buildDie, padCandidates, defaultLayers, render, ringOrder, findMark };
 })(window);

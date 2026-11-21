@@ -2,22 +2,26 @@
 # requires-python = ">=3.10"
 # dependencies = ["lxml", "ezdxf"]
 # ///
-"""WBX reference prototype: write, parse, check and export .wb.svg files.
+"""drc: the wirebond.svg reference checker. Writes, reads, checks, places and exports .wb.svg files; wbsvg uses it.
+
+Part of wirebond.svg: https://github.com/anfroholic/wirebond.svg. (c) Andrew Wingate, MIT licence.
+Every file it writes says so: a comment and <metadata> in a .wb.svg, a custom property in a DXF.
 
 One file, so it can be copied anywhere. Run it, or import it:
 
-    python wbx.py check board.wb.svg          # needs lxml
-    python wbx.py place board.wb.svg          # how far the die can move or turn before a check fails
-    python wbx.py export board.wb.svg out     # out.bondlist.csv, out.fiducials.csv, out.dxf; also needs ezdxf
-    uv run wbx.py check board.wb.svg          # the same, with uv fetching lxml and ezdxf from the header above
+    python drc.py check board.wb.svg          # needs lxml
+    python drc.py place board.wb.svg          # how far the die can move or turn before a check fails
+    python drc.py export board.wb.svg out     # out.bondlist.csv, out.fiducials.csv, out.dxf; also needs ezdxf
+    uv run drc.py check board.wb.svg          # the same, with uv fetching lxml and ezdxf from the header above
 
-    import wbx
-    m = wbx.rd("board.wb.svg")                # a dict: die, pads, lands, wires, prof, stack, and fid, tol, board if present
-    res, errors = wbx.check(m)
+    import drc
+    m = drc.rd("board.wb.svg")                # a dict: die, pads, lands, wires, prof, stack, seal, and fid, tol, board if present
+    res, errors = drc.check(m)
+    drc.seal("board.wb.svg")                  # stamp a file written some other way with its seal, in place
 """
-import math, re, csv, sys, hashlib, copy
+import math, re, csv, sys, hashlib, copy, json, os
 from lxml import etree as ET
-WB="urn:wbx:0.1"; SVG="http://www.w3.org/2000/svg"; INK="http://www.inkscape.org/namespaces/inkscape"
+WB="urn:wbsvg:0.2"; SVG="http://www.w3.org/2000/svg"; INK="http://www.inkscape.org/namespaces/inkscape"; XL="http://www.w3.org/1999/xlink"
 q=lambda a:f"{{{WB}}}{a}"
 def n(v):
     s=f"{v:.3f}".rstrip('0').rstrip('.'); return '0' if s in('-0','') else s
@@ -63,6 +67,55 @@ def fref(f,m):
     a,b,c,e=fbox(f);x,y=(a+c)/2,(b+e)/2
     if f.get('frame','board')=='board': return (x,y)
     d=m['die'];return (d['tx']+x,d['ty']-y)
+# ---- seal --------------------------------------------------------------------
+# Two SHA-256 digests on the root say whether a file was changed after it was written: wb:data-sha256 covers what a
+# reader reads, wb:drawing-sha256 everything drawn. SPEC.md, Seal, has the canonical form. app/js/seal.js and
+# wbsvg's reader works them out the same way, and must stay so. Not a signature: anyone can work them out again.
+SEAL=('data-sha256','drawing-sha256')
+def _ws(s): return re.sub(r'[ \t\n\r]+',' ',s or '').strip(' ')
+PROJECT,PROJECT_URL="wirebond.svg","https://github.com/anfroholic/wirebond.svg"
+MADE_WITH=f"Made with {PROJECT} {PROJECT_URL}"   # provenance, ASCII, in every file written here
+def seal_digests(root):
+    "(data, drawing) for a parsed .wb.svg's root element, from lxml or xml.etree. A seal it already carries is left out."
+    data=[];draw=[]
+    line=lambda depth,k,at,txt:json.dumps([depth,k,[x for a in sorted(at) for x in (a,at[a])],txt],ensure_ascii=False,separators=(',',':'))
+    def walk(e,depth,ind):
+        if not isinstance(e.tag,str) or not e.tag.startswith(f"{{{SVG}}}"): return
+        k=e.tag.split('}',1)[1]
+        if k=='metadata' or (k=='defs' and not any(isinstance(c.tag,str) for c in e)): return   # provenance, and the empty defs editors add
+        at={}
+        for a,v in e.attrib.items():
+            if a.startswith('{'):
+                ns,l=a[1:].split('}',1)
+                if ns==WB:
+                    if depth==0 and l in SEAL: continue
+                    a='wb:'+l
+                elif ns==XL and l=='href': a='href'
+                else: continue
+            elif a=='id': continue
+            at[a]=_ws(v)
+        txt=_ws((e.text or '')+''.join(c.tail or '' for c in e))
+        draw.append(line(depth,k,at,txt)); ind=ind or 'wb:kind' in at
+        if depth==0: data.append(line(0,k,{a:v for a,v in at.items() if a.startswith('wb:')},''))
+        elif ind and k not in('title','desc'): data.append(line(depth,k,{a:v for a,v in at.items() if a not in('class','style')},txt))
+        for c in e: walk(c,depth+1,ind)
+    walk(root,0,False)
+    return tuple(hashlib.sha256('\n'.join(L).encode('utf-8')).hexdigest() for L in (data,draw))
+def seal_check(root):
+    "what a root element's seal says: 'none', 'intact', 'drawing changed' or 'data changed'"
+    d,g=root.get(q(SEAL[0])),root.get(q(SEAL[1]))
+    if not d and not g: return 'none'
+    D,G=seal_digests(root)
+    return 'data changed' if d!=D else 'drawing changed' if g!=G else 'intact'
+def seal(path):
+    "stamp a .wb.svg with its seal, in place: at the end of the root's start tag, replacing any it had. Nothing else changes."
+    with open(path,'rb') as f: b=f.read()
+    d,g=seal_digests(ET.fromstring(b))
+    s=re.sub(r'(<svg\b[^>]*?)(\s*/?>)',lambda m:re.sub(r'\s+wb:(?:data|drawing)-sha256="[^"]*"','',m[1])+f' wb:data-sha256="{d}" wb:drawing-sha256="{g}"'+m[2],b.decode('utf-8'),count=1)
+    with open(path,'w',encoding='utf-8',newline='') as f: f.write(s)
+SEAL_SAYS={'none':('note',"seal: none, so a change made after the file was written can't be found"),
+           'drawing changed':('warn',"seal: the drawing was changed after the file was written, but its data wasn't: labels, hover text or colours may not match the data"),
+           'data changed':('error',"seal: the data was changed after the file was written, by hand or in another program: wb:data-sha256 doesn't match it")}
 # ---- 3. writer -------------------------------------------------------------
 COL=dict(sig="#b8860b",pwr="#c0392b",gnd="#2e7d32")
 def cls(net):
@@ -73,9 +126,15 @@ def write(m,path):
     root=E(f"{{{SVG}}}svg",nsmap={None:SVG,'wb':WB,'inkscape':INK})
     S=lambda p,t,**a:ET.SubElement(p,f"{{{SVG}}}{t}",{(q(k[3:]) if k.startswith('wb_') else k.replace('_','-')):str(v) for k,v in a.items()})
     root.set('viewBox','');root.set('width','');root.set('height','')   # set at the end, once the panels are laid out
-    for k,v in dict(version="0.1",units="um",design=m['design'],rev=m['rev'],**{'rule-wire-gap':n(m['rules']['gap']),'rule-edge-clear':n(m['rules']['edge'])}).items(): root.set(q(k),v)
+    for k,v in dict(version="0.2",units="um",design=m['design'],rev=m['rev'],**{'rule-wire-gap':n(m['rules']['gap']),'rule-edge-clear':n(m['rules']['edge'])}).items(): root.set(q(k),v)
     if 'fid' in m['rules']: root.set(q('rule-fid-clear'),n(m['rules']['fid']))
     S(root,'title').text=f"Wire bond diagram: {m['design']} rev {m['rev']}"
+    S(root,'desc').text=f"A wire bond diagram in the {PROJECT} format, v0.2: a true-scale drawing that is also the data. {MADE_WITH}"
+    md=S(root,'metadata'); DC="http://purl.org/dc/elements/1.1/"; RDF="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    dsc=ET.SubElement(ET.SubElement(md,f"{{{RDF}}}RDF",nsmap={'rdf':RDF,'dc':DC}),f"{{{RDF}}}Description",{f"{{{RDF}}}about":""})
+    for k,v in (('title',f"Wire bond diagram: {m['design']} rev {m['rev']}"),('format','image/svg+xml'),('type',f"wire bond diagram, {PROJECT} v0.2"),
+                ('description',MADE_WITH),('source',PROJECT_URL),('relation',PROJECT_URL+'/blob/main/SPEC.md'),('contributor','wbsvg')):
+        ET.SubElement(dsc,f"{{{DC}}}{k}").text=v
     S(root,'style').text=("text{font-family:Helvetica,Arial,sans-serif;fill:#222}.h{font-size:150px;font-weight:bold}.t{font-size:105px}.s{font-size:78px;fill:#555}"
       ".sub{fill:#eef3ea;stroke:#9aa;stroke-width:8}.cu{fill:#d9a441}.die{fill:#c9ccd6;stroke:#667;stroke-width:6}.pad{fill:#f7f7fa;stroke:#445;stroke-width:4}"
       ".w{fill:none;stroke-linecap:round}.sig{stroke:#b8860b}.pwr{stroke:#c0392b}.gnd{stroke:#2e7d32}.lab{font-size:62px;fill:#333}"
@@ -211,6 +270,7 @@ def write(m,path):
     for c,t in ((c,f"{dict(sig='Signal',pwr='Supply',gnd='Ground')[c]}: {', '.join(used[c])}") for c in ('sig','pwr','gnd') if c in used):
         S(root,'line',x1=X,y1=yy-30,x2=X+300,y2=yy-30,stroke_width=25,**{'class':'w '+c}); S(root,'text',x=X+380,y=yy,**{'class':'t'}).text=t; yy+=140
     yy+=60;S(root,'text',x=X,y=yy,**{'class':'s'}).text="Illustrative data only. Hover any wire, pad or layer for details."
+    yy+=120;S(root,'text',x=X,y=yy,**{'class':'s'}).text=f"Made with {PROJECT}: {PROJECT_URL.split('//')[1]}"
     if tol:   # placement panel, all derived from the model
         P=check(m)[0]['place']; L=place_limit(m); k=tol['datums'].split(); w=n(tol['width']); r=m['rules']
         dn=[f"{s['datum']} top of {s['name']} (section)" for s in m['stack'] if s.get('datum')]+[f"{f['datum']} fiducial {f['name']}" for f in m.get('fid',[]) if f.get('datum')]
@@ -230,7 +290,9 @@ def write(m,path):
             S(root,'text',x=X,y=yy,**{'class':c}).text=s; yy+=150 if c=='t' else 120
     vw,vh=X+5500,max(Y0+600,yy+200)+500
     root.set('viewBox',f"-300 -500 {n(vw)} {n(vh)}");root.set('width',n(vw/10));root.set('height',n(vh/10))
+    root.addprevious(ET.Comment(f" {MADE_WITH} "))
     ET.ElementTree(root).write(path,xml_declaration=True,encoding='utf-8',pretty_print=True)
+    if isinstance(path,(str,os.PathLike)): seal(path)
 # ---- 4. reader -------------------------------------------------------------
 def rd(path):
     t=ET.parse(path).getroot()
@@ -239,7 +301,7 @@ def rd(path):
     d=kinds('die')[0]; tr=re.match(r"translate\(([-\d.]+) ([-\d.]+)\) scale\(1 -1\)",d.get('transform'))
     o=[c for c in d if c.get(q('kind'))=='outline'][0]
     m=dict(design=A(t,'design'),rev=A(t,'rev'),die=dict(name=A(d,'name'),w=F(o,'width'),h=F(o,'height'),tx=float(tr[1]),ty=float(tr[2]),gds=A(d,'gds-cell'),layer=A(d,'pad-layer')),
-           rules=dict(gap=float(A(t,'rule-wire-gap') or 0),edge=float(A(t,'rule-edge-clear') or 0)))
+           rules=dict(gap=float(A(t,'rule-wire-gap') or 0),edge=float(A(t,'rule-edge-clear') or 0)),seal=seal_check(t))
     if A(t,'rule-fid-clear'): m['rules']['fid']=float(A(t,'rule-fid-clear'))
     art=next(d.iter(f"{{{SVG}}}image"),None)   # the die's artwork, kept only so a rewrite gives the same file
     if art is not None and art.get('href'): m['die']['art']=art.get('href')
@@ -392,6 +454,9 @@ def fid_check(m):
 def check(m):
     res,out=_check(m);t=m.get('tol')
     fs,fo,fw,fn=fid_check(m);res['fid']=fs;out+=fo
+    if m.get('seal'):   # read by rd(); a model built in Python has none to report
+        res['seal']=m['seal']
+        if m['seal'] in SEAL_SAYS: lv,x=SEAL_SAYS[m['seal']]; (out if lv=='error' else fw if lv=='warn' else fn).append(x)
     if fw: res['warn']=fw
     if fn: res['note']=fn
     if not t: return res,out
@@ -430,7 +495,7 @@ def canon(m):
     if 'tol' in m: x['tol']={k:v for k,v in m['tol'].items() if k in('width','datums')}
     return x
 def export(m,base):
-    import ezdxf   # only export needs it, so check and place run with lxml alone (in Pyodide too)
+    import ezdxf   # only export needs it, so check and place run with lxml alone (the wbsvg reader needs neither)
     pf={p['name']:p for p in m['prof']};S={s['role']:s for s in m['stack']};ztop=S['die']['z']+S['die']['t']
     D=m['die'];cx,cy=D['tx']+D['w']/2,D['ty']-D['h']/2   # exports are centred on the die
     with open(base+'.bondlist.csv','w',newline='') as f:
@@ -442,14 +507,14 @@ def export(m,base):
             c=csv.writer(f);c.writerow("frame name role datum x_um y_um".split())
             for fd in m['fid']:
                 x,y=fref(fd,m);c.writerow([fd.get('frame','board'),fd['name'],fd.get('role','align'),fd.get('datum',''),n(x-cx),n(cy-y)])
-    d=ezdxf.new('R2010');ms=d.modelspace()
+    d=ezdxf.new('R2010');ms=d.modelspace();d.header.custom_vars.append("MadeWith",MADE_WITH)
     for w in m['wires']:
         p=pf[w['profile']];sp=math.dist((w['x1'],w['y1']),(w['x2'],w['y2']));ux,uy=(w['x2']-w['x1'])/sp,(w['y2']-w['y1'])/sp
         ms.add_polyline3d([(w['x1']+ux*x-cx,cy-(w['y1']+uy*x),ztop+z) for x,z in loop(p['moves'],sp,-ztop)],dxfattribs={'layer':f"WIRE_T{w['tier']}"})
     d.saveas(base+'.dxf')
 def main(argv=None):
     import argparse, json
-    p=argparse.ArgumentParser(description="WBX prototype tools")
+    p=argparse.ArgumentParser(description="drc: check, place and export wirebond.svg (.wb.svg) files",epilog=f"Part of {PROJECT}: {PROJECT_URL}")
     sub=p.add_subparsers(dest="cmd",required=True)
     c=sub.add_parser("check",help="validate a .wb.svg"); c.add_argument("file")
     e=sub.add_parser("export",help="write bondlist CSV and 3D DXF"); e.add_argument("file"); e.add_argument("base")

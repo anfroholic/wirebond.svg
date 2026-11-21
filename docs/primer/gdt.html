@@ -4,6 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>GD&amp;T Primer</title>
+<link rel="icon" type="image/svg+xml" href="../../app/brand/wirebond-icon.svg">
+<meta name="author" content="Andrew Wingate">
+<meta name="generator" content="wirebond.svg">
 <style>
 /* Same house style as wire-bonding-primer.html and fiducials.html: one reading column, Evezor palette, dark first. */
 :root{
@@ -160,12 +163,14 @@ svg .gdb{fill:var(--panel2);stroke:var(--txt);stroke-width:1.6}
 svg .band{fill:var(--amber);fill-opacity:.35;stroke:var(--amber);stroke-width:1}
 svg .nom{fill:none;stroke:var(--muted);stroke-dasharray:5 4;stroke-width:1.2}
 svg .tick{stroke:var(--muted);stroke-width:1}
+.brandmark{display:inline-block;margin:0 0 12px}.brandmark img{display:block;height:40px;width:auto}.madewith{display:flex;align-items:center;gap:10px;max-width:960px;margin:40px auto 28px;padding:16px 20px 0;border-top:1px solid rgba(127,127,127,.3);font-size:13px;color:#7ba69c}.madewith img{width:24px;height:24px;flex:none}.madewith a{color:inherit}
 </style>
 </head>
 <body>
 
 <header class="mast">
   <div class="wrap">
+    <a class="brandmark" href="https://github.com/anfroholic/wirebond.svg" title="wirebond.svg on GitHub"><img src="../../app/brand/wirebond-logo.svg" alt="wirebond.svg" width="160" height="40"></a>
     <nav class="sitenav" aria-label="Project pages">
       <a href="../../app/index.html">← Wire Bond Bench</a>
       <a href="wire-bonding-primer.html">Wire bonding primer</a>
@@ -250,7 +255,7 @@ svg .tick{stroke:var(--muted);stroke-width:1}
 
 <!-- 2 -->
 <h2 id="box"><span class="k">2</span>Reading the box</h2>
-<p>A GD&amp;T requirement is a row of boxes joined by a leader to the feature it controls. ISO calls it a <b>tolerance indicator</b>; ASME calls it a <b>feature control frame</b>. Read it left to right: <i>what kind of control, how much, measured from what</i>. This is the one Wire Bond Bench and <code>wbx.py</code> draw for the example die. Click any part of it.</p>
+<p>A GD&amp;T requirement is a row of boxes joined by a leader to the feature it controls. ISO calls it a <b>tolerance indicator</b>; ASME calls it a <b>feature control frame</b>. Read it left to right: <i>what kind of control, how much, measured from what</i>. This is the one Wire Bond Bench and <code>drc.py</code> draw for the example die. Click any part of it.</p>
 
 <div class="fig">
 <div class="scroll">
@@ -318,7 +323,7 @@ svg .tick{stroke:var(--muted);stroke-width:1}
 </div>
 
 <h3>Why the box sits beside the die</h3>
-<p>A drawing keeps the tolerance indicator in clear space, off the part, and joins it to the feature with a thin leader. The box never hides what it controls, and one glance tells you which feature it means. Wire Bond Bench and <code>wbx.py</code> put it just outside the top-left corner of the area the die and its lands cover, with a short horizontal shoulder from its right end, then a straight leader to the nearest bonded pad. Earlier versions drew it over the middle of the die; that held the same data, but hid the part.</p>
+<p>A drawing keeps the tolerance indicator in clear space, off the part, and joins it to the feature with a thin leader. The box never hides what it controls, and one glance tells you which feature it means. Wire Bond Bench and <code>drc.py</code> put it just outside the top-left corner of the area the die and its lands cover, with a short horizontal shoulder from its right end, then a straight leader to the nearest bonded pad. Earlier versions drew it over the middle of the die; that held the same data, but hid the part.</p>
 
 <!-- 3 -->
 <h2 id="datums"><span class="k">3</span>Datums: where measuring starts</h2>
@@ -434,7 +439,7 @@ svg .tick{stroke:var(--muted);stroke-width:1}
     </div>
   </div>
   <div class="scroll"><svg id="pfSvg" class="wide" viewBox="0 0 860 420" role="img" aria-label="The example die's 74 bonded pads, each inside its position tolerance zone, with the die's shift and turn magnified four times"></svg></div>
-  <div class="cap">Errors and zones are drawn four times larger than true, or a 25 µm move would be invisible next to a 5 mm die. Pad places are the example's, from <code>examples/example.wb.svg</code>. The die turns about its centre, as <code>wbx.py</code> checks it.</div>
+  <div class="cap">Errors and zones are drawn four times larger than true, or a 25 µm move would be invisible next to a 5 mm die. Pad places are the example's, from <code>examples/example.wb.svg</code>. The die turns about its centre, as <code>drc.py</code> checks it.</div>
   <div class="readout" id="pfRead"></div>
 </div>
 
@@ -512,14 +517,14 @@ svg .tick{stroke:var(--muted);stroke-width:1}
 
 <!-- 8 -->
 <h2 id="checker"><span class="k">8</span>What the checker does with it</h2>
-<p><code>wbx.py check</code> treats the tolerance as a promise from the assembler and asks: if the die is anywhere in its zone, is the design still good?</p>
+<p><code>drc.py check</code> treats the tolerance as a promise from the assembler and asks: if the die is anywhere in its zone, is the design still good?</p>
 <ol class="steps">
   <li><div><b>The box is well formed.</b><span><code>wb:char</code> is <code>position</code>, <code>wb:modifier</code> is <code>CZ</code>, <code>wb:tol</code> is above 0, and <code>wb:applies-to</code> names the die.</span></div></li>
   <li><div><b>Each datum exists.</b><span>Every letter in <code>wb:datums</code> must be on some element's <code>wb:datum</code>.</span></div></li>
   <li><div><b>Every check still passes at the edge of the zone.</b><span>The die is moved half the diameter eight ways, 45° apart, and turned each way until its farthest bonded pad reaches its circle's edge: ten positions. Wire gap, edge clearance and land reach all run again at each.</span></div></li>
-  <li><div><b>How far could it really go?</b><span><code>wbx.py place</code> searches for the largest shift and turn that still pass, so you can see how much margin the stated tolerance leaves.</span></div></li>
+  <li><div><b>How far could it really go?</b><span><code>drc.py place</code> searches for the largest shift and turn that still pass, so you can see how much margin the stated tolerance leaves.</span></div></li>
 </ol>
-<p>It assumes the bonder finds the die by vision, as automatic bonders do: first bonds follow the die, second bonds stay on the lands, and only the wires between them bend. It also works out the other case, a bonder that bonds blind where it was programmed. Results for the example, from <code>python tools/wbx.py check</code> and <code>python tools/wbx.py place</code> on <code>examples/example.wb.svg</code>:</p>
+<p>It assumes the bonder finds the die by vision, as automatic bonders do: first bonds follow the die, second bonds stay on the lands, and only the wires between them bend. It also works out the other case, a bonder that bonds blind where it was programmed. Results for the example, from <code>python tools/drc.py check</code> and <code>python tools/drc.py place</code> on <code>examples/example.wb.svg</code>:</p>
 <div class="tw"><table>
   <thead><tr><th>Case</th><th>Result</th><th>What limits it</th></tr></thead>
   <tbody>
@@ -529,7 +534,7 @@ svg .tick{stroke:var(--muted);stroke-width:1}
   </tbody>
 </table></div>
 <p>The gap between those last two rows is the practical lesson. With vision, a ⌀50 tolerance is very loose for this design, and a looser one would cost less at the assembler. Without vision, even ⌀50 is far too much, because the ball lands where the pad used to be.</p>
-<p class="small muted">Limits come only from the checks in <code>wbx.py</code>. The app's other rules, such as wire angle and length, aren't in it, so the true limits may be tighter. The bonder's vision capture range, how far off a die can be and still be found, isn't checked either; no bonding house has given us that number yet.</p>
+<p class="small muted">Limits come only from the checks in <code>drc.py</code>. The app's other rules, such as wire angle and length, aren't in it, so the true limits may be tighter. The bonder's vision capture range, how far off a die can be and still be found, isn't checked either; no bonding house has given us that number yet.</p>
 
 <!-- 9 -->
 <h2 id="app"><span class="k">9</span>Doing it in Wire Bond Bench</h2>
@@ -539,7 +544,7 @@ svg .tick{stroke:var(--muted);stroke-width:1}
   <li><div><b>See it in the plan.</b><span>An orange circle appears round each bonded pad at true scale; zoom in to see them. The box appears beside the die, off the top-left corner of its lands, with its leader to the nearest bonded pad.</span></div></li>
   <li><div><b>Check the datums.</b><span>A is always the board's top face. B and C start on the two align fiducials farthest apart. To change them, click a copper mark in the plan and use its Datum buttons. If fewer than two marks are datums, the Placement panel warns you.</span></div></li>
   <li><div><b>Export.</b><span>The .wb.svg carries the box, its zone circles and the datum flags; KiCad exports carry <code>wb_position_tol_um</code> and <code>wb_datum_&lt;mark&gt;</code>. Reopening either keeps the tolerance.</span></div></li>
-  <li><div><b>Check at the zone's edges with wbx.py.</b><span>The app's Checks tab doesn't move the die to the edges of its zone. The <b>Check at the zone's edges</b> button under the tolerance does, by running wbx.py on the layout. Or run <code>python tools/wbx.py check</code> and <code>python tools/wbx.py place</code> on the exported file.</span></div></li>
+  <li><div><b>Check at the zone's edges.</b><span>The app's Checks tab checks the die where it's drawn. The <b>Check at the zone's edges</b> button under the tolerance moves and turns each die to the edges of its zone and runs every check again there, and lists what gets worse. Or run <code>python tools/drc.py check</code> and <code>python tools/drc.py place</code> on the exported file.</span></div></li>
 </ol>
 
 <!-- 10 -->
@@ -589,13 +594,13 @@ svg .tick{stroke:var(--muted);stroke-width:1}
     <tr><td>The rule</td><td><a href="../../SPEC.md">SPEC.md</a>, "Placement tolerance (draft)"</td><td>Datums, the tolerance indicator's attributes, what's decided, and the checker's results for the example.</td></tr>
     <tr><td>Element kinds</td><td>SPEC.md, "Element kinds" table</td><td>Rows for <code>layer</code> (<code>datum</code>), <code>fiducial</code> (<code>datum</code>) and <code>tolerance</code>.</td></tr>
     <tr><td>Datums on fiducials</td><td>SPEC.md, "Fiducials (draft)"; <a href="fiducials.html#format">fiducials page, section 7</a></td><td>One fiducial can be both a datum and an alignment point.</td></tr>
-    <tr><td>Drawing it</td><td><code>wbx.py</code>, <code>write()</code>, its helper <code>datum()</code>, and the "placement tolerance" layer after the wires</td><td>Writes the indicator beside the die, the zone circles, the datum flags, and the "Die placement" panel.</td></tr>
-    <tr><td>Reading it</td><td><code>wbx.py</code>, <code>rd()</code></td><td>Reads the indicator's attributes only.</td></tr>
-    <tr><td>Checking it</td><td><code>wbx.py</code>, <code>check()</code>, <code>tol_pads()</code>, <code>corners()</code>, <code>shift()</code>, <code>place_limit()</code></td><td>Grammar, datums exist, every check passes at the zone's edges. <code>python tools/wbx.py place file.wb.svg</code> finds the real limits.</td></tr>
-    <tr><td>Tests</td><td><code>tests/test_wbx.py</code>, the <code>placement</code> tests; <code>tests/test_app.py</code>, <code>test_placement_tolerance_is_drawn_once_and_read_back</code></td><td></td></tr>
+    <tr><td>Drawing it</td><td><code>drc.py</code>, <code>write()</code>, its helper <code>datum()</code>, and the "placement tolerance" layer after the wires</td><td>Writes the indicator beside the die, the zone circles, the datum flags, and the "Die placement" panel.</td></tr>
+    <tr><td>Reading it</td><td><code>drc.py</code>, <code>rd()</code></td><td>Reads the indicator's attributes only.</td></tr>
+    <tr><td>Checking it</td><td><code>drc.py</code>, <code>check()</code>, <code>tol_pads()</code>, <code>corners()</code>, <code>shift()</code>, <code>place_limit()</code></td><td>Grammar, datums exist, every check passes at the zone's edges. <code>python tools/drc.py place file.wb.svg</code> finds the real limits.</td></tr>
+    <tr><td>Tests</td><td><code>tests/test_drc.py</code>, the <code>placement</code> tests; <code>tests/test_app.py</code>, <code>test_placement_tolerance_is_drawn_once_and_read_back</code>; <code>tests/test_py.py</code>, the zone check tests</td><td></td></tr>
     <tr><td>Example</td><td><code>examples/make_example.py</code> (<code>tol=dict(width=50, datums="A B C")</code>), <code>examples/example.wb.svg</code></td><td>The indicator sits off the top-left corner of the lands, on the "placement tolerance" layer, with its leader to a pad.</td></tr>
     <tr><td>Exports</td><td><code>examples/example.fiducials.csv</code> (datum column); KiCad <code>wb_datum</code>, and from the app <code>wb_position_tol_um</code> and <code>wb_datum_&lt;mark&gt;</code></td><td>The derived x, y and θ limits aren't exported yet.</td></tr>
-    <tr><td>The app</td><td><code>app/js/model.js</code> (<code>tolOf</code>, <code>tolPads</code>, <code>tolClear</code>, <code>datumLetters</code>), <code>app.js</code> (Placement panel, a copper mark's Datum buttons), <code>view.js</code> (<code>paintTolZones</code>, <code>paintTolFrames</code>), <code>export.js</code>, <code>wbsvg.js</code></td><td><code>tolClear</code> is the area the die and its lands cover; the plan and the .wb.svg put the indicator outside it.</td></tr>
+    <tr><td>The app</td><td><code>app/js/model.js</code> (<code>tolOf</code>, <code>tolPads</code>, <code>tolClear</code>, <code>datumLetters</code>, <code>zoneEdges</code>, <code>zoneCheck</code>), <code>app.js</code> (Placement panel, a copper mark's Datum buttons), <code>view.js</code> (<code>paintTolZones</code>, <code>paintTolFrames</code>), <code>export.js</code>, <code>wbsvg.js</code></td><td><code>tolClear</code> is the area the die and its lands cover; the plan and the .wb.svg put the indicator outside it.</td></tr>
   </tbody>
 </table></div>
 </details>
@@ -608,9 +613,9 @@ svg .tick{stroke:var(--muted);stroke-width:1}
   <li><div><b>Write the grammar into SPEC.md, in ISO terms.</b> <span class="pill p-dec">Done</span><span>Required attributes, <code>wb:char</code> a closed list of one value, <code>position</code>; <code>wb:tol</code> the diameter in µm, positive; <code>wb:datums</code> one to three letters, primary first; <code>wb:applies-to</code> one die. The zone in one sentence. Cites ISO 1101, ISO 1660 and ISO 5459.</span></div></li>
   <li><div><b>Say what may be a datum.</b><span>Today any <code>wb:datum</code> works. Tighten it: the primary is a stack layer's top face; secondary and tertiary are <code>align</code> fiducials. Two datums with the same letter is an error.</span></div></li>
   <li><div><b>Say what "no tolerance" means.</b><span>A file without one is "not specified", not "zero". The checker should print a note, and leave the edge-of-zone checks out.</span></div></li>
-  <li><div><b>Make the checker enforce it.</b><span>Still to do: datum rules, a saw allowance on the die edge in the edge clearance check, and a margin report, the stated tolerance against what <code>place</code> finds. A test for each in <code>tests/test_wbx.py</code>.</span></div></li>
+  <li><div><b>Make the checker enforce it.</b><span>Still to do: datum rules, a saw allowance on the die edge in the edge clearance check, and a margin report, the stated tolerance against what <code>place</code> finds. A test for each in <code>tests/test_drc.py</code>.</span></div></li>
   <li><div><b>Carry it to the people who use it.</b><span>Write the derived x, y and θ limits into the bond list CSV header and the fiducials CSV, draw the indicator in the DXF, and put it on the die footprint in KiCad as fab-layer text.</span></div></li>
-  <li><div><b>Teach the app.</b> <span class="pill p-lean">Half done</span><span>Wire Bond Bench sets the diameter and the datums, draws the zones and the indicator beside the die, writes them in its exports and reads them back. Still to do: check at the zone's edges in its Checks tab.</span></div></li>
+  <li><div><b>Teach the app.</b> <span class="pill p-lean">Half done</span><span>Wire Bond Bench sets the diameter and the datums, draws the zones and the indicator beside the die, writes them in its exports and reads them back. Its <b>Check at the zone's edges</b> button runs every check at the zone's edges, in JavaScript, for any number of die. Still to do: show it in the Checks tab itself.</span></div></li>
   <li><div><b>Ask an assembler.</b><span>Ask a house to read our indicator, and what numbers they would sign up to. Ask a bonding house for their vision capture range. Adjust before freezing.</span></div></li>
   <li><div><b>Promote it.</b><span>Remove "(draft)" from the SPEC section, bump the spec version, and note the change.</span></div></li>
 </ol>
@@ -643,7 +648,7 @@ svg .tick{stroke:var(--muted);stroke-width:1}
   <li><a href="https://www.nist.gov/services-resources/software/step-file-analyzer-and-viewer">NIST, STEP File Analyzer and Viewer</a>, and its user's guide (NIST AMS 200-4). Semantic PMI (representation) versus graphic PMI (presentation) in STEP AP242.</li>
   <li><a href="https://www.mbx-if.org/home/wp-content/uploads/2024/06/rec_pracs_pmi_v41.pdf">CAx-IF, Recommended Practices for PMI, v4.1</a>. How AP242 links semantic GD&amp;T to its drawn presentation.</li>
   <li><a href="https://www.cadinterop.com/en/formats/neutral-format/qif.html">CADInterop, QIF</a>. <span class="pill t-ven">Vendor page</span> QIF, an XML format that carries semantic GD&amp;T for measurement. Worth a look if we ever export to inspection.</li>
-  <li>This repo: <code>SPEC.md</code>, <code>wbx.py</code>, <code>examples/make_example.py</code>, <code>tests/test_wbx.py</code>, and the <a href="fiducials.html">fiducials page</a>. Numbers in sections 7 and 8 are from running <code>wbx.py</code> on <code>examples/example.wb.svg</code>.</li>
+  <li>This repo: <code>SPEC.md</code>, <code>drc.py</code>, <code>examples/make_example.py</code>, <code>tests/test_drc.py</code>, and the <a href="fiducials.html">fiducials page</a>. Numbers in sections 7 and 8 are from running <code>drc.py</code> on <code>examples/example.wb.svg</code>.</li>
 </ol>
 
 </main>
@@ -734,5 +739,6 @@ $("presets").addEventListener("click",function(e){
 draw();
 })();
 </script>
+<p class="madewith"><img src="../../app/brand/wirebond-icon.svg" alt=""><span>Part of <a href="https://github.com/anfroholic/wirebond.svg">wirebond.svg</a>, a viewable wire bond exchange format, and its browser app <a href="../../app/index.html">Wire Bond Bench</a>. (c) Andrew Wingate, MIT licence.</span></p>
 </body>
 </html>

@@ -1,5 +1,6 @@
 /* KiCad reader: s-expressions into footprints and boards, in millimetres, y down, as KiCad holds them.
-   Each list remembers its source span, so a board can be edited by splicing and everything else stays byte-identical. */
+   Each list remembers its source span, so a board can be edited by splicing and everything else stays byte-identical.
+   Part of Wire Bond Bench, from wirebond.svg: https://github.com/anfroholic/wirebond.svg. (c) Andrew Wingate, MIT licence. */
 (function (W) {
   'use strict';
 
@@ -148,7 +149,9 @@
         const net = netN ? String(netN[netN.length - 1]) : null;
         fp.pads.push({ num: k[1], type: k[2], shape: k[3], lx: pat[0] || 0, ly: pat[1] || 0, rot: pat[2] || 0, w: size[0] || 0, h: size[1] === undefined ? size[0] : size[1],
           layers: lay ? lay.slice(1) : [], net: net || null, pinfunction: pf ? pf[1] : null, rr: rrN ? +rrN[1] : 0.25, drill: kid(k, 'drill') ? +kid(k, 'drill')[1] : 0,
-          fab: fab ? String(fab[1]) : null });   // KiCad's fabrication property, e.g. pad_prop_fiducial_glob
+          fab: fab ? String(fab[1]) : null,      // KiCad's fabrication property, e.g. pad_prop_fiducial_glob
+          // a custom pad's copper beyond its anchor: shapes in the pad's own frame
+          prims: kid(k, 'primitives') ? kid(k, 'primitives').slice(1).filter(Array.isArray).map(graphic).filter(Boolean) : [] });
       } else if (head === 'image') {
         const iat = nums(kid(k, 'at')), data = kid(k, 'data');
         if (data) fp.images.push({ x: iat[0] || 0, y: iat[1] || 0, scale: kid(k, 'scale') ? +kid(k, 'scale')[1] : 1, layer: kid(k, 'layer') ? kid(k, 'layer')[1] : null, b64: data.slice(1).join('') });
@@ -161,6 +164,7 @@
     for (const p of fp.pads) {
       const [x, y] = rot(p.lx, p.ly, fp.rot);
       p.x = x + fp.x; p.y = y + fp.y;
+      p.gfx = p.prims.map(g => transformed(g, p.x, p.y, p.rot));
       // A .kicad_pcb stores pad angles with the footprint's rotation already in them; a .kicad_mod has rotation 0.
     }
     return fp;
@@ -441,6 +445,6 @@
     return out;
   }
 
-  W.WBX = W.WBX || {};
-  W.WBX.kicad = { parseSexpr, parseBoard, parseFootprintFile, landsFrom, marksFrom, fiducialFootprints, markRoles, markDatums, suggestSubstrate, dieFromFootprint, boardWires, boardTypes, drawnLines, rot, kid, kids };
+  W.WBSVG = W.WBSVG || {};
+  W.WBSVG.kicad = { parseSexpr, parseBoard, parseFootprintFile, landsFrom, marksFrom, fiducialFootprints, markRoles, markDatums, suggestSubstrate, dieFromFootprint, boardWires, boardTypes, drawnLines, rot, kid, kids };
 })(window);

@@ -1,6 +1,6 @@
 (kicad_pcb
 	(version 20260206)
-	(generator "wbx_make_stacked_die")
+	(generator "wbsvg_make_stacked_die")
 	(generator_version "10.0")
 	(general
 		(thickness 0.8)

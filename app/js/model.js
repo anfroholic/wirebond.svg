@@ -1,10 +1,11 @@
 /* The marriage: place a die on a substrate, generate wires under different regimes, and measure them.
-   Everything is in board millimetres, y down, except loop moves and heights, which are micrometres as in SPEC.md. */
+   Everything is in board millimetres, y down, except loop moves and heights, which are micrometres as in SPEC.md.
+   Part of Wire Bond Bench, from wirebond.svg: https://github.com/anfroholic/wirebond.svg. (c) Andrew Wingate, MIT licence. */
 (function (W) {
   'use strict';
-  const { rot } = W.WBX.kicad;
+  const { rot } = W.WBSVG.kicad;
 
-  /* ---- loops: same moves model as wbx.loop ---- */
+  /* ---- loops: same moves model as drc.loop ---- */
   function parseMoves(moves, span) {
     const pts = [[0, 0]];
     let x = 0, z = 0;
@@ -618,7 +619,7 @@
       if (g < minGap) minGap = g;
       if (g < L.gapUm) { gapBad.add(a.w); gapBad.add(b.w); }
     }
-    add('cross', 'Crossings in plan view', 'Europractice', crossed.size > W.WBX.rules.value(S, 'crossings') ? 'fail' : 'ok', crossed.size ? `${crossed.size} wires cross` : 'none', [...crossed], many ? 'Compares wires from one die to the board. The next row covers every other pair.' : '');
+    add('cross', 'Crossings in plan view', 'Europractice', crossed.size > W.WBSVG.rules.value(S, 'crossings') ? 'fail' : 'ok', crossed.size ? `${crossed.size} wires cross` : 'none', [...crossed], many ? 'Compares wires from one die to the board. The next row covers every other pair.' : '');
     if (many) {
       // No limit exists for wires passing over each other, so the only number used is the wire gap we already have.
       let closest = Infinity, unknownPairs = 0;
@@ -635,14 +636,16 @@
       if (overCross.length) bits.push(`${overCross.length} crossing${overCross.length > 1 ? 's' : ''}`);
       if (closest < Infinity) bits.push(`closest ${fmt(closest, 0)} µm apart`);
       if (unknownPairs) bits.push(`${unknownPairs} left to the bonder, not compared`);
-      add('crossz', 'Crossings between different die', 'WBX example rule', close.size ? 'fail' : unknownPairs ? 'warn' : 'ok', bits.length ? bits.join(', ') : 'none', close.size ? [...close] : [...seen],
+      add('crossz', 'Crossings between different die', 'wirebond.svg example rule', close.size ? 'fail' : unknownPairs ? 'warn' : 'ok', bits.length ? bits.join(', ') : 'none', close.size ? [...close] : [...seen],
         'Where two wires cross in plan and their die or far ends differ, this compares loop heights as drawn, less the wire sizes, with the wire to wire gap limit. A generic or undefined wire has no loop to compare.');
       out[out.length - 1].notChecked = unknownPairs;
     }
-    add('gap', 'Wire to wire gap', 'WBX example rule', gapBad.size ? 'warn' : 'ok', minGap === Infinity ? 'one wire' : `smallest ${fmt(minGap, 0)} µm`, [...gapBad], many ? 'Plan view only, across every die: it ignores loop height and stack height.' : 'Plan view only: it ignores loop height.', 'gapUm', 'µm');
+    add('gap', 'Wire to wire gap', 'wirebond.svg example rule', gapBad.size ? 'warn' : 'ok', minGap === Infinity ? 'one wire' : `smallest ${fmt(minGap, 0)} µm`, [...gapBad], many ? 'Plan view only, across every die: it ignores loop height and stack height.' : 'Plan view only: it ignores loop height.', 'gapUm', 'µm');
+    if (minGap < Infinity) out[out.length - 1].num = minGap;   // in µm, for zoneCheck
 
     bad = specified.filter(r => r.prof.clearance < L.edgeUm);
-    judged('edge', 'Clearance at die edge', 'WBX example rule', bad.length ? 'fail' : 'ok', `lowest ${fmt(Math.min(...specified.map(r => r.prof.clearance)), 0)} µm`, bad.map(r => r.w), many ? 'Loop height above each die the wire crosses: at the edge of a die it bonds to, and along the whole stretch over any other. Beneath an overhang, the gap to its underside.' : 'Loop height above the die where the wire leaves it.', 'edgeUm', 'µm');
+    judged('edge', 'Clearance at die edge', 'wirebond.svg example rule', bad.length ? 'fail' : 'ok', `lowest ${fmt(Math.min(...specified.map(r => r.prof.clearance)), 0)} µm`, bad.map(r => r.w), many ? 'Loop height above each die the wire crosses: at the edge of a die it bonds to, and along the whole stretch over any other. Beneath an overhang, the gap to its underside.' : 'Loop height above the die where the wire leaves it.', 'edgeUm', 'µm');
+    if (specified.length) out[out.length - 1].num = Math.min(...specified.map(r => r.prof.clearance));
     if (many) {
       const over = rows.filter(r => r.prof.edges.some(x => x.kind !== 'edge'));
       if (over.length) add('overdie', 'Wires running over another die', 'Geometry', 'info', `${over.length} of ${rows.length}`, over.map(r => r.w), 'In plan, these pass above or below a die they do not bond to.');
@@ -650,7 +653,7 @@
 
     /* Pad opening and pad pitch are numbers about the die, not the wire, so they run on every wired pad, as length does.
        Both are quoted for 25 µm Au; the rules per wire diameter, which need a real wire, are in ruleChecks. */
-    const padMinUm = W.WBX.rules.value(S, 'padMin'), tooSmall = [];
+    const padMinUm = W.WBSVG.rules.value(S, 'padMin'), tooSmall = [];
     let smallest = Infinity;
     for (const r of rows) for (const p of r.e.toPad ? [r.e.pad, r.e.toPad] : [r.e.pad]) {
       const s = Math.min(p.w, p.h) * 1000;
@@ -660,7 +663,7 @@
     add('padsize', 'Die pad opening, smallest side', 'Europractice', tooSmall.length ? 'warn' : 'ok', `smallest ${fmt(smallest, 0)} µm`, tooSmall,
       `${tooSmall.length} wires on a pad under ${fmt(padMinUm, 0)} µm. Quoted for 25 µm Au ball; 33 µm wants 70 µm` + (open ? ', so for a wire left to the bonder it is only a guide' : ''), 'padMin', 'µm');
 
-    const padPitchUm = W.WBX.rules.value(S, 'padPitch'), wiredPads = new Map(), tight = new Set();
+    const padPitchUm = W.WBSVG.rules.value(S, 'padPitch'), wiredPads = new Map(), tight = new Set();
     for (const r of rows) { wiredPads.set(padKey(r.e.die.id, r.w.pad), r.e.die); if (r.e.toDie) wiredPads.set(padKey(r.e.toDie.id, r.w.toPad), r.e.toDie); }
     let pitchMin = Infinity;
     for (const d of dies) {
@@ -694,11 +697,11 @@
       }
     }
     const onLand = rows.filter(r => r.e.land && dies.some(d => inOutline(d, r.e.b)));
-    if (onLand.length) add('underdie', 'Second bond under the die', 'WBX', 'fail', `${onLand.length} wires`, onLand.map(r => r.w), 'The land is covered by the die at this placement.');
+    if (onLand.length) add('underdie', 'Second bond under the die', 'wirebond.svg', 'fail', `${onLand.length} wires`, onLand.map(r => r.w), 'The land is covered by the die at this placement.');
     // The same thing one level up: a wired pad with a higher die over it.
     const covers = (end, own) => dies.find(d => d !== own && dieBase(S, d) >= dieTop(S, own) - 1e-6 && inOutline(d, end)) || null;
     const buried = rows.filter(r => covers(r.e.a, r.e.die) || (r.e.toDie && covers(r.e.b, r.e.toDie)));
-    if (buried.length) add('underupper', 'Bonded pad under a higher die', 'WBX', 'fail', `${buried.length} wires`, buried.map(r => r.w), 'A pad with a wire is covered by a die above it at this placement. Whether it could be bonded before that die goes on is not judged here.');
+    if (buried.length) add('underupper', 'Bonded pad under a higher die', 'wirebond.svg', 'fail', `${buried.length} wires`, buried.map(r => r.w), 'A pad with a wire is covered by a die above it at this placement. Whether it could be bonded before that die goes on is not judged here.');
     stackChecks(S, add);
 
     const used = new Set();
@@ -713,13 +716,68 @@
     if (S.substrate) {
       const ring = S.substrate.selected >= 0 ? S.substrate.board.fps[S.substrate.selected] : null, marked = new Set((S.marks || []).map(m => m.fp));
       const names = (S.marks || []).filter(m => m.role === 'align').map(m => m.id);
-      if (S.substrate.board.kind === 'board') for (const f of W.WBX.kicad.fiducialFootprints(S.substrate.board, fp => fp === ring || fp.layer !== 'F.Cu' || marked.has(fp))) if (f.role === 'align') names.push(f.fp.ref);
+      if (S.substrate.board.kind === 'board') for (const f of W.WBSVG.kicad.fiducialFootprints(S.substrate.board, fp => fp === ring || fp.layer !== 'F.Cu' || marked.has(fp))) if (f.role === 'align') names.push(f.fp.ref);
       add('fids', 'Board fiducials to align to', 'wirebond.svg F1', names.length >= 2 ? 'ok' : 'warn', names.length ? `${names.length}: ${names.join(', ')}` : 'none', [],
         names.length >= 2 ? 'The bonder finds the board by these before the second bonds.' : 'With fewer than two, the bonding house picks its own. Click a copper mark in the plan to use it as one.');
     }
     ruleChecks(S, rows, add, judged);
-    W.WBX.rules.decorate(S, out);
+    W.WBSVG.rules.decorate(S, out);
     return { rows, list: out };
+  }
+
+  /* ---- the die at the edges of its placement tolerance zone ----
+     A bonder that finds the die by vision puts each first bond where the die is, and each second bond where the land is.
+     So each die with a tolerance is moved to the edge of its zone eight ways, and turned each way by the most the zone
+     allows, with every second bond held where it is drawn, and every check runs again. What comes out worse than at the
+     placement drawn is what the tolerance costs. Several die, turned die and stacked die are checked as check() does them. */
+  const RANK = { fail: 2, warn: 1 };
+  const rank = r => RANK[r.status] || 0;
+  const ZONE_WAYS = ['right', 'down and right', 'down', 'down and left', 'left', 'up and left', 'up', 'up and right'];
+  /* Where a die can be at the edge of its zone: moved half the diameter eight ways, board y down, and turned about its
+     centre by the largest angle that keeps every bonded pad's centre in its circle. dx, dy in mm, dr in degrees. */
+  function zoneEdges(S, d) {
+    const h = tolOf(d) / 2000, [cx, cy] = dieCentre(d.die);
+    const R = Math.max(0, ...tolPads(S, d).map(p => Math.hypot(p.x - cx, p.y - cy)));
+    const turn = R > 0 ? 2 * Math.asin(Math.min(1, h / (2 * R))) * 180 / Math.PI : 0;
+    const um = +(h * 1000).toFixed(1);
+    const edges = ZONE_WAYS.map((way, k) => ({ label: `moved ${um} µm ${way}`, dx: h * Math.cos(k * Math.PI / 4), dy: h * Math.sin(k * Math.PI / 4), dr: 0 }));
+    if (turn > 0) for (const g of [1, -1]) edges.push({ label: `turned ${turn.toFixed(2)}° ${g > 0 ? 'anticlockwise' : 'clockwise'}`, dx: 0, dy: 0, dr: g * turn });
+    return { turn, edges };
+  }
+  // A die's place after moving its centre by dx, dy and turning it about its centre by dr.
+  function movedTo(place, die, dx, dy, dr) {
+    const [cx, cy] = dieCentre(die), c = dieToBoard(place, cx, cy), r = (place.rot || 0) + dr, [a, b] = rot(cx, cy, r);
+    return Object.assign({}, place, { x: c[0] + dx - a, y: c[1] + dy - b, rot: r });
+  }
+  /* Resolves nothing, changes nothing: S is read, never written. Returns
+     { zones: [{ id, tol, turn }], least: { edge, gap } in µm over every edge, found: [{ die, at, id, label, status, value, wires }] },
+     where found holds each check that is worse at an edge than at the placement drawn. */
+  function zoneCheck(S) {
+    // Second bonds held as offsets along their lands, so moving a die can't move them. The placement drawn is checked the
+    // same way, so the only difference between the two is the die.
+    const held = S.wires.map(w => {
+      if (isDieToDie(w) || w.landOff) return w;
+      const e = wireEnds(S, w);
+      if (!e || !e.land) return w;
+      const { ux, uy } = landAxis(e.land), x = e.b[0] - e.land.x, y = e.b[1] - e.land.y;
+      return Object.assign({}, w, { landOff: [x * ux + y * uy, -x * uy + y * ux] });
+    });
+    const orig = new Map(held.map((w, i) => [w, S.wires[i]]));
+    const view = dies => { const T = Object.create(S); T.wires = held; T.dies = dies; return T; };
+    const was = new Map(check(view(S.dies)).list.map(r => [r.id, rank(r)]));
+    const least = { edge: Infinity, gap: Infinity }, found = [], zones = [];
+    for (const d of placedDies(S).filter(tolOf)) {
+      const Z = zoneEdges(S, d);
+      zones.push({ id: d.id, tol: tolOf(d), turn: Z.turn });
+      for (const at of Z.edges) {
+        const moved = Object.assign({}, d, { place: movedTo(d.place, d.die, at.dx, at.dy, at.dr) });
+        for (const r of check(view(S.dies.map(x => x === d ? moved : x))).list) {
+          if ((r.id === 'edge' || r.id === 'gap') && r.num != null) least[r.id] = Math.min(least[r.id], r.num);
+          if (rank(r) > (was.get(r.id) || 0)) found.push({ die: d.id, at: at.label, id: r.id, label: r.label, status: r.status, value: r.value, wires: r.wires.map(w => orig.get(w) || w) });
+        }
+      }
+    }
+    return { zones, least, found };
   }
 
   /* ---- DRC rules beyond the first checks (app/js/rules.js). Each row passes its rule id where a limit key goes, so rules.decorate
@@ -727,7 +785,7 @@
      die's pad is checked at both pads. Anything needing a wire diameter or a loop goes through judged, so wires left to the bonder
      are counted as not checked, never passed. ---- */
   function ruleChecks(S, rows, add, judged) {
-    const R = W.WBX.rules, dies = placedDies(S), many = dies.length > 1;
+    const R = W.WBSVG.rules, dies = placedDies(S), many = dies.length > 1;
     if (!rows.length) return;
     const fmt = (v, d) => (+v).toFixed(d === undefined ? 0 : d);
     const val = id => R.value(S, id);
@@ -935,7 +993,7 @@
     S.placeNote = { from, lengths: T.map((t, i) => ({ rot: i * 90, mm: t.tot })) };
   }
 
-  W.WBX.model = { UNDEFINED, UNDEFINED_LABEL, GENERIC, GENERIC_LABEL, CHOICE_TUBE_UM, RESERVED_NAME, isBonderChoice, isBonderChoiceWire, isGenericType, isUndefinedType, isUndefinedWire, typeLabel, ensureUndefinedType, choicePath, choiceCurve, parseMoves, loopPts, loopCurve, zAt, DEFAULT_TYPES, FAMILIES, DEFAULT_LIMITS, REGIMES, dieToBoard, boardToDie, dieCentre, landAxis, landBond, wireEnds, wireProfile, padAngle, typeFor, typeOf, netsAgree, endsAgree, normNet, measure, check, autoPlace, pointToLand,
+  W.WBSVG.model = { UNDEFINED, UNDEFINED_LABEL, GENERIC, GENERIC_LABEL, CHOICE_TUBE_UM, RESERVED_NAME, isBonderChoice, isBonderChoiceWire, isGenericType, isUndefinedType, isUndefinedWire, typeLabel, ensureUndefinedType, choicePath, choiceCurve, parseMoves, loopPts, loopCurve, zAt, DEFAULT_TYPES, FAMILIES, DEFAULT_LIMITS, REGIMES, dieToBoard, boardToDie, dieCentre, landAxis, landBond, wireEnds, wireProfile, padAngle, typeFor, typeOf, netsAgree, endsAgree, normNet, measure, check, autoPlace, pointToLand,
     placedDies, dieById, activeDie, wireDieId, isDieToDie, padKey, wireEndKeys, wireTouchesDie, wiresOnPad, dieSupport, dieBottom, dieTop, dieBase, stackedOn, stackOrder, dieCorners, inOutline, outlinesOverlap, clipToDie, farNet, wireLabels, mkDieWire,
-    tolOf, anyTol, tolPads, tolClear, datumMarks, datumLetters };
+    tolOf, anyTol, tolPads, tolClear, datumMarks, datumLetters, zoneEdges, zoneCheck };
 })(window);

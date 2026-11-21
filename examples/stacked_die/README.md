@@ -59,7 +59,7 @@ To see it, open the Wire Bond Bench (`app/index.html`) and choose **RAM die stac
 
 - **Nets across two die.** As in the two-die example, each die names its pads for itself, so the twelve bus wires warn: `bidir_PAD[14]` at one end and `DQ7` at the other.
 - **The stud bumps.** Nothing in the file says D1's bus pads get a bump before their stitch. SPEC.md lists `security-bump` as proposed.
-- **`wbx.py` reads one die,** and not a turned one, so `wbx.py check` can't check this file. The bench's checks cover both die.
+- **`drc.py` reads one die,** and not a turned one, so `drc.py check` can't check this file. The bench's checks cover both die.
 - **Loop heights in the wire gap check.** Nothing crosses here, so it doesn't matter, but the bench's 60 µm wire-to-wire gap is measured in plan. A stack that let the RAM's wires cross over D1's, as multi-tier packages do, would warn on every crossing even where the loops are far apart. Its crossing check between different die does compare heights.
 
 The bench's checks on it: nothing fails, nothing crosses, and only the twelve net warnings aren't a pass. It also notes that the RAM's twelve wires to the board run over another die, and that the RAM's TEST pad isn't bonded. KiCad's DRC of the board, and of the assembled board the bench writes, finds nothing but the unrouted nets.
@@ -89,3 +89,7 @@ python app/make_samples.py
 ```
 
 `make_stacked_die.py` writes the board, then has the bench put it together in a headless Chrome. It loads the board and both GDS files, puts the logo die on the board and the RAM on the logo die, makes every wire, and writes `stacked_die.wb.svg`. `--inputs` writes only the board. The output is the same byte for byte each time. `tests/test_app.py` runs the same assembly and checks that it still gives this file, and that KiCad passes the assembled board.
+
+---
+
+<sub><img src="../../app/brand/wirebond-icon.svg" alt="" width="16" height="16"> Part of [wirebond.svg](https://github.com/anfroholic/wirebond.svg), a viewable wire bond exchange format, and its browser app Wire Bond Bench. (c) Andrew Wingate, MIT licence.</sub>

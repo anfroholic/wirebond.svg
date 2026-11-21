@@ -1,3 +1,12 @@
+<p align="center">
+  <a href="https://github.com/anfroholic/wirebond.svg">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="../app/brand/wirebond-logo.svg">
+      <img src="../app/brand/wirebond-logo-light.svg" alt="wirebond.svg" width="360">
+    </picture>
+  </a>
+</p>
+
 # SVG-Based Wire Bond Exchange Format: Design Report
 
 Design report, November 2026. It records the reasoning behind this prototype.
@@ -8,7 +17,7 @@ Design report, November 2026. It records the reasoning behind this prototype.
 
 SVG works as a wire bond exchange format if the drawn shapes are the data and a small wb: namespace adds only what a 2D drawing cannot express. I built a prototype to test this: a GDS went in, a viewable SVG came out, and a parser rebuilt the same file byte for byte from the SVG alone (74 wires, 74 pads, 67 KB).
 
-The format is now named wirebond.svg, with the extension .wb.svg. This report uses its earlier working name, WBX. Five decisions define it:
+The format is now named wirebond.svg, with the extension .wb.svg. This report uses its earlier working name, WBSVG. Five decisions define it:
 
 - **The picture is the data.** One SVG unit is 1 µm, stroke-width is the wire diameter, and a rect is a pad opening.
 
@@ -20,7 +29,7 @@ The format is now named wirebond.svg, with the extension .wb.svg. This report us
 
 - **Connectivity uses names, and a checker catches drift.** Wires reference pads by name, so a hand edit that breaks the geometry gets flagged.
 
-The main limit is that WBX is a design-intent format. Bonders run on vendor programs, so WBX must export to what offline programming accepts, and a loop profile remains a target until the bonding engineer tunes it.
+The main limit is that wirebond.svg is a design-intent format. Bonders run on vendor programs, so wirebond.svg must export to what offline programming accepts, and a loop profile remains a target until the bonding engineer tunes it.
 
 ## The gap
 
@@ -36,7 +45,7 @@ None of the established sources carries pads, wires, loop shape and die stack to
 | KiCad                              | Ordinary footprints and pads                                                                                                                          | I found no native bond wires in [KiCad 10 coverage](https://www.kicad.org/blog/2026/03/Version-10.0.0-Released/index.html); [users have asked for wire diameter, material and bend profile](https://forum.kicad.info/t/chiplets-and-interposers/60987) |
 | Bondlist text file                 | [Bond coordinates and connectivity](https://file.scirp.org/Html/2573.html)                                                                            | Any visual form, and loop intent                                                                                                                                                                                                                       |
 
-The target is also well defined. Offline programming needs [wire endpoints precise to a few microns, a 1:1 drawing, and wires sorted by bonding tier](https://sst.semiconductor-digest.com/?p=34154). WBX has to supply at least that.
+The target is also well defined. Offline programming needs [wire endpoints precise to a few microns, a 1:1 drawing, and wires sorted by bonding tier](https://sst.semiconductor-digest.com/?p=34154). wirebond.svg has to supply at least that.
 
 ## Prior art: is industry already using a format?
 
@@ -59,7 +68,7 @@ So the format people worry about most likely isn't one format. It's a DXF drawin
 | Standard                                                                                                           | Covers                                                                                                                                   | Why it isn't the answer                                                                                                                                                                                 |
 |--------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | [IEC 62258-2 DDX](https://dtsheet.com/doc/1287219/ddx-file-format)                                                 | Bare die: size, thickness, pad shape, position, connection, in readable text                                                             | Die only; the material I read doesn't mention wires or loops. Worth aligning field names                                                                                                                |
-| [JEDEC JESD59](https://www.jedec.org/node/7486)                                                                    | How to model a bond wire, 1997                                                                                                           | A modeling method, not a file. Its [4-point and 5-point shapes are still built into Ansys SIwave](https://www.oldfriend.url.tw/SIwave/ansys_ch_Package_Plane_Impedance.html), so WBX should map to them |
+| [JEDEC JESD59](https://www.jedec.org/node/7486)                                                                    | How to model a bond wire, 1997                                                                                                           | A modeling method, not a file. Its [4-point and 5-point shapes are still built into Ansys SIwave](https://www.oldfriend.url.tw/SIwave/ansys_ch_Package_Plane_Impedance.html), so wirebond.svg should map to them |
 | [IPC-2581C](https://www.protoexpress.com/blog/ipc-2581-revision-c-facilitates-pcb-data-management-by-hemant-shah/) | Board data, with [wire bond components added](https://www.protoexpress.com/?p=11086)                                                     | [An envelope, not the path](https://iconnect007.uberflip.com/i/1417991/38), per a committee interview; I did not read the schema                                                                        |
 | [IEEE P3537 3Dblox](https://standards.ieee.org/ieee/3537/11871)                                                    | Chiplet stacks and connectivity; still an active draft project                                                                           | Placement-and-route level, [with no wire-bond pad target](https://ihp-open-adk-docs.readthedocs.io/en/latest/formats/08_3dblox_interop.html)                                                            |
 | [JEDEC JEP30 with CDXML](https://www.jedec.org/node/9418)                                                          | XML part description for chiplets                                                                                                        | Describes the part, not the assembly                                                                                                                                                                    |
@@ -67,7 +76,7 @@ So the format people worry about most likely isn't one format. It's a DXF drawin
 
 ### Open projects
 
-| Project                                                                                          | What it is                                                                                            | Relationship to WBX                                                                                                                                        |
+| Project                                                                                          | What it is                                                                                            | Relationship to wirebond.svg                                                                                                                                        |
 |--------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | [open.cob.json](https://github.com/MaxClerkwell/open.cob.json)                                   | JSON exchange format for chip-on-board wire bonding, CC BY 4.0, with GDS import and KiCad 9/10 export | Direct overlap                                                                                                                                             |
 | [IHP .chiplet](https://ihp-open-adk-docs.readthedocs.io/en/latest/formats/01_chiplet.html)       | YAML assembly format for interposers, Apache-2.0, preview release, KiCad-connected                    | Places die and [lists wire-bond pads](https://ihp-open-adk-docs.readthedocs.io/en/latest/formats/02_chiplet_components.html); no individual wires or loops |
@@ -80,7 +89,7 @@ So the format people worry about most likely isn't one format. It's a DXF drawin
 
 I cloned the repository (latest commit 1 November 2026) and read its data model. Its author says [wafer.space's Stuart Childs encouraged him to publish it](https://github.com/namibj/open.cob.json). It is marked work in progress.
 
-| Need                                  | open.cob.json                                                       | WBX prototype                      |
+| Need                                  | open.cob.json                                                       | wirebond.svg prototype                      |
 |---------------------------------------|---------------------------------------------------------------------|------------------------------------|
 | File is itself viewable               | No. A tool renders JSON to SVG; the demo SVG has no data attributes | Yes                                |
 | Demo size                             | 1,300 lines for 9 wires                                             | 352 lines for 21 wires, with the draft placement tolerance |
@@ -94,7 +103,7 @@ I cloned the repository (latest commit 1 November 2026) and read its data model.
 | KiCad                                 | Exports symbol and footprint today                                  | Designed only                      |
 | GDS import                            | Yes, with PDK awareness                                             | Prototype                          |
 
-The line counts aren't like for like, because its demo carries process data that WBX lacks. They do show the long JSON that a viewable format avoids.
+The line counts aren't like for like, because its demo carries process data that wirebond.svg lacks. They do show the long JSON that a viewable format avoids.
 
 ### Recommendation
 
@@ -108,7 +117,7 @@ Three contributions fit:
 
 3.  **Per-wire bond sequence and tier**, which offline programming needs.
 
-If the maintainer declines, WBX can still import and export his format.
+If the maintainer declines, wirebond.svg can still import and export his format.
 
 ### Limits of this search
 
@@ -152,7 +161,7 @@ The [SVG specification lets foreign-namespace elements and attributes appear any
 
 Three rules follow. Per-element attributes hold the data, names go in wb:name and never in id, and minifiers are forbidden because the converted shapes broke my parser. \<metadata\> is still fine for non-essential provenance such as author or tool version.
 
-I chose wb: over data-\* because a namespace can be validated as a schema and avoids collisions. [data-\* names also can't contain capitals](https://developer.mozilla.org/docs/Web/SVG/Reference/Attribute/data-*). The namespace is urn:wbx:0.1, which needs no domain.
+I chose wb: over data-\* because a namespace can be validated as a schema and avoids collisions. [data-\* names also can't contain capitals](https://developer.mozilla.org/docs/Web/SVG/Reference/Attribute/data-*). The namespace is urn:wbsvg:0.2, which needs no domain.
 
 ### Keeping the drawing honest
 
@@ -243,25 +252,25 @@ The prototype's checks on this file:
 
 ## Toolchain
 
-GDS to WBX and WBX to DXF both work in the prototype; the KiCad link is designed but not built. Each design tool and manufacturing output talks only to the .wb.svg, so a new tool needs one converter.
+GDS to wirebond.svg and wirebond.svg to DXF both work in the prototype; the KiCad link is designed but not built. Each design tool and manufacturing output talks only to the .wb.svg, so a new tool needs one converter.
 
-![WBX data flow](dataflow.png)
+![wirebond.svg data flow](dataflow.png)
 
-WBX data flow · 3 sources, 3 outputs
+wirebond.svg data flow · 3 sources, 3 outputs
 
 | Path                   | Method                                                  | Status                                               |
 |------------------------|---------------------------------------------------------|------------------------------------------------------|
-| GDS to WBX             | gdstk reads pad polygons and text labels                | Tested on the wafer.space template die               |
-| WBX to bondlist CSV    | Sorted by sequence, with X, Y, Z for both bonds         | Tested                                               |
-| WBX to 3D DXF          | One 3D polyline per wire, tagged by tier                | Generated and read back; not loaded in a bonder tool |
-| WBX to PNG             | rsvg-convert                                            | Tested                                               |
-| KiCad to WBX           | Plugin reads footprint pads; wires held on a user layer | Designed                                             |
-| WBX to KiCad footprint | Fingers as pads, wires as graphics                      | Designed                                             |
-| WBX to STEP or glTF    | Sweep a circle along each evaluated loop                | Designed                                             |
+| GDS to wirebond.svg             | gdstk reads pad polygons and text labels                | Tested on the wafer.space template die               |
+| wirebond.svg to bondlist CSV    | Sorted by sequence, with X, Y, Z for both bonds         | Tested                                               |
+| wirebond.svg to 3D DXF          | One 3D polyline per wire, tagged by tier                | Generated and read back; not loaded in a bonder tool |
+| wirebond.svg to PNG             | rsvg-convert                                            | Tested                                               |
+| KiCad to wirebond.svg           | Plugin reads footprint pads; wires held on a user layer | Designed                                             |
+| wirebond.svg to KiCad footprint | Fingers as pads, wires as graphics                      | Designed                                             |
+| wirebond.svg to STEP or glTF    | Sweep a circle along each evaluated loop                | Designed                                             |
 
 **GDS.** Pad openings on GF180MCU are [layer 37, datatype 0](https://foss-eda-tools.googlesource.com/gf180mcu-pdk/+/0cba32596b0dbc82f53d16b4d1adfebd1ecf9eb3/docs/physical_verification/design_manual/tables_clear/06_Drawn_layer10.csv), so the example records that in wb:pad-layer. Pin names need a source, since GDS generally lacks them. The prototype used synthetic labels on 53/0; a real flow would use the PDK's pin label layer or DEF.
 
-**KiCad.** A KiCad user has already described [a script from DEF to a footprint and symbol for wire bonded die](https://forum.kicad.info/t/chiplets-and-interposers/60987), so that direction has precedent. KiCad won't know a wire connects two nets, so WBX should own connectivity and the net check.
+**KiCad.** A KiCad user has already described [a script from DEF to a footprint and symbol for wire bonded die](https://forum.kicad.info/t/chiplets-and-interposers/60987), so that direction has precedent. KiCad won't know a wire connects two nets, so wirebond.svg should own connectivity and the net check.
 
 **Bonder.** [Offline programming tools can read DXF](https://community.cadence.com/cadence_blogs_8/b/pcb/posts/allegro-package-designer-and-3d-dxf), which makes it the sensible first export. Each machine's native program stays out of scope. The exporters centre coordinates on the assembly, matching the [0,0-centred, 1:1 convention](https://sst.semiconductor-digest.com/?p=34154).
 
@@ -283,9 +292,9 @@ The largest unknown is what a packaging house will accept, so the first step is 
 
 - Which formats do packaging houses take in, and do they want a drawing as well?
 
-- Should WBX be pitched to wafer.space users early, so that its pad conventions become the default?
+- Should wirebond.svg be pitched to wafer.space users early, so that its pad conventions become the default?
 
-- Should a bonding engineer's changes write back to WBX, or is the bonder's program the record after handoff?
+- Should a bonding engineer's changes write back to wirebond.svg, or is the bonder's program the record after handoff?
 
 - Is .wb.svg the right name?
 
@@ -301,7 +310,7 @@ Before step 1, contact the open.cob.json maintainer. The steps below then apply 
 
 4.  **Connect KiCad.** Build the plugin in both directions and test it on a chip-on-board design.
 
-5.  **Run real silicon.** Take one real die through GDS, WBX, the house, and a physical bond, then compare measured loops with profiles.
+5.  **Run real silicon.** Take one real die through GDS, wirebond.svg, the house, and a physical bond, then compare measured loops with profiles.
 
 6.  **Extend.** Add angles, stitch chains, stacked die, 3D checks, and STEP export.
 
@@ -372,3 +381,7 @@ Prior-art sources:
 - [Wirebonding](https://github.com/ppxscal/Wirebonding) and [its WOSET 2020 paper](https://woset-workshop.github.io/PDFs/2020/a06.pdf)
 
 - [kotoba-lang/pkg](https://github.com/kotoba-lang/pkg)
+
+---
+
+<sub><img src="../app/brand/wirebond-icon.svg" alt="" width="16" height="16"> Part of [wirebond.svg](https://github.com/anfroholic/wirebond.svg), a viewable wire bond exchange format, and its browser app Wire Bond Bench. (c) Andrew Wingate, MIT licence.</sub>

@@ -2,11 +2,12 @@
    An element gets its tip from data-tip="key", or, without one, from what it already carries: data-bind="x" reads "bind:x",
    data-live="x" reads "live:x", and data-act="x" reads "act:x", or "act:x:<what|tool|mode|tab|sample|menu|role>" when that exists.
    An entry is a string, or a function of the element that returns one. Rule numbers are never written here: they come from the
-   DRC rule table (rules.js) when the tip is shown, so a tip can't drift from the rule it explains. Blank lines start a new paragraph. */
+   DRC rule table (rules.js) when the tip is shown, so a tip can't drift from the rule it explains. Blank lines start a new paragraph.
+   Part of Wire Bond Bench, from wirebond.svg: https://github.com/anfroholic/wirebond.svg. (c) Andrew Wingate, MIT licence. */
 (function (W) {
   'use strict';
   const D = document;
-  const app = () => W.WBX.app, St = () => W.WBX.app.S, DRC = () => W.WBX.rules, M = () => W.WBX.model;
+  const app = () => W.WBSVG.app, St = () => W.WBSVG.app.S, DRC = () => W.WBSVG.rules, M = () => W.WBSVG.model;
   const many = () => M().placedDies(St()).length > 1;
   const active = () => St().active;
 
@@ -119,7 +120,7 @@
     'act:openDrc': 'The design rules behind the Checks: each limit\'s value, its on/off switch, how solid its source is and where it comes from. Changes apply to every die and save with the session.',
     'act:menu:sampleMenu': 'Load a bundled example to try the app. It clears the current session first, as Start over does.',
     'act:sample': el => {
-      const ex = (W.WBX.app.examples || []).find(e => e.id === el.dataset.sample);
+      const ex = (W.WBSVG.app.examples || []).find(e => e.id === el.dataset.sample);
       const extra = { wired: ' The board already holds wb_ wire footprints, so From the board is used.', mods: ' No GDS, so the die has no artwork.', board: ' Its .kicad_pro and .kicad_sch go into the export with it.' };
       return ex ? `Clears the current session, then opens ${ex.files.filter(f => f[0] !== '.').join(' and ')}.${extra[ex.id] || ''} The files are in the repo's examples folder.` : '';
     },
@@ -128,14 +129,14 @@
       : 'Write files for KiCad from this session. Each choice below downloads a file; nothing leaves the browser otherwise.',
     'act:export:board': () => 'Downloads <board>_bonded.zip: your board, or a new one around the footprint, with each die as a footprint, one footprint per wire, and the WBLIB wire type library. The 3D model is one STEP holding the die, attach, pads and every wire, embedded in the board on the first die\'s footprint, so there is no 3d folder to keep with it; KiCad\'s own STEP export carries it on. The zip also has a loose copy of the STEP for mechanical CAD. Die, wires, library and STEP an earlier export put in the board are replaced. The rest of the board is kept as it was, apart from a user layer added for the wires when it needs one. Any .kicad_pro and .kicad_sch you loaded go with it.\n\nNeeds a substrate.',
     'act:export:fp': () => (dieCount() > 1
-      ? `Downloads wbx_die_footprints.zip, holding wbx_die.pretty with one .kicad_mod per die (${dieCount()} now).`
+      ? `Downloads wbsvg_die_footprints.zip, holding wbsvg_die.pretty with one .kicad_mod per die (${dieCount()} now).`
       : 'Downloads the die as one .kicad_mod.') + ' Each has the outline on F.Fab and F.CrtYd, a numbered F.Fab rectangle per pad and the artwork image. No copper, so it adds nothing to the board\'s nets.',
     'act:export:fp3d': () => (dieCount() > 1
-      ? `Downloads wbx_die_footprints_3d.zip, holding wbx_die.pretty with one .kicad_mod per die (${dieCount()} now).`
+      ? `Downloads wbsvg_die_footprints_3d.zip, holding wbsvg_die.pretty with one .kicad_mod per die (${dieCount()} now).`
       : 'Downloads the die as one .kicad_mod.') + ' The same footprint as above, with a 3D model embedded in it: a STEP of the die, its attach layer and its pads, built from the thickness and attach under Placement. KiCad\'s 3D viewer shows it and its STEP export carries it on, with no file to keep beside the footprint. Wires are not in it; they belong to the board.',
-    'act:export:kit': 'Downloads a zip with, for each die: its footprint in wbx_die.pretty, a schematic symbol (.kicad_sym), a 3D stand-in as STEP built from the thickness and attach under Placement, embedded in the footprint and also as a loose .step, and a .die.json manifest of its pads.',
+    'act:export:kit': 'Downloads a zip with, for each die: its footprint in wbsvg_die.pretty, a schematic symbol (.kicad_sym), a 3D stand-in as STEP built from the thickness and attach under Placement, embedded in the footprint and also as a loose .step, and a .die.json manifest of its pads.',
     'act:export:bond': () => 'Downloads a .csv with one row per wire, in list order: net, ends, x, y and z of each bond in bond order (µm, from the first die\'s centre), type, length and loop peak. Peak is empty for generic and undefined wires.' + (dieCount() > 1 ? ' With several die it adds to_kind and origin columns.' : ''),
-    'act:export:svg': () => 'Downloads a .wb.svg, the wirebond.svg format in SPEC.md: a true-scale drawing of the bond area that tools read as data. It holds the lands, the substrate copper marks you use as board fiducials, ' + (dieCount() > 1 ? 'each die' : 'the die') + ' with its pads, one line per wire named by its pad, land and type, a side view of the stack, and the loop profiles. Any browser opens it, and hovering a wire, pad or land shows its details. python wbx.py check reads it.\n\nDie thickness and attach are the assumed ones under Placement. Generic and undefined wires are drawn 20 µm wide; that is not a wire size.',
+    'act:export:svg': () => 'Downloads a .wb.svg, the wirebond.svg format in SPEC.md: a true-scale drawing of the bond area that tools read as data. It holds the lands, the substrate copper marks you use as board fiducials, ' + (dieCount() > 1 ? 'each die' : 'the die') + ' with its pads, one line per wire named by its pad, land and type, a side view of the stack, and the loop profiles. Any browser opens it, and hovering a wire, pad or land shows its details. python drc.py check reads it.\n\nDie thickness and attach are the assumed ones under Placement. Generic and undefined wires are drawn 20 µm wide; that is not a wire size.',
     'act:reset': 'Forgets every file, wire, type and DRC rule change in this browser, and starts empty. It empties the undo history too, so it can\'t be undone.',
 
     // toolbar
@@ -159,7 +160,7 @@
     'act:mode:diagram': 'The bond diagram (.wb.svg) the export writes, drawn here and kept up to date as you work: wires, pads, lands, the side view and loop profiles at true scale. Turn the die, change a wire or a type, and it redraws.',
     'act:diagPane:picture': 'The drawing, as a browser opens the file. Scroll to zoom where the pointer is, drag to pan, and hover a wire, pad, land or layer for its details. Fit (F) shows it whole.',
     'act:diagPane:both': 'The drawing and its code side by side.',
-    'act:diagPane:code': 'The SVG text. wb: attributes, in pink, are the data a reader such as wbx.py check uses; the rest is drawing. A die\'s artwork image is shortened in this view; Copy and Download give the whole file.',
+    'act:diagPane:code': 'The SVG text. wb: attributes, in pink, are the data a reader such as drc.py check uses; the rest is drawing. A die\'s artwork image is shortened in this view; Copy and Download give the whole file.',
     'act:diagZoom:in': 'Zoom in on the middle of the drawing. The scroll wheel zooms where the pointer is.',
     'act:diagZoom:out': 'Zoom out from the middle of the drawing. The scroll wheel zooms where the pointer is.',
     'diag:wrap': 'Wrap long lines in the code. The file itself is unchanged.',
@@ -241,9 +242,9 @@
     'bind:place.tol': 'How far the die may sit from where it is drawn, as a circle\'s diameter in µm. Empty or 0 for none. Each bonded pad\'s centre must be inside its own circle, and the circles move together with the die. Written into the .wb.svg as a drawn tolerance indicator, and into the KiCad export as wb_position_tol_um.',
     'info:placeTol': 'An ISO 1101 position tolerance with CZ (combined zone), to datums A, B and C. ⌀50 means each bonded pad\'s centre may be up to 25 µm from its nominal place, and since the pads are one piece of silicon they all move together: a shift of up to 25 µm, or a small turn, or some of both.\n\nIt holds the pads, not the sawn edge, because the pads are what gets bonded and the edge may be cut less precisely.\n\nIn the .wb.svg it is one group, wb:kind="tolerance": its wb: attributes are the data a program reads, and the frame drawn inside it is the same rule for people. See docs/primer/gdt.html.',
     'act:tolCheck': el => el.disabled
-      ? `Runs wbx.py check, which moves and turns the die to every edge of the tolerance zone and checks the layout at each. ${W.WBX.app.tolCheckWhy()}`
-      : `Runs wbx.py check on this layout's .wb.svg: it moves and turns the die to every edge of the tolerance zone, reruns its checks at each, and says the least die edge clearance, wire gap and land clearance it found. Uses ${W.WBX.py.state.python || 'Python'}. The answer clears once anything changes.`,
-    'py:tolRun': 'What wbx.py check said about the .wb.svg this layout writes, with the die at every edge of its tolerance zone. Die edge is the least clearance from a wire to the die edge, wire gap the least gap between wires in plan, and land the least clearance from the die attach to a land. Errors and warnings are wbx.py\'s own words; its checks are fewer than the app\'s, and it reads one die.',
+      ? `Moves and turns each die with a tolerance to every edge of its zone, and runs every check again at each. ${W.WBSVG.app.tolCheckWhy()}`
+      : 'Moves each die with a tolerance to the edge of its zone eight ways, and turns it each way by the most the zone allows, with the second bonds held on their lands, as a bonder that finds the die by vision would bond it. Every check runs again at each, and it lists what comes out worse than at the placement drawn. The answer clears once anything changes.',
+    'zone:run': 'The checks with each die at the edges of its tolerance zone. Listed are the checks that warn or fail there and not at the placement drawn; what already warns or fails is in the Checks tab. Die edge is the least loop clearance over a die edge, and wire gap the least gap between wires in plan, over every edge of every zone.',
     'place:tol':'The rule as the drawing writes it: the number of pads it holds, the symbol for position, the diameter, CZ, then the datums in order. Datum letters on copper marks are set in a mark\'s panel.',
     'place:lengths':'Total wire length at each rotation, from the last automatic placement. The lowest is the one chosen.',
     'bind:bond.mode': 'Where the second bond lands on each land: a set distance in from the land\'s end nearest the die, or the land centre. It moves the land end of every wire not dragged by hand, so lengths, angles and checks change.',
@@ -362,12 +363,14 @@
     // DRC panel
     'act:closeDrc': 'Close the rules. Changes are already applied and saved. (Esc)',
     'act:drcReset': 'Puts every value and switch back to its default, after asking if anything changed.',
-    'act:drcExport': 'Saves this rule set as wbx_drc_rules.json, with each value, switch, tier and source, to share or to hand to a bonding house.',
+    'act:drcExport': 'Saves this rule set as wbsvg_drc_rules.json, with each value, switch, tier and source, to share or to hand to a bonding house.',
     'act:drcImport': 'Loads a rule set from a JSON file, such as one a bonding house sends back. Rules it doesn\'t name keep their values; ids this app doesn\'t know are left out and listed.',
     'drc:sheet': 'Opens docs/wire_bond_design_rules.svg, which draws every rule and where its number comes from. Opens when the app runs from this repo.',
     'drc:primer': 'Opens the wire bonding primer at its rule table, where each rule says why it matters. Opens when the app runs from this repo.',
     'top:gdt': 'Opens the GD&T page in a new tab: how to read the tolerance box beside the die, what datums A, B and C are, and what a position tolerance lets the die do. Opens when the app runs from this repo.',
     'top:repo': 'Opens the wirebond.svg repository on GitHub in a new tab: the spec for the format, the example files, the Python tools and the source of this app.',
+    'top:brand': 'wirebond.svg: the viewable wire bond format this app is built on, and the project it comes from. Opens the repository on GitHub in a new tab. Every file this app exports says it was made here.',
+    'brand:credit': 'Who made this app and where it lives. Every file it exports carries the same line.',
     'top:primer': 'Opens the wire bonding primer in a new tab: what bonding is, the words for it, and why each rule is what it is. Opens when the app runs from this repo.',
     'drc:key': el => { const g = rule(ruleIdOf(el)); return `${g.key}: this rule's key on the spec sheet and in the sources notes.`; },
     'drc:source': 'Opens the document this default was read from.',
@@ -378,7 +381,7 @@
   // Regime ⓘ texts.
   for (const [k, v] of Object.entries(REGIME_NEEDS)) T['info:regime:' + k] = v;
   // The older limit inputs write into their rules, so they explain themselves as those rules.
-  for (const [k, id] of Object.entries(W.WBX.rules.LIMIT_KEYS)) T['bind:limit.' + k] = () => ruleValue(rule(id));
+  for (const [k, id] of Object.entries(W.WBSVG.rules.LIMIT_KEYS)) T['bind:limit.' + k] = () => ruleValue(rule(id));
   T['bind:limit.moldUm'] = () => `Height of your glob top above the board, in µm. 0 means there is none. Any other value switches Glob top height (S4) on, and loop tops${many() ? ' and the die stack' : ''} are checked under it.`;
 
   /* ---- reading a tip ---- */
@@ -519,6 +522,6 @@
   }
   if (D.readyState === 'loading') D.addEventListener('DOMContentLoaded', init); else init();
 
-  W.WBX = W.WBX || {};
-  W.WBX.tips = { TIPS: T, SEL, keyOf, textFor, anchorOf, show, hide, get shown() { return shown; } };
+  W.WBSVG = W.WBSVG || {};
+  W.WBSVG.tips = { TIPS: T, SEL, keyOf, textFor, anchorOf, show, hide, get shown() { return shown; } };
 })(window);

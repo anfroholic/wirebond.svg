@@ -4,6 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Files In and Out</title>
+<link rel="icon" type="image/svg+xml" href="../../app/brand/wirebond-icon.svg">
+<meta name="author" content="Andrew Wingate">
+<meta name="generator" content="wirebond.svg">
 <style>
 /* Same house style as wire-bonding-primer.html: one reading column, Evezor palette, dark first. */
 :root{
@@ -229,12 +232,14 @@ ul.lim li{background:var(--panel);border:1px solid var(--line);border-radius:8px
 
 footer{border-top:1px solid var(--line);margin-top:56px;padding-top:14px;font-size:13px;color:var(--muted)}
 @media (prefers-reduced-motion:reduce){ .map .nd,.map .ed,details.recipe summary::before{transition:none} }
+.brandmark{display:inline-block;margin:0 0 12px}.brandmark img{display:block;height:40px;width:auto}.madewith{display:flex;align-items:center;gap:10px;max-width:960px;margin:40px auto 28px;padding:16px 20px 0;border-top:1px solid rgba(127,127,127,.3);font-size:13px;color:#7ba69c}.madewith img{width:24px;height:24px;flex:none}.madewith a{color:inherit}
 </style>
 </head>
 <body>
 
 <header class="mast">
   <div class="wrap">
+    <a class="brandmark" href="https://github.com/anfroholic/wirebond.svg" title="wirebond.svg on GitHub"><img src="../../app/brand/wirebond-logo.svg" alt="wirebond.svg" width="160" height="40"></a>
     <nav class="sitenav" aria-label="Project pages">
       <a href="../../app/index.html">← Wire Bond Bench</a>
       <a href="wire-bonding-primer.html">Wire bonding primer</a>
@@ -243,7 +248,7 @@ footer{border-top:1px solid var(--line);margin-top:56px;padding-top:14px;font-si
     </nav>
     <div class="eyebrow">Wire Bond Bench · guide · November 2026</div>
     <h1>Files in and out</h1>
-    <p>Which files Wire Bond Bench and <code style="background:rgba(0,0,0,.2);color:inherit">wbx.py</code> can read, what each one gives them, how much of a bonded design to put in your KiCad board, and what comes back out.</p>
+    <p>Which files Wire Bond Bench and <code style="background:rgba(0,0,0,.2);color:inherit">drc.py</code> can read, what each one gives them, how much of a bonded design to put in your KiCad board, and what comes back out.</p>
   </div>
 </header>
 
@@ -255,7 +260,7 @@ footer{border-top:1px solid var(--line);margin-top:56px;padding-top:14px;font-si
     <li><b>Two things go in: a substrate and a die.</b> The substrate is a KiCad footprint or board with the bond lands. The die is a GDS, or a footprint if you don't have the GDS yet.</li>
     <li><b>KiCad files can carry as much as you like.</b> A bare padring is enough. Nets, sketched lines or full wire footprints let the app pair pads with lands for you.</li>
     <li><b>Most of what comes out is for KiCad:</b> the assembled board with the die and wires in 3D as one STEP, a die footprint, or a die kit with symbol and STEP model. The bondlist and <code>.wb.svg</code> are for the bonding house.</li>
-    <li><b>An exported board reads back in,</b> and so does a <code>.wb.svg</code>. Load either and the die, wires and wire types return. <code>wbx.py</code> reads the <code>.wb.svg</code> too.</li>
+    <li><b>An exported board reads back in,</b> and so does a <code>.wb.svg</code>. Load either and the die, wires and wire types return. <code>drc.py</code> reads the <code>.wb.svg</code> too.</li>
     <li><b>The 3D is one STEP file.</b> It holds the die and every wire, and it is embedded in the board, so there's no folder of models to keep with it. Section 6 has how that was decided and what is still open.</li>
   </ul>
 </div>
@@ -275,10 +280,10 @@ footer{border-top:1px solid var(--line);margin-top:56px;padding-top:14px;font-si
 
 <!-- 1 -->
 <h2 id="map"><span class="k">1</span>The map</h2>
-<p class="lede">There are two tools. <b>Wire Bond Bench</b> is the browser app in <code>app/</code>. It reads design files, pairs pads with lands and writes KiCad files. <b>wbx.py</b> is a small Python tool that checks a <code>.wb.svg</code> and turns it into files a bonder can use. Click any file to see what it carries.</p>
+<p class="lede">There are two tools. <b>Wire Bond Bench</b> is the browser app in <code>app/</code>. It reads design files, pairs pads with lands and writes KiCad files. <b>drc.py</b> is a small Python tool that checks a <code>.wb.svg</code> and turns it into files a bonder can use. Click any file to see what it carries.</p>
 
 <div class="fig map" id="map-fig">
-  <div class="scroll"><svg id="mapSvg" viewBox="0 -14 960 560" role="group" aria-label="Files read and written by Wire Bond Bench and wbx.py"></svg></div>
+  <div class="scroll"><svg id="mapSvg" viewBox="0 -14 960 560" role="group" aria-label="Files read and written by Wire Bond Bench and drc.py"></svg></div>
   <div class="legend" aria-hidden="true">
     <span><i style="background:var(--amber)"></i>Silicon</span>
     <span><i style="background:var(--green)"></i>KiCad</span>
@@ -365,17 +370,17 @@ footer{border-top:1px solid var(--line);margin-top:56px;padding-top:14px;font-si
     <p>The limits the Checks tab measures against: wire gap, edge clearance, longest wire and the rest. Each rule says where its number comes from.</p>
     <div class="gives"><span class="chip">Rule values</span><span class="chip">On or off</span></div>
     <ul>
-      <li>Open <b>DRC rules</b> in the top bar, then <b>Import JSON</b>. <b>Export JSON</b> writes <code>wbx_drc_rules.json</code>, so a bonding house's numbers can be shared and reused.</li>
+      <li>Open <b>DRC rules</b> in the top bar, then <b>Import JSON</b>. <b>Export JSON</b> writes <code>wbsvg_drc_rules.json</code>, so a bonding house's numbers can be shared and reused.</li>
     </ul>
   </article>
 
   <article class="card exch" id="in-wbsvg">
     <h3>Bond diagram <code>.wb.svg</code></h3>
-    <p>The wirebond.svg format from <a href="../../SPEC.md">SPEC.md</a>. It's a true-scale drawing that is also the data. The app opens one whole, its own or one from <code>wbx.py</code>, as a session to change and export again. <code>wbx.py</code> reads it too.</p>
+    <p>The wirebond.svg format from <a href="../../SPEC.md">SPEC.md</a>. It's a true-scale drawing that is also the data. The app opens one whole, its own or one from <code>drc.py</code>, as a session to change and export again. <code>drc.py</code> reads it too.</p>
     <div class="gives"><span class="chip">Die</span><span class="chip">Pads</span><span class="chip">Lands</span><span class="chip">Wires</span><span class="chip">Loop profiles</span><span class="chip">Layer stack</span><span class="chip">Fiducials</span><span class="chip">Tolerance</span></div>
     <ul>
-      <li><code>python tools/wbx.py check file.wb.svg</code> validates it. <code>place</code> finds how far the die can move or turn before a check fails. <code>export</code> writes CSV and DXF.</li>
-      <li><code>wbx.py</code> reads one die at 0°. The app writes turned and stacked die correctly, but <code>wbx.py</code> can't read them yet.</li>
+      <li><code>python tools/drc.py check file.wb.svg</code> validates it. <code>place</code> finds how far the die can move or turn before a check fails. <code>export</code> writes CSV and DXF.</li>
+      <li><code>drc.py</code> reads one die at 0°. The app writes turned and stacked die correctly, but <code>drc.py</code> can't read them yet.</li>
     </ul>
   </article>
 </div>
@@ -422,8 +427,8 @@ footer{border-top:1px solid var(--line);margin-top:56px;padding-top:14px;font-si
     <div class="menu">.kicad_mod</div>
     <p>The die alone, for a footprint library. It has the outline on Fab and courtyard, a filled Fab rectangle with <code>number net</code> text for each pad, and the artwork as an image. It has no copper.</p>
 <pre class="tree">&lt;die&gt;.kicad_mod
-<span class="c">several die: wbx_die_footprints.zip
-  └─ wbx_die.pretty/&lt;die&gt;.kicad_mod …</span></pre>
+<span class="c">several die: wbsvg_die_footprints.zip
+  └─ wbsvg_die.pretty/&lt;die&gt;.kicad_mod …</span></pre>
     <div class="use"><b>Use it to</b> place the die by hand on another board, or as a stand-in before the wiring is decided.</div>
   </article>
 
@@ -432,7 +437,7 @@ footer{border-top:1px solid var(--line);margin-top:56px;padding-top:14px;font-si
     <div class="menu">.zip</div>
     <p>Everything KiCad needs to treat the die as a part: footprint with its STEP model embedded, schematic symbol, the same STEP loose, and a JSON record of the pads.</p>
 <pre class="tree">&lt;die&gt;_kit.zip
-├─ wbx_die.pretty/&lt;die&gt;.kicad_mod
+├─ wbsvg_die.pretty/&lt;die&gt;.kicad_mod
 ├─ &lt;die&gt;.kicad_sym   <span class="c">pins by side, VDD/VSS power</span>
 ├─ &lt;die&gt;.step        <span class="c">3D die with its artwork, assumed thickness</span>
 └─ &lt;die&gt;.die.json    <span class="c">size, pads, pin 1, source</span></pre>
@@ -456,29 +461,29 @@ footer{border-top:1px solid var(--line);margin-top:56px;padding-top:14px;font-si
     <p>A true-scale drawing of the bond area that any browser opens, with hover text on every wire, pad and land. It has a plan view, a side view of the layer stack, and the loop profiles.</p>
 <pre class="tree">&lt;board&gt;.wb.svg
 <span class="c">1 unit = 1 µm · wb: attributes are the data</span></pre>
-    <div class="use"><b>Use it to</b> review the bonding with people who don't use KiCad, check it with <code>wbx.py check</code>, or turn it into bonder files with <code>wbx.py export</code>.</div>
+    <div class="use"><b>Use it to</b> review the bonding with people who don't use KiCad, check it with <code>drc.py check</code>, or turn it into bonder files with <code>drc.py export</code>.</div>
   </article>
 
   <article class="out">
-    <h3>From wbx.py</h3>
-    <div class="menu">python tools/wbx.py export file.wb.svg base</div>
+    <h3>From drc.py</h3>
+    <div class="menu">python tools/drc.py export file.wb.svg base</div>
     <p>Files for offline programming of a bonder, all centred on the die.</p>
 <pre class="tree">base.bondlist.csv    <span class="c">seq, tier, ends, profile</span>
 base.fiducials.csv   <span class="c">eye points, if any</span>
 base.dxf             <span class="c">3D polyline per wire,</span>
                      <span class="c">layer WIRE_T&lt;tier&gt;</span></pre>
-    <div class="use"><b>Use it for</b> a bonding house's CAD or teach step. <code>wbx.py</code> needs <code>lxml</code> and <code>ezdxf</code>.</div>
+    <div class="use"><b>Use it for</b> a bonding house's CAD or teach step. <code>drc.py</code> needs <code>lxml</code> and <code>ezdxf</code>.</div>
   </article>
 </div>
 
-<div class="callout"><p><b>The two bondlists have different columns.</b> The app's has <code>type</code>, <code>length_um</code> and <code>peak_um</code>. <code>wbx.py</code>'s has <code>tier</code> and <code>profile</code>, because it reads them from the <code>.wb.svg</code>. Both use µm from the die centre, with y up.</p></div>
+<div class="callout"><p><b>The two bondlists have different columns.</b> The app's has <code>type</code>, <code>length_um</code> and <code>peak_um</code>. <code>drc.py</code>'s has <code>tier</code> and <code>profile</code>, because it reads them from the <code>.wb.svg</code>. Both use µm from the die centre, with y up.</p></div>
 
 <!-- 5 -->
 <h2 id="inside"><span class="k">5</span>Inside the exported board</h2>
 <p class="lede">KiCad has no bond wire object. The export uses ordinary footprints and hidden <code>wb_</code> fields instead, which KiCad keeps and lets you edit without understanding them. This is one wire as the app writes it, with the UUIDs and font settings left out.</p>
 
 <div class="anno">
-<pre class="code"><span class="m sp"></span>(footprint <span class="k">"wbx_wire"</span>
+<pre class="code"><span class="m sp"></span>(footprint <span class="k">"wbsvg_wire"</span>
 <span class="m">1</span>  (layer "F.Cu") (at 104.66 98.2)
 <span class="m sp"></span>  (property "Reference" "W01" (hide yes))
 <span class="m sp"></span>  (property "Value" "STD25" (hide yes))
@@ -559,7 +564,7 @@ base.dxf             <span class="c">3D polyline per wire,</span>
 <tr><td class="f">A chain of short exact cylinders</td><td>True wire diameter for clearance checks. Each piece is three simple faces, so it's the easiest to get right.</td><td>Small steps at the bends. Roughly 3&nbsp;kB per segment, so a few MB for the 74-wire example. That's a guess to measure.</td></tr>
 <tr><td class="f">One swept B-spline face per wire</td><td>Smooth, and the smallest file, around 10&nbsp;kB per wire.</td><td>The hardest to write correctly: the seam, the end caps and the surface's orientation.</td></tr>
 <tr><td class="f">A faceted mesh, as flat faces</td><td>Trivial maths, the same mesh as today's WRL.</td><td>Each triangle becomes about 15 STEP entities, so files get very large.</td></tr>
-<tr><td class="f">OpenCascade in <code>wbx.py</code></td><td>Exact sweeps, joined solids, colours, all from a mature library (CadQuery or build123d).</td><td>A heavy Python dependency, and not in the browser, so the app couldn't write it.</td></tr>
+<tr><td class="f">OpenCascade in <code>drc.py</code></td><td>Exact sweeps, joined solids, colours, all from a mature library (CadQuery or build123d).</td><td>A heavy Python dependency, and not in the browser, so the app couldn't write it.</td></tr>
 </tbody></table></div>
 <p><b>Built: the chain of cylinders</b>, in <code>app/js/step.js</code>. Each wire's path is thinned to what its own diameter can show, about 12 cylinders a wire, and each cylinder runs a little past a bend so the outside of the bend has no notch. The 74-wire example is 964 solids in 1.9&nbsp;MB of STEP, which puts 2.5&nbsp;MB into the board. KiCad renders it in colour and passes it to its board STEP export. B-spline sweeps remain the way to shrink it if that size becomes a problem. Each solid is coloured: wires by their type, the die grey and the pads white. The die artwork is what was lost. The old WRL drew it as a mosaic of coloured rectangles. In STEP that would be thousands of small faces, so the STEP leaves it out. The footprint keeps it as an image.</p>
 
@@ -567,19 +572,19 @@ base.dxf             <span class="c">3D polyline per wire,</span>
 <p>The structure stays as it is: ordinary footprints with hidden <code>wb_</code> fields. Three things are added: the embedded STEP, which is built, and a KiCad group and the wirebond.svg as an embedded snapshot, which are still proposals. UUIDs and formatting are left out.</p>
 <div class="anno">
 <pre class="code"><span class="m sp"></span>(kicad_pcb …
-<span class="m">1</span>  (footprint <span class="k">"wbx_die"</span>  <span class="d">; D1, wb_kind die, as today</span>
+<span class="m">1</span>  (footprint <span class="k">"wbsvg_die"</span>  <span class="d">; D1, wb_kind die, as today</span>
 <span class="m sp"></span>    …
-<span class="m sp"></span>    (embedded_files (file (name "wbx_bond.step")
+<span class="m sp"></span>    (embedded_files (file (name "wbsvg_bond.step")
 <span class="m sp"></span>      (type model) (checksum "…")))
-<span class="m sp"></span>    (model "kicad-embed://wbx_bond.step"))
-<span class="m">2</span>  (footprint <span class="k">"wbx_wire"</span> …)  <span class="d">; W01…, no model</span>
-<span class="m">3</span>  (footprint <span class="k">"wbx_types"</span>  <span class="d">; WBLIB</span>
+<span class="m sp"></span>    (model "kicad-embed://wbsvg_bond.step"))
+<span class="m">2</span>  (footprint <span class="k">"wbsvg_wire"</span> …)  <span class="d">; W01…, no model</span>
+<span class="m">3</span>  (footprint <span class="k">"wbsvg_types"</span>  <span class="d">; WBLIB</span>
 <span class="m sp"></span>    (property "wb_type_STD25" "…")
 <span class="m sp"></span>    (property "wb_snapshot" "sha256:…"))
 <span class="m">4</span>  (group <span class="k">"wirebond D1"</span>
 <span class="m sp"></span>    (members &lt;D1&gt; &lt;W01&gt; … &lt;WBLIB&gt;))
 <span class="m">5</span>  (embedded_files
-<span class="m sp"></span>    (file (name "wbx_bond.step") (type model)
+<span class="m sp"></span>    (file (name "wbsvg_bond.step") (type model)
 <span class="m sp"></span>      (data |KLUv…|) (checksum "&lt;sha256&gt;"))
 <span class="m">6</span>    (file (name "bonding.wb.svg") (type other)
 <span class="m sp"></span>      (data |KLUv…|) (checksum "&lt;sha256&gt;"))))</pre>
@@ -624,7 +629,7 @@ base.dxf             <span class="c">3D polyline per wire,</span>
     <div class="menu">.zip · replaces the die kit</div>
 <pre class="tree">&lt;die&gt;_part.zip
 ├─ &lt;die&gt;.kicad_sym           <span class="c">pins by side</span>
-├─ wbx_die.pretty/
+├─ wbsvg_die.pretty/
 │  └─ &lt;die&gt;.kicad_mod        <span class="c">die STEP embedded</span>
 ├─ &lt;die&gt;.step
 └─ &lt;die&gt;.wb.svg              <span class="c">die only: outline, pads,</span>
@@ -637,7 +642,7 @@ base.dxf             <span class="c">3D polyline per wire,</span>
 <pre class="tree">&lt;die&gt;_on_&lt;padring&gt;.zip
 ├─ &lt;name&gt;.kicad_sym          <span class="c">pin numbers = land numbers,</span>
 │                            <span class="c">pin names = nets</span>
-├─ wbx_bonded.pretty/
+├─ wbsvg_bonded.pretty/
 │  └─ &lt;name&gt;.kicad_mod       <span class="c">lands in copper, die, wire</span>
 │                            <span class="c">lines, STEP embedded</span>
 ├─ &lt;name&gt;.step
@@ -714,8 +719,8 @@ base.dxf             <span class="c">3D polyline per wire,</span>
   <summary>Send it to a bonding house <small>files they can use</small></summary>
   <ol class="steps">
     <li><b>Export the bond diagram (.wb.svg) and the bondlist (.csv).</b><span>The diagram is the drawing a person reviews. The bondlist is the table.</span></li>
-    <li><b>Check it.</b><span><code>python tools/wbx.py check board.wb.svg</code> lists errors, warnings and notes, and returns non-zero on errors. <code>wbx.py place</code> says how far the die can sit off its nominal place before a check fails.</span></li>
-    <li><b>Make bonder files.</b><span><code>python tools/wbx.py export board.wb.svg board</code> writes the 3D DXF, the bondlist and the fiducials.</span></li>
+    <li><b>Check it.</b><span><code>python tools/drc.py check board.wb.svg</code> lists errors, warnings and notes, and returns non-zero on errors. <code>drc.py place</code> says how far the die can sit off its nominal place before a check fails.</span></li>
+    <li><b>Make bonder files.</b><span><code>python tools/drc.py export board.wb.svg board</code> writes the 3D DXF, the bondlist and the fiducials.</span></li>
     <li><b>Send a PDF and the table too.</b><span>No bonding house expects <code>.wb.svg</code> yet. Print the diagram from a browser.</span></li>
   </ol>
 </details>
@@ -725,7 +730,7 @@ base.dxf             <span class="c">3D polyline per wire,</span>
 <p class="lede">A file that can be written and read again lets a design go out to KiCad and come back without losing anything. This is where each format stands.</p>
 
 <div class="tw"><table>
-<thead><tr><th>File</th><th class="c">App reads</th><th class="c">App writes</th><th class="c">wbx.py reads</th><th class="c">wbx.py writes</th><th>Notes</th></tr></thead>
+<thead><tr><th>File</th><th class="c">App reads</th><th class="c">App writes</th><th class="c">drc.py reads</th><th class="c">drc.py writes</th><th>Notes</th></tr></thead>
 <tbody>
 <tr><td class="f">GDS</td><td class="c y">Yes</td><td class="c n">—</td><td class="c n">—</td><td class="c n">—</td><td>Input only. Artwork goes out inside the footprint image.</td></tr>
 <tr><td class="f"><code>.kicad_mod</code></td><td class="c y">Yes</td><td class="c y">Yes</td><td class="c n">—</td><td class="c n">—</td><td>An exported die footprint reads back as a die, from its Fab pads and text.</td></tr>
@@ -733,7 +738,7 @@ base.dxf             <span class="c">3D polyline per wire,</span>
 <tr><td class="f"><code>.kicad_pro</code> <code>.kicad_sch</code></td><td class="c y">Carried</td><td class="c y">Carried</td><td class="c n">—</td><td class="c n">—</td><td>Passed through unchanged.</td></tr>
 <tr><td class="f"><code>.kicad_sym</code> <code>.step</code> <code>.die.json</code></td><td class="c n">No</td><td class="c y">Yes</td><td class="c n">—</td><td class="c n">—</td><td>In the die kit, and the board's STEP beside the board. For KiCad and MCAD, not for reading back.</td></tr>
 <tr><td class="f">DRC rules <code>.json</code></td><td class="c y">Yes</td><td class="c y">Yes</td><td class="c n">—</td><td class="c n">—</td><td>Import and export in the DRC rules panel.</td></tr>
-<tr><td class="f"><code>.wb.svg</code></td><td class="c y">Yes</td><td class="c y">Yes</td><td class="c y">Yes</td><td class="c y">Yes</td><td>The app opens its own and <code>wbx.py</code>'s. <code>wbx.py</code> reads one die at 0°.</td></tr>
+<tr><td class="f"><code>.wb.svg</code></td><td class="c y">Yes</td><td class="c y">Yes</td><td class="c y">Yes</td><td class="c y">Yes</td><td>The app opens its own and <code>drc.py</code>'s. <code>drc.py</code> reads one die at 0°.</td></tr>
 <tr><td class="f">Bondlist <code>.csv</code></td><td class="c n">No</td><td class="c y">Yes</td><td class="c n">No</td><td class="c y">Yes</td><td>Different columns from each tool.</td></tr>
 <tr><td class="f"><code>.fiducials.csv</code> <code>.dxf</code></td><td class="c n">No</td><td class="c n">—</td><td class="c n">No</td><td class="c y">Yes</td><td>For the bonder.</td></tr>
 </tbody></table></div>
@@ -764,11 +769,11 @@ base.dxf             <span class="c">3D polyline per wire,</span>
   <li><b>The STEP follows the die, not the wires.</b> Move the die footprint in KiCad and the whole assembly's 3D moves with it; move a wire footprint and its tube stays. Export again from the app to bring them back together.</li>
   <li><b>Die thickness and attach height are assumed.</b> They're written into the board and the STEP, so set them under Placement before exporting.</li>
   <li><b>Pad finding is checked only on the wafer.space template die</b>, in the 1x1 and 1x0p5 slots. Check the pad count and numbering on other dies.</li>
-  <li><b><code>wbx.py</code> reads one die at 0°.</b> The app writes turned and stacked die correctly, but <code>wbx.py</code> can't check them yet.</li>
+  <li><b><code>drc.py</code> reads one die at 0°.</b> The app writes turned and stacked die correctly, but <code>drc.py</code> can't check them yet.</li>
   <li><b>Nothing here has been bonded.</b> The formats and checks haven't been through a real bonder or a bonding house's software.</li>
 </ul>
 
-<footer>Written from the code in <code>app/js</code> and <code>wbx.py</code> as of November 2026. Where this page and the code disagree, the code is right. <a href="../../SPEC.md">SPEC.md</a> has the detail.</footer>
+<footer>Written from the code in <code>app/js</code> and <code>drc.py</code> as of November 2026. Where this page and the code disagree, the code is right. <a href="../../SPEC.md">SPEC.md</a> has the detail.</footer>
 
 </main>
 
@@ -811,34 +816,34 @@ var nodes=[
    rd:"A bonding house, a spreadsheet, your scripts",wr:"Put it in KiCad → Bondlist",sec:"out"},
   {id:"svg",col:"out",y:226,fam:"exch",t:"Bond diagram",x:".wb.svg",back:"yes",
    carries:"A true-scale drawing that is also the data: die, pads, lands, wires, loop profiles and the layer stack.",
-   rd:"Any browser, wbx.py, and the app, which opens it as a session.",wr:"Put it in KiCad → Bond diagram, or the Diagram view",sec:"in-wbsvg"},
+   rd:"Any browser, drc.py, and the app, which opens it as a session.",wr:"Put it in KiCad → Bond diagram, or the Diagram view",sec:"in-wbsvg"},
   {id:"rout",col:"out",y:280,fam:"rules",t:"DRC rules",x:".json",back:"yes",
    carries:"Your rule values, to share or reuse.",
    rd:"Wire Bond Bench",wr:"DRC rules → Export JSON",sec:"in-rules"},
 
   {id:"wcsv",col:"out",y:384,fam:"exch",t:"Bondlist",x:".bondlist.csv",
    carries:"One row per wire with tier and profile, both ends in µm from the die centre.",
-   rd:"A bonding house",wr:"wbx.py export",sec:"out"},
+   rd:"A bonding house",wr:"drc.py export",sec:"out"},
   {id:"fid",col:"out",y:438,fam:"exch",t:"Fiducials",x:".fiducials.csv",
    carries:"The eye points on the die and board, so the bonder can be taught where to look.",
-   rd:"A bonding house",wr:"wbx.py export, when the .wb.svg has fiducials",sec:"out"},
+   rd:"A bonding house",wr:"drc.py export, when the .wb.svg has fiducials",sec:"out"},
   {id:"dxf",col:"out",y:492,fam:"exch",t:"3D wires",x:".dxf",
    carries:"One 3D polyline per wire, following its loop, on a layer per tier.",
-   rd:"CAD tools, a bonder's offline programming",wr:"wbx.py export",sec:"out"}
+   rd:"CAD tools, a bonder's offline programming",wr:"drc.py export",sec:"out"}
 ];
 var tools=[
   {id:"bench",y:30,h:304,t:"Wire Bond Bench",x:"browser app · app/index.html",
    s:["Read the substrate and die","Find pads, place the die","Pair pads with lands","Check against the rules","Write KiCad and .wb.svg"]},
-  {id:"wbx",y:396,h:140,t:"wbx.py",x:"Python · command line",
+  {id:"drc",y:396,h:140,t:"drc.py",x:"Python · command line",
    s:["check  validate a .wb.svg","place  how far the die can move","export  CSV and 3D DXF"]}
 ];
 var edges=[];
 nodes.forEach(function(n){
   if(n.col==="in") edges.push({a:n.id,b:"bench"});
   else if(n.y<380) edges.push({a:"bench",b:n.id});
-  else edges.push({a:"wbx",b:n.id});
+  else edges.push({a:"drc",b:n.id});
 });
-edges.push({a:"svg",b:"wbx",cls:"wb"});
+edges.push({a:"svg",b:"drc",cls:"wb"});
 var byId={}; nodes.forEach(function(n){byId[n.id]=n;}); tools.forEach(function(t){byId[t.id]=t;});
 
 function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;");}
@@ -857,7 +862,7 @@ function draw(){
   o+='<text class="colh" x="'+IN_X+'" y="24">Reads</text>';
   o+='<text class="colh" x="'+TX+'" y="20">Tools</text>';
   o+='<text class="colh" x="'+(OUT_X+NW)+'" y="2" text-anchor="end">Writes, from the app</text>';
-  o+='<text class="colh" x="'+(OUT_X+NW)+'" y="372" text-anchor="end">Writes, from wbx.py</text>';
+  o+='<text class="colh" x="'+(OUT_X+NW)+'" y="372" text-anchor="end">Writes, from drc.py</text>';
   edges.forEach(function(e,i){
     o+='<path class="ed'+(e.cls?" "+e.cls:"")+'" data-a="'+e.a+'" data-b="'+e.b+'" d="'+path(e)+'" marker-end="url(#ah)"/>';
   });
@@ -1000,5 +1005,6 @@ document.getElementById("lvSeg").addEventListener("click",function(ev){var b=ev.
 lv(1);
 })();
 </script>
+<p class="madewith"><img src="../../app/brand/wirebond-icon.svg" alt=""><span>Part of <a href="https://github.com/anfroholic/wirebond.svg">wirebond.svg</a>, a viewable wire bond exchange format, and its browser app <a href="../../app/index.html">Wire Bond Bench</a>. (c) Andrew Wingate, MIT licence.</span></p>
 </body>
 </html>

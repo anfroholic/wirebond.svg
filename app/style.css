@@ -1,4 +1,5 @@
-/* Evezor palette, as in evezor_ide/app/static/core/style.css and macro_sharer/app/static/style.css. */
+/* Wire Bond Bench, part of wirebond.svg: https://github.com/anfroholic/wirebond.svg. (c) Andrew Wingate, MIT licence.
+   Evezor palette, as in evezor_ide/app/static/core/style.css and macro_sharer/app/static/style.css. */
 :root {
   --green: #068770; --magenta: #d93aa7; --blue: #3ea9da;
   --shade-1: #0b6f5d; --shade-2: #105649; --shade-3: #12302b; --shade-4: #0c1311;
@@ -22,6 +23,7 @@ code, .mono { font-family: var(--mono); font-size: 0.93em; }
 .brand { font-weight: 600; color: var(--ink-high); font-size: 15px; display: flex; align-items: center; gap: 8px; white-space: nowrap; }
 /* Logo: concept 28 "Period ball" from docs/logo/marks.html, built by docs/logo/make_brand.py. */
 .brand .logo { display: block; height: 38px; width: auto; flex: none; }
+.brand .logolink { display: block; flex: none; border-radius: 4px; }
 .brand .app { padding-left: 10px; margin-left: 2px; border-left: 1px solid var(--line); line-height: 20px; }
 .brand .sub { font-weight: 400; font-size: 12px; color: var(--muted); }
 .grow { flex: 1; }
@@ -78,6 +80,8 @@ code, .mono { font-family: var(--mono); font-size: 0.93em; }
 #empty { position: absolute; inset: var(--toolbar-h, 41px) 0 0 0; z-index: 5; display: flex; padding: 26px; overflow: auto; background: var(--shade-4); }
 .welcome { max-width: 860px; margin: auto; padding-block: 8px 4px; }
 .welcome .hero { margin-bottom: 22px; }
+/* The wirebond.svg logo over the welcome, the same mark as the top bar, larger. */
+.welcome .herologo { display: block; height: 64px; width: auto; margin: 0 0 14px -6px; }
 .welcome h1 { color: var(--ink-high); font-size: 30px; font-weight: 600; line-height: 1.15; margin: 0 0 10px; letter-spacing: -.01em; }
 .welcome p { color: var(--ink); margin: 0 0 18px; font-size: 14px; }
 .welcome .lede { max-width: 660px; font-size: 15px; line-height: 1.6; }
@@ -86,6 +90,8 @@ code, .mono { font-family: var(--mono); font-size: 0.93em; }
 .welcome .status { margin-top: 26px; padding-top: 14px; border-top: 1px solid var(--line); color: var(--muted); font-size: 12px; line-height: 1.55; }
 .welcome .status b { color: var(--ink); font-weight: 600; }
 .welcome .status .repolinks { display: block; margin-top: 6px; }
+.welcome .status .madewith { display: flex; align-items: center; gap: 8px; margin-top: 12px; }
+.welcome .status .madewith img { width: 22px; height: 22px; flex: none; }
 #top .btn .gh { vertical-align: -2px; margin-right: 6px; }
 .welcome h2 { color: var(--muted); font-size: 11.5px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; margin: 22px 0 10px; }
 .exgroup { margin-bottom: 14px; }
@@ -157,11 +163,10 @@ input[type=checkbox], input[type=radio] { accent-color: var(--green); }
 .stats b { display: block; font: 600 13.5px var(--mono); color: var(--ink-high); }
 .stats span { font-size: 11px; color: var(--muted); }
 .warnline { margin-top: 7px; font-size: 12px; color: var(--warn); }
-/* What wbx.py said, under the tolerance */
-#tolRun small { color: var(--muted); }
-.pyout { margin: 4px 0 0; padding-left: 16px; font: 11.5px var(--mono); }
-.pyout.err { color: var(--bad); }
-.pyout.warn { color: var(--warn); }
+/* The checks at the zone's edges, under the tolerance */
+.zoneout { margin: 4px 0 0; padding-left: 16px; font: 11.5px var(--mono); }
+.zoneout .err { color: var(--bad); }
+.zoneout .warn { color: var(--warn); }
 details.more { margin-top: 8px; }
 details.more > summary { cursor: pointer; color: var(--blue); font-size: 12px; }
 .layerlist { max-height: 210px; overflow-y: auto; margin-top: 5px; background: var(--inset); border-radius: 5px; padding: 4px 6px; }

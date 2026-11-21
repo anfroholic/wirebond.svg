@@ -53,3 +53,7 @@ python app/make_samples.py
 ```
 
 A slot left out keeps the files it has: the 1x1 die without `--gds`, EuroSynth without `--eurosynth`.
+
+---
+
+<sub><img src="../../app/brand/wirebond-icon.svg" alt="" width="16" height="16"> Part of [wirebond.svg](https://github.com/anfroholic/wirebond.svg), a viewable wire bond exchange format, and its browser app Wire Bond Bench. (c) Andrew Wingate, MIT licence.</sub>

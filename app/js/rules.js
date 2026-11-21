@@ -1,10 +1,11 @@
 /* DRC rules: the one table of design rule defaults, with where each number comes from.
    docs/wire_bond_design_rules.svg is generated from this table by app/make_rules_svg.py, and a test checks the two agree.
    Nobody here has bonded anything, so every number carries its tier: a placeholder must never read as a standard.
-   The rule set is optional. A session or a third party can switch any rule off, or replace the lot from a JSON file. */
+   The rule set is optional. A session or a third party can switch any rule off, or replace the lot from a JSON file.
+   Part of Wire Bond Bench, from wirebond.svg: https://github.com/anfroholic/wirebond.svg. (c) Andrew Wingate, MIT licence. */
 (function (W) {
   'use strict';
-  W.WBX = W.WBX || {};
+  W.WBSVG = W.WBSVG || {};
 
   // BEGIN RULES JSON. Plain JSON between these markers: make_rules_svg.py and the tests read it as text.
   const TABLE = [
@@ -41,7 +42,7 @@
     {"id": "edgeClear", "key": "S1", "group": "Height", "name": "Loop clearance over die edge", "value": 40, "unit": "µm", "tier": "placeholder", "level": "fail", "enforce": "specified",
      "meaning": "Height of the wire above the die edge it crosses, or above any other die it passes over.",
      "affects": "Wires of a type with a loop.",
-     "condition": "Ours, from the WBX example. MIL-STD-883 TM 2017 asks 1 mil (25 µm) within 5 mil of a ball bond.", "short": "ours",
+     "condition": "Ours, from the wirebond.svg example. MIL-STD-883 TM 2017 asks 1 mil (25 µm) within 5 mil of a ball bond.", "short": "ours",
      "source": "This repo", "url": ""},
     {"id": "edgeClearPerD", "key": "S2", "group": "Height", "name": "Die edge clearance per diameter", "value": 2, "unit": "× d", "tier": "standard", "level": "warn", "enforce": "specified",
      "meaning": "Clearance over the die edge as a multiple of the wire diameter.",
@@ -245,7 +246,7 @@
 
   function exportJson(S) {
     return JSON.stringify({
-      format: 'wbx-drc-rules', version: 1,
+      format: 'wbsvg-drc-rules', version: 1, made_with: W.WBSVG.brand.credit,
       note: 'Wire bond DRC rules from Wire Bond Bench. Edit value and on, and add a source and tier (standard, vendor, thumb, placeholder) for any number you give.',
       rules: TABLE.map(r => { const g = get(S, r.id); return { id: r.id, key: r.key, name: r.name, value: g.value, unit: r.unit, on: g.on, tier: g.tier, source: g.source, url: g.fromFile ? '' : r.url, condition: r.condition, default: r.value }; }),
     }, null, 1);
@@ -257,7 +258,7 @@
     const map = {};
     const unknown = [];
     if (list) for (const r of list) { if (r && BY_ID.has(r.id)) map[r.id] = r; else unknown.push(r && r.id); }
-    else for (const [k, v] of Object.entries(data.rules || data)) { if (BY_ID.has(k)) map[k] = v; else if (!['format', 'version', 'note'].includes(k)) unknown.push(k); }
+    else for (const [k, v] of Object.entries(data.rules || data)) { if (BY_ID.has(k)) map[k] = v; else if (!['format', 'version', 'note', 'made_with'].includes(k)) unknown.push(k); }
     // A file's tier is kept only where it gives a source too, and a value from the file that matches our default keeps our source.
     for (const [id, r] of Object.entries(map)) {
       if (r && typeof r === 'object' && r.source && r.source === BY_ID.get(id).source) { delete r.source; delete r.tier; }
@@ -269,5 +270,5 @@
     return { count: Object.keys(map).length, unknown: unknown.filter(Boolean) };
   }
 
-  W.WBX.rules = { TABLE, TIERS, BY_ID, LIMIT_KEYS, CHECK_RULE, defaults, normalise, get, on, value, attach, migrate, decorate, notEnforced, exportJson, importJson };
+  W.WBSVG.rules = { TABLE, TIERS, BY_ID, LIMIT_KEYS, CHECK_RULE, defaults, normalise, get, on, value, attach, migrate, decorate, notEnforced, exportJson, importJson };
 })(window);

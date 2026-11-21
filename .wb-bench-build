@@ -1,2 +1,1 @@
 Written by build.py in the development repo, wb-exchange-explorer. A rebuild replaces app, docs, examples, tools, index.html, README.md, SPEC.md, LICENSE, so change those there.
-Pyodide 0.27.7, from jsDelivr.

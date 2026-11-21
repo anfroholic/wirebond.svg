@@ -1,7 +1,8 @@
-/* The bench: holds the session, loads files, and wires the panels to the model and views. */
+/* The bench: holds the session, loads files, and wires the panels to the model and views.
+   Wire Bond Bench, part of wirebond.svg: https://github.com/anfroholic/wirebond.svg. (c) Andrew Wingate, MIT licence. */
 (function (W) {
   'use strict';
-  const K = W.WBX.kicad, G = W.WBX.gds, M = W.WBX.model, X = W.WBX.export, V = W.WBX.view, DRC = W.WBX.rules, PY = W.WBX.py;
+  const BRAND = W.WBSVG.brand, K = W.WBSVG.kicad, G = W.WBSVG.gds, M = W.WBSVG.model, X = W.WBSVG.export, V = W.WBSVG.view, DRC = W.WBSVG.rules;
   const $ = id => document.getElementById(id);
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const fx = (v, d) => (+v).toFixed(d === undefined ? 2 : d);
@@ -58,7 +59,7 @@
   const app = {
     S, sel: null, selWire: null, flagged: null, flagId: null, preview: null, mode: 'plan', tab: 'regimes', regimes: {}, checks: null,
   };
-  W.WBX.app = app;
+  W.WBSVG.app = app;
   /* Wire selection. app.selWires holds every selected wire, by object; app.selWire is the primary one, and setting it selects that wire alone (null clears),
      so code that only knows one wire keeps working. app.anchor is where a Shift range starts. None of it is saved with the session. */
   let primaryWire = null;
@@ -448,7 +449,7 @@
      It replaces the session. The file is rewritten as a board in the form the bench writes for KiCad, and opened as one,
      so everything after this, editing, saving the session and exporting, works as it does for that board. */
   async function openWbSvg(text, name) {
-    const WB = W.WBX.wbsvg;
+    const WB = W.WBSVG.wbsvg;
     if (!WB.looks(text)) throw new Error(`${name} is an SVG but not a wirebond.svg: it has no wb: namespace.`);
     const doc = WB.parse(text);
     await reset(true, true);
@@ -486,7 +487,7 @@
     }
     renderAll(); plan.draw(); tilt.draw(); save();
     const kept = [`${placedDies().length} die`, `${S.lands.length} lands`, `${S.wires.length} of ${doc.wires.length} wires`];
-    toast(`Opened ${name}: ${kept.join(', ')}.${doc.notes.length ? ' ' + doc.notes.join(' ') : ''}`);
+    toast(`Opened ${name}: ${kept.join(', ')}.${doc.notes.length ? ' ' + doc.notes.join(' ') : ''}`, doc.seal === 'data changed' ? 'err' : doc.seal === 'drawing changed' ? 'warn' : undefined);
   }
   /* ---- bundled examples ----
      The files live in samples/<id>.js, written by make_samples.py, and that script is only added when its example is
@@ -515,7 +516,7 @@
       files: ['stacked_die.wb.svg'],
       blurb: 'The same RAM, turned and glued on top: twelve wires down the step to the logo die, and its supply wires over it to the board.' },
   ];
-  const REPO_URL = 'https://github.com/anfroholic/wirebonding.svg';   // the published repo: the format, the examples and this app's source
+  const REPO_URL = BRAND.url;   // the published repo: the format, the examples and this app's source
   const EXAMPLE_GROUPS = {
     ws: ['wafer.space 1x1', 'The gf180mcu project template die, with the wafer.space logo: 3.93 × 5.12 mm, 74 pads'],
     other: ['Other slots', 'The same die in another slot size'],
@@ -624,7 +625,7 @@
     document.head.appendChild(s);
   });
   async function sampleScript(which) {
-    const X = W.WBX;
+    const X = W.WBSVG;
     if (!(X.sampleData && X.sampleData[which])) await addScript('samples/' + encodeURIComponent(which) + '.js');
     await Promise.all(X.sampleData[which].map(name => X.sampleFiles && X.sampleFiles[name] ? null : addScript('samples/files/' + encodeURIComponent(name) + '.js')));
   }
@@ -641,7 +642,7 @@
       toast('This example isn\'t bundled in this copy. Run python app/make_samples.py.', 'err');
       return;
     }
-    const files = await Promise.all(W.WBX.sampleData[which].map(async name => new File([await gunzip(W.WBX.sampleFiles[name])], name)));
+    const files = await Promise.all(W.WBSVG.sampleData[which].map(async name => new File([await gunzip(W.WBSVG.sampleFiles[name])], name)));
     // One undo step, back to whatever was open before.
     await oneStep(async () => {
       await reset(true, true);
@@ -932,11 +933,10 @@
     if (tolRun && tolRun.step === hist.steps[hist.at]) h += tolRun.html;
     return h;
   }
-  /* ---- wbx.py, by WBX.py: serve.py's Python in development, Pyodide in the standalone page ---- */
+  /* ---- the checks again, with each die at the edges of its tolerance zone: M.zoneCheck ---- */
   let tolRun = null;   // the last check at the zone's edges: { step it was run on, html }. Any change or undo drops it.
   function tolCheckWhy() {
-    if (placedDies().length > 1) return 'wbx.py reads one die so far, and this session has several. Check a .wb.svg with one die.';
-    if (!PY.state.name) return PY.state.why;
+    if (!S.wires.length) return 'There are no wires to check yet.';
     return '';
   }
   function dropStaleTol() {
@@ -944,7 +944,7 @@
     tolRun = null;
     const e = $('tolRun'); if (e) e.remove();
   }
-  const um = v => v >= 1e8 ? 'none near' : fx(v, 1) + ' µm';
+  const um = v => v === Infinity ? 'none near' : fx(v, 0) + ' µm';
   async function tolCheck() {
     const why = tolCheckWhy();
     if (why) { toast(why, 'warn'); return; }
@@ -952,17 +952,20 @@
     if (btn) btn.disabled = true;
     let r;
     try {
-      busy('Checking the zone');
-      r = await PY.check(X.wbSvg(S), t => busy(t));
+      busy('Checking at the zone\'s edges');
+      await new Promise(go => setTimeout(go, 0));   // so the busy line shows before the work starts
+      r = M.zoneCheck(S);
     } finally { busy(null); if (btn) btn.disabled = false; }
-    if (hist.steps[hist.at] !== step) { toast('The layout changed while wbx.py was checking. Check again.', 'warn'); return; }
-    const where = esc(PY.state.python), P = r.res && r.res.place, list = (k, xs) => xs.length ? `<ul class="pyout ${k}">${xs.slice(0, 6).map(x => `<li>${esc(x)}</li>`).join('')}${xs.length > 6 ? `<li>and ${xs.length - 6} more</li>` : ''}</ul>` : '';
+    const many = r.zones.length > 1, who = z => many ? z.id + ' ' : '';
+    const turns = r.zones.map(z => `${who(z)}±${fx(z.turn, 2)}°`).join(', ');
+    const least = `Least at the edges: die edge ${um(r.least.edge)}, wire gap ${um(r.least.gap)}. The zone allows a turn of ${turns}.`;
     let html;
-    if (r.failed) html = `<div class="warnline" id="tolRun" data-tip="py:tolRun">wbx.py couldn't read this layout: ${esc(r.failed)} <small>(${where})</small></div>`;
+    if (!r.found.length) html = `<div class="note" id="tolRun" data-tip="zone:run"><b>Nothing gets worse</b> at the zone's edges. ${least}</div>`;
     else {
-      const head = r.errors.length ? `<div class="warnline" id="tolRun" data-tip="py:tolRun"><b>${r.errors.length} error${r.errors.length > 1 ? 's' : ''}</b> from wbx.py check` : `<div class="note" id="tolRun" data-tip="py:tolRun"><b>Passes</b> wbx.py check at the zone's edges`;
-      html = head + (P ? `. Least at the edges: die edge ${um(P.edge)}, wire gap ${um(P.gap)}, land ${um(P.land)}; the zone allows a turn of ${fx(P.turn, 3)}°.` : '.') +
-        ` <small>(${where})</small>${list('err', r.errors)}${list('warn', r.warns)}</div>`;
+      const checks = new Set(r.found.map(f => f.id)).size, fails = r.found.some(f => f.status === 'fail');
+      const shown = r.found.slice(0, 6).map(f => `<li class="${f.status === 'fail' ? 'err' : 'warn'}">${esc((many ? f.die + ' ' : '') + f.at)}: ${esc(f.label)}, ${esc(f.value)}</li>`).join('');
+      html = `<div class="warnline" id="tolRun" data-tip="zone:run"><b>${checks} check${checks > 1 ? 's' : ''} ${fails ? 'fail or ' : ''}get${checks > 1 ? '' : 's'} worse</b> at the zone's edges. ${least}` +
+        `<ul class="zoneout">${shown}${r.found.length > 6 ? `<li>and ${r.found.length - 6} more</li>` : ''}</ul></div>`;
     }
     tolRun = { step, html };
     renderLeft();
@@ -1305,6 +1308,7 @@
       <div class="excards">${EXAMPLES.filter(e => e.group === g).map(exampleCard).join('')}</div></div>`).join('');
     $('empty').innerHTML = `<div class="welcome">
       <div class="hero">
+        <img class="herologo" src="brand/wirebond-logo.svg" alt="${esc(BRAND.name)}" width="256" height="64">
         <h1>Wire bond layout for KiCad</h1>
         <p class="lede">Place a bare die on the board it bonds to, lay out every wire, check them against bonding design rules, and send the assembly back to KiCad with 3D wires and a bond diagram. It all runs in this browser, and your files stay on your computer.</p>
         <div class="row"><button class="btn primary big" data-act="pick" data-role="">Choose files</button><a class="btn ghost big" href="../docs/primer/wire-bonding-primer.html" target="_blank" rel="noopener" data-tip="top:primer">New to wire bonding? Read the primer</a></div>
@@ -1318,8 +1322,9 @@
       </div>
       <h2>Open an example</h2>
       ${groups}
-      <footer class="status"><b>Early release.</b> The <a class="link" href="${REPO_URL}/blob/main/SPEC.md" target="_blank" rel="noopener">wirebond.svg format</a> is a v0.1 draft, and no layout from this app has been bonded yet. Rule limits are for comparing layouts, not for sign-off.
-        <span class="repolinks"><a class="link" href="${REPO_URL}" target="_blank" rel="noopener">The project on GitHub</a> · <a class="link" href="${REPO_URL}/tree/main/examples" target="_blank" rel="noopener">Example files</a> · <a class="link" href="${REPO_URL}/issues" target="_blank" rel="noopener">Report a problem</a></span></footer>
+      <footer class="status"><b>Early release.</b> The <a class="link" href="${REPO_URL}/blob/main/SPEC.md" target="_blank" rel="noopener">wirebond.svg format</a> is a v0.2 draft, and no layout from this app has been bonded yet. Rule limits are for comparing layouts, not for sign-off.
+        <span class="repolinks"><a class="link" href="${REPO_URL}" target="_blank" rel="noopener">The project on GitHub</a> · <a class="link" href="${REPO_URL}/tree/main/examples" target="_blank" rel="noopener">Example files</a> · <a class="link" href="${REPO_URL}/issues" target="_blank" rel="noopener">Report a problem</a></span>
+        <span class="madewith" data-tip="brand:credit"><img src="brand/wirebond-icon.svg" alt="" width="22" height="22"><span>${esc(BRAND.app)} is part of <a class="link" href="${REPO_URL}" target="_blank" rel="noopener">${esc(BRAND.name)}</a>, by ${esc(BRAND.author)}. ${esc(BRAND.license)} licence.</span></span></footer>
     </div>`;
   }
   function renderAll() {
@@ -1457,7 +1462,12 @@
   function manifest(slotD) {
     const d = slotD.die, P = slotD.place;
     const stack = manyDies() ? { id: slotD.id, sits_on: M.dieSupport(S, slotD) ? P.on : P.on === 'custom' ? 'custom' : 'board', bottom_um: M.dieBottom(S, slotD) } : {};
-    return JSON.stringify(Object.assign({ name: d.name, source: d.source, file: d.fileName, w_mm: d.x1 - d.x0, h_mm: d.y1 - d.y0, thickness_um_assumed: P.thick, attach_um_assumed: P.attach }, stack, { pad_layer: d.info.padLayer || null, pin1: d.info.cornerSource ? { corner: d.info.corner, source: d.info.cornerSource, direction: d.info.dir } : null, pads: d.pads.map(p => ({ num: p.num, net: p.net, side: p.side, x_mm: +p.x.toFixed(6), y_mm: +p.y.toFixed(6), w_um: +(p.w * 1000).toFixed(3), h_um: +(p.h * 1000).toFixed(3) })) }), null, 1);
+    return JSON.stringify(Object.assign({ made_with: BRAND.credit, name: d.name, source: d.source, file: d.fileName, w_mm: d.x1 - d.x0, h_mm: d.y1 - d.y0, thickness_um_assumed: P.thick, attach_um_assumed: P.attach }, stack, { pad_layer: d.info.padLayer || null, pin1: d.info.cornerSource ? { corner: d.info.corner, source: d.info.cornerSource, direction: d.info.dir } : null, pads: d.pads.map(p => ({ num: p.num, net: p.net, side: p.side, x_mm: +p.x.toFixed(6), y_mm: +p.y.toFixed(6), w_um: +(p.w * 1000).toFixed(3), h_um: +(p.h * 1000).toFixed(3) })) }), null, 1);
+  }
+  // The note in every zip this app writes: what it is, and where it came from.
+  function zipReadme(what) {
+    return [`${what}`, '', `${BRAND.credit}`, `${BRAND.app} lays out wire bonds for KiCad, in the browser: ${BRAND.site}`,
+      `The ${BRAND.name} format, the Python tools and the source: ${BRAND.url}`, `(c) ${BRAND.author}, ${BRAND.license} licence.`, ''].join('\r\n');
   }
   // A file name for each die: its own name, unless two die share one.
   function dieFileNames() {
@@ -1479,15 +1489,16 @@
       return;
     }
     const files = {};
-    for (const d of dies) files[`wbx_die.pretty/${names.get(d)}.kicad_mod`] = fp(d);
-    download(with3d ? 'wbx_die_footprints_3d.zip' : 'wbx_die_footprints.zip', X.zip(files));
-    toast(`Wrote ${dies.length} die footprints${model} in wbx_die.pretty. Add it as a footprint library.`);
+    for (const d of dies) files[`wbsvg_die.pretty/${names.get(d)}.kicad_mod`] = fp(d);
+    files['README.txt'] = zipReadme(`${dies.length} die footprints${model}, as a KiCad footprint library: add wbsvg_die.pretty in KiCad's Footprint Libraries.`);
+    download(with3d ? 'wbsvg_die_footprints_3d.zip' : 'wbsvg_die_footprints.zip', X.zip(files));
+    toast(`Wrote ${dies.length} die footprints${model} in wbsvg_die.pretty. Add it as a footprint library.`);
   }
   const exporters = {
     fp() { footprints(false); },
     fp3d() { footprints(true); },
     kit() {
-      const dies = placedDies(), names = dieFileNames(), lib = 'wbx_die.pretty', files = {};
+      const dies = placedDies(), names = dieFileNames(), lib = 'wbsvg_die.pretty', files = {};
       for (const d of dies) {
         const name = names.get(d);
         const step = X.dieStep(d.die, d.place.thick, d.place.attach, name, d.art3d);
@@ -1496,7 +1507,8 @@
         files[`${name}.step`] = step;
         files[`${name}.die.json`] = manifest(d);
       }
-      download((dies.length > 1 ? 'wbx_die' : names.get(dies[0])) + '_kit.zip', X.zip(files));
+      files['README.txt'] = zipReadme('A die kit for KiCad: each die\'s footprint in wbsvg_die.pretty with its 3D model embedded, its schematic symbol, the same 3D model as a loose STEP, and a JSON manifest of its pads.');
+      download((dies.length > 1 ? 'wbsvg_die' : names.get(dies[0])) + '_kit.zip', X.zip(files));
       toast(dies.length > 1 ? `Wrote the die kit for ${dies.length} die. Thickness in the 3D models is assumed.` : `Wrote the die kit for ${names.get(dies[0])}. Thickness in the 3D model is assumed.`);
     },
     board() {
@@ -1508,6 +1520,7 @@
       for (const [k, v] of Object.entries(r.files)) files[k === 'assembly.kicad_pcb' ? base + '.kicad_pcb' : k === 'bond.step' ? base.replace(/_bonded$/, '_bond') + '.step' : k] = v;
       if (S.sidecars.pro) files[base + '.kicad_pro'] = S.sidecars.pro;
       if (S.sidecars.sch) files[base + '.kicad_sch'] = S.sidecars.sch;
+      files['README.txt'] = zipReadme(`${base}.kicad_pcb is your board with the die, one footprint per bond wire and the wire type library added, and one STEP of the die and wires embedded in it. Open it in KiCad 10. The loose .step is the same model, for mechanical CAD.`);
       download(base + '.zip', X.zip(files));
       toast(`Wrote ${base}.zip: ${r.rows.length} wires on ${r.layer}. Unzip it and open the .kicad_pcb.`);
       if (S.substrate.kind === 'board' && !S.sidecars.pro) toast('No .kicad_pro was loaded, so KiCad will apply its default design rules to this copy.', 'warn');
@@ -1515,7 +1528,7 @@
     },
     bond() {
       const dies = placedDies();
-      download((dies.length > 1 ? 'wbx_die' : X.safe(dies[0].die.name)) + '.bondlist.csv', X.bondlist(S), 'text/csv');
+      download((dies.length > 1 ? 'wbsvg_die' : X.safe(dies[0].die.name)) + '.bondlist.csv', X.bondlist(S), 'text/csv');
       toast('Wrote the bondlist.');
     },
     svg() {
@@ -1526,7 +1539,7 @@
   };
   function svgName() {
     const dies = placedDies();
-    return (S.substrate ? X.safe(S.substrate.fileName.replace(/(\.wb)?\.[^.]+$/i, '')) : dies.length > 1 ? 'wbx_die' : X.safe(dies[0].die.name)) + '.wb.svg';
+    return (S.substrate ? X.safe(S.substrate.fileName.replace(/(\.wb)?\.[^.]+$/i, '')) : dies.length > 1 ? 'wbsvg_die' : X.safe(dies[0].die.name)) + '.wb.svg';
   }
 
   /* ---- Diagram view: the .wb.svg the export would write, as a drawing, as code or both, kept up to date as you work ----
@@ -1845,7 +1858,7 @@
       if (changed && !W.confirm('Put every DRC rule back to its default?')) return;
       S.rules = DRC.defaults(); afterRules(); toast('DRC rules are back to their defaults.');
     },
-    drcExport() { download('wbx_drc_rules.json', DRC.exportJson(S), 'application/json'); toast('Wrote wbx_drc_rules.json.'); },
+    drcExport() { download('wbsvg_drc_rules.json', DRC.exportJson(S), 'application/json'); toast('Wrote wbsvg_drc_rules.json.'); },
     drcImport() { const i = $('pickRules'); i.value = ''; i.click(); },
     addRule() { S.typeRules.push({ match: '', type: S.types[0].name }); renderRight(); save(); },
     undo() { undo(); },
@@ -2073,7 +2086,16 @@
     W.addEventListener('resize', renderLoop);
   }
 
+  // A word in the console for anyone who opens it, as every file this app writes says where it came from.
+  function hello() {
+    const icon = 'data:image/svg+xml,' + encodeURIComponent(BRAND.icon);
+    console.log(`%c %c${BRAND.app}%c  part of ${BRAND.name}
+${BRAND.url}`,
+      `background:url("${icon}") no-repeat center/contain;padding:14px 16px;margin-right:6px`,
+      'color:#068770;font:600 15px "IBM Plex Sans",system-ui,sans-serif', 'color:#d93aa7;font:13px "IBM Plex Mono",monospace');
+  }
   async function boot() {
+    hello();
     plan = new V.PlanView($('plan'), app);
     tilt = new V.TiltView($('tilt'), app);
     app.plan = plan; app.tilt = tilt;
@@ -2087,8 +2109,6 @@
     renderAll();
     if (had) { plan.fit(); toast('Picked up where you left off. Start over clears it.'); }
     app.ready = true;
-    // Ask once whether Python is here. Nothing waits for it, and the tolerance check's button follows the answer.
-    PY.backend().then(() => { if (M.anyTol(S)) renderLeft(); });
   }
   app.gds = gds;
   app.refresh = renderAll;

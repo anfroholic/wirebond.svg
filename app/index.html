@@ -1,20 +1,35 @@
 <!doctype html>
+<!--
+  Wire Bond Bench, the browser app of wirebond.svg: wire bond layout for KiCad.
+  https://github.com/anfroholic/wirebond.svg
+  (c) Andrew Wingate, MIT licence. The logo and icon are in brand/, and docs/logo/make_brand.py builds them.
+-->
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Wire Bond Bench</title>
+<title>Wire Bond Bench · wirebond.svg</title>
+<meta name="description" content="Wire Bond Bench, from the wirebond.svg project: wire bond layout for KiCad. Place a bare die, lay out and check every wire, and write the assembly back to KiCad with 3D wires and a .wb.svg bond diagram.">
+<meta name="application-name" content="Wire Bond Bench">
+<meta name="author" content="Andrew Wingate">
+<meta name="generator" content="wirebond.svg">
+<meta name="theme-color" content="#068770">
+<meta property="og:title" content="Wire Bond Bench · wirebond.svg">
+<meta property="og:description" content="Wire bond layout for KiCad, in the browser. Part of wirebond.svg, a viewable wire bond exchange format.">
+<meta property="og:url" content="https://anfroholic.github.io/wirebond.svg/app/">
+<meta property="og:site_name" content="wirebond.svg">
 <link rel="icon" type="image/svg+xml" href="brand/wirebond-icon.svg">
+<link rel="apple-touch-icon" href="brand/wirebond-icon.svg">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <header id="top">
-  <div class="brand"><img class="logo" src="brand/wirebond-logo.svg" alt="wirebond.svg" width="151" height="38"><span class="app">Wire Bond Bench</span><span class="sub">wire bond layout for KiCad</span></div>
+  <div class="brand"><a href="https://github.com/anfroholic/wirebond.svg" target="_blank" rel="noopener" data-tip="top:brand" class="logolink"><img class="logo" src="brand/wirebond-logo.svg" alt="wirebond.svg" width="151" height="38"></a><span class="app">Wire Bond Bench</span><span class="sub">wire bond layout for KiCad</span></div>
   <div id="busy" hidden><span id="busyText"></span><span class="bar"><i id="busyBar"></i></span></div>
   <div class="grow"></div>
   <a class="btn ghost" href="../docs/primer/wire-bonding-primer.html" target="_blank" rel="noopener" data-tip="top:primer" style="text-decoration:none">Learn wire bonding</a>
   <a class="btn ghost" href="../docs/primer/gdt.html" target="_blank" rel="noopener" data-tip="top:gdt" style="text-decoration:none">Learn GD&amp;T</a>
-  <a class="btn ghost" href="https://github.com/anfroholic/wirebonding.svg" target="_blank" rel="noopener" data-tip="top:repo" style="text-decoration:none"><svg class="gh" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>GitHub</a>
+  <a class="btn ghost" href="https://github.com/anfroholic/wirebond.svg" target="_blank" rel="noopener" data-tip="top:repo" style="text-decoration:none"><svg class="gh" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>GitHub</a>
   <button class="btn" data-act="openDrc" id="drcBtn">DRC rules</button>
   <div class="menuwrap">
     <button class="btn" data-act="menu" data-menu="sampleMenu">Examples</button>
@@ -107,17 +122,16 @@
 <a id="dl" hidden></a>
 <dialog id="drc" aria-labelledby="drcTitle"><div id="drcBody"></div></dialog>
 <input type="file" id="pickRules" hidden accept=".json,application/json">
+<script src="js/brand.js"></script>
 <script src="js/kicad.js"></script>
 <script src="js/gds.js"></script>
 <script src="js/rules.js"></script>
 <script src="js/model.js"></script>
 <script src="js/step.js"></script>
+<script src="js/seal.js"></script>
 <script src="js/export.js"></script>
 <script src="js/wbsvg.js"></script>
 <script src="js/view.js"></script>
-<script src="js/py-config.js"></script>
-<script src="js/py-pyodide.js"></script>
-<script src="js/py.js"></script>
 <script src="js/tips.js"></script>
 <script src="js/app.js"></script>
 </body>
